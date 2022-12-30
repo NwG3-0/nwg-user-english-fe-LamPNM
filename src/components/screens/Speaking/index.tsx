@@ -1,26 +1,14 @@
 import { MicStart, MicStop } from '@components/common/CustomIcon'
 import useRecorder from '@hooks/useRecoder'
-import { AUTH_TOKEN, USER_INFO } from '@src/models/api'
+import { useDataLoginInfoStore } from '@src/zustand'
 import { addSpeakingFile } from '@utils/api'
-import { safeParseJSON } from '@utils/json'
-import { useMemo, useRef } from 'react'
+import { useRef } from 'react'
 import { v4 as uuidV4 } from 'uuid'
 
 export const SpeakingPage = () => {
+  const [userInfo, accessToken] = useDataLoginInfoStore((state: any) => [state.userInfo, state.accessToken])
   const { fileAudio, audioURL, isRecording, startRecording, stopRecording }: any = useRecorder()
   const question = useRef() as React.MutableRefObject<HTMLInputElement>
-
-  const accessToken = useMemo(() => {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem(AUTH_TOKEN)
-    }
-  }, [])
-
-  const userInfo: any = useMemo(() => {
-    if (typeof window !== 'undefined') {
-      return safeParseJSON(localStorage.getItem(USER_INFO) as string)
-    }
-  }, [])
 
   const onSend = async () => {
     try {

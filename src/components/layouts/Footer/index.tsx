@@ -1,6 +1,7 @@
 import { FaceBookIcon, GoogleIcon, InstagramIcon, TelegramIcon, YouTubeIcon } from '@components/common/CustomIcon'
 
-const Footer = () => {
+export const Footer = () => {
+  console.log('Render')
   return (
     <div className="">
       <div className="bg-[#00eda4]">
@@ -43,5 +44,3 @@ const Footer = () => {
     </div>
   )
 }
-
-export default Footer
