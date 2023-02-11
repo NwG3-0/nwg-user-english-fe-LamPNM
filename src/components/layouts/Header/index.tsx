@@ -20,7 +20,7 @@ const Header = () => {
       <div className="flex justify-between items-center container lg:w-[1240px] mx-auto py-[20px]">
         <div data-aos-offset="0" data-aos="flip-left" data-aos-delay="500">
           <Link href={'/'}>
-            <img src="/images/Logo.webp" className="w-[100px] h-[100px]" alt="Logo Web" />
+            <img src="/images/ielts-logo.png" className="w-[100px] object-contain" alt="Logo Web" />
           </Link>
         </div>
         <div data-aos-offset="0" data-aos="fade-left" data-aos-delay="1000" className="flex gap-[20px] items-center">
