@@ -1,8 +1,6 @@
-import { AUTH_TOKEN, USER_INFO } from '@src/models/api'
 import { useQuery } from '@tanstack/react-query'
 import { checkCard, getDictionary } from '@utils/api'
-import { safeParseJSON } from '@utils/json'
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import HotKeys from 'react-hot-keys'
 import { CustomModal } from '@components/common/CustomModal'
 import { SaveCardModal } from '@components/widgets/SaveCardModal'
@@ -10,28 +8,18 @@ import { MessageIcon } from '@components/common/CustomIcon'
 import { DictionaryModal } from '@components/common/DictionaryModal'
 import { MessageModal } from '@components/common/MessageModal'
 import { QUERY_KEYS } from '@utils/keys'
+import { useDataLoginInfoStore } from '@src/zustand'
 
 const trueHotKeysWindow = 'alt+m'
 const trueHotKeysMacOS = 'command+m'
 
 export const MenuWeb = () => {
+  const [userInfo, accessToken] = useDataLoginInfoStore((state: any) => [state.userInfo, state.accessToken])
   const [isOpenDictionary, setIsOpenDictionary] = useState<boolean>(false)
   const [isMessageModal, setIsMessageModal] = useState<boolean>(false)
   const [isOpenSaveCardModal, setIsSaveCardModal] = useState<boolean>(false)
   const [searchWordValue, setSearchWordValue] = useState<string>('')
   const [saveChecked, setSaveChecked] = useState<boolean>(false)
-
-  const userInfo: any = useMemo(() => {
-    if (typeof window !== 'undefined') {
-      return safeParseJSON(localStorage.getItem(USER_INFO) as string)
-    }
-  }, [])
-
-  const accessToken = useMemo(() => {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem(AUTH_TOKEN)
-    }
-  }, [])
 
   const { data: wordDetail, isLoading: isLoadingWord } = useQuery(
     [QUERY_KEYS.DICTIONARY_SEARCH, searchWordValue],

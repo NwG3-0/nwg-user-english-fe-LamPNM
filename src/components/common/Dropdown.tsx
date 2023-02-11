@@ -27,7 +27,7 @@ export const DropdownMenu = ({ classNameCustom, title, subMenu }: Props) => {
           } `}
         >
           <DropdownArrow width={16} height={16} color={''} />
-        </div>{' '}
+        </div>
       </div>
       {showDropdown && (
         <div

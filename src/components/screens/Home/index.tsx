@@ -3,34 +3,9 @@ import Link from 'next/link'
 import React from 'react'
 
 const HomePage = () => {
-  // const [isCloudRun, setCloudRun] = useState<boolean>(false)
-
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //     setCloudRun(true)
-  //   }, 1500)
-  // }, [])
-
   return (
     <div className="w-full">
-      <div className="relative  w-full h-[800px] bg-[url('/images/snowbg.webp')] bg-cover overflow-hidden">
-        {/* <div>
-          <img className="w-[300px] h-[300px]" src="/images/Logo.webp" alt="" />
-        </div> */}
-        {/* {isCloudRun && (
-          <>
-            <div className="clound1 absolute top-[0px]">
-              <img src="/images/snowrain2.png" className="w-full h-full" alt="Cloud Run" />
-            </div>
-            <div className="clound2 absolute">
-              <img src="/images/snowrain2.png" className="w-full h-full" alt="Cloud Run" />
-            </div>
-            <div className="clound3 absolute">
-              <img src="/images/snowrain2.png" className="w-full h-full" alt="Cloud Run" />
-            </div>
-          </>
-        )} */}
-      </div>
+      <div className="relative  w-full h-[800px] bg-[url('/images/snowbg.webp')] bg-cover overflow-hidden"></div>
       <div className="bg-[url('/images/home-background-navbar.webp')] bg-cover w-full py-[50px]">
         <div data-aos="fade-up" data-aos-offset="0" className="home-title w-full text-center font-extrabold text-8xl ">
           <h1>Choose your skill</h1>
@@ -78,7 +53,7 @@ const HomePage = () => {
           </div>
         </div>
       </div>
-      <div className="py-[30px]">
+      <div className="py-[60px]">
         <div className="relative w-fit h-fit mx-auto pl-[100px]">
           <div className="absolute z-100 left-[-50px] top-[30px]">
             <div className="text-[48px] font-extrabold">
@@ -102,9 +77,17 @@ const HomePage = () => {
               </div>
             </div>
           </div>
-          <div className="relative w-[600px] h-[600px] rounded-full bg-[#e4f2f2]">
+          <div
+            data-aos="zoom-in"
+            data-aos-duration="600"
+            className="relative w-[600px] h-[600px] rounded-full bg-[#e4f2f2]"
+          >
             <div className="absolute train-run w-full h-full z-50 rounded-full">
-              <div className="absolute w-[30px] h-[30px] bg-[#eebb76]"></div>
+              <img
+                src="/images/train.svg"
+                alt="Train"
+                className="absolute w-[60px] object-cover -rotate-[20deg] top-[-35px]"
+              />
             </div>
             <div className="absolute rounded-full top-[20px] left-[50%] translate-x-[-50%] text-center py-[35px] w-[165px] bg-[#eebb76] border-[1px] border-[#000]">
               <div className="font-bold text-[24px]">A1</div>
