@@ -1,6 +1,6 @@
 import { API_DICTIONARY_URL, AUTH_TOKEN, USER_INFO } from '@src/models/api'
 
-export const API_BASE_URL = process.env.API_BASE_URL ?? 'http://localhost:4000'
+export const API_BASE_URL = process.env.API_BASE_URL ?? 'https://nwg-ielts-backend.onrender.com'
 
 export const isLogin = () => {
   if (typeof window !== 'undefined') {
