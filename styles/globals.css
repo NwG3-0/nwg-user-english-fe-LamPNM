@@ -302,3 +302,17 @@ background-position:1293px;
 	from { 	transform: rotate(0deg) translateX(150px); }
 	to   {  transform: rotate(360deg) translateX(150px); }
 }
+
+.cursor {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 32px;
+  height: 32px;
+  background-color: #fff;
+  pointer-events: none;
+  border-radius: 50% 100% 100% 100%;
+  z-index: 9999999;
+  mix-blend-mode: difference;
+  opacity: 0;
+}
