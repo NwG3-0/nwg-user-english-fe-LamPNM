@@ -11,7 +11,7 @@ import { CloseIcon2, EmojiIcon } from '../CustomIcon'
 import { GifPopUp } from '../GifPopUp'
 import { StickerPopUp } from '../StickerPopUp'
 
-const socket = io.connect('http://localhost:4000/')
+const socket = io.connect('https://nwg-ielts-backend.onrender.com/')
 
 interface Props {
   onOpenMessageModal: () => void

@@ -26,7 +26,7 @@ export const DropdownMenu = ({ classNameCustom, title, subMenu }: Props) => {
             showDropdown ? ' dropdown-open' : ''
           } `}
         >
-          <DropdownArrow width={16} height={16} color={''} />
+          <DropdownArrow width={16} height={16} color={'#FFFFFF'} />
         </div>
       </div>
       {showDropdown && (

@@ -2,21 +2,71 @@ import { ListeningIcon, ReadingIcon, SpeakingIcon, WritingIcon } from '@componen
 import Link from 'next/link'
 import React from 'react'
 
+interface Degree {
+  id: number
+  degreeName: string
+  aboutDegree: string
+  content: string
+}
+
+const DEGREES: Degree[] = [
+  {
+    id: 1,
+    degreeName: 'A1',
+    aboutDegree: 'absolute beginner',
+    content: 'Basic words & phrases',
+  },
+  {
+    id: 2,
+    degreeName: 'A2',
+    aboutDegree: 'beginner',
+    content: 'Simple Interactions',
+  },
+  {
+    id: 3,
+    degreeName: 'B1',
+    aboutDegree: 'intermediate',
+    content: 'Everyday conversation',
+  },
+  {
+    id: 4,
+    degreeName: 'B2',
+    aboutDegree: 'upper-intermediate',
+    content: 'Complex topics',
+  },
+  {
+    id: 5,
+    degreeName: 'C1',
+    aboutDegree: 'advanced',
+    content: 'Proficient language use',
+  },
+]
+
 const HomePage = () => {
   return (
     <div className="w-full">
-      <div className="relative  w-full h-[800px] bg-[url('/images/snowbg.webp')] bg-cover overflow-hidden"></div>
+      <div className="relative w-full h-[800px] bg-[url('/images/background-home.webp')] bg-cover overflow-hidden">
+        <div
+          data-aos="zoom-in"
+          data-aos-offset="50"
+          data-aos-duration="500"
+          data-aos-delay="300"
+          className="mx-auto md:absolute text-[#FFFFFF] drop-shadow-xl max-md:text-center max-md:mt-[300px] w-fit md:w-[720px] break-words top-[40%] right-[10px] text-[48px] md:text-[64px] font-bold"
+        >
+          IELTS is your future, time to learn it!
+        </div>
+      </div>
       <div className="bg-[url('/images/home-background-navbar.webp')] bg-cover w-full py-[50px]">
         <div data-aos="fade-up" data-aos-offset="0" className="home-title w-full text-center font-extrabold text-8xl ">
           <h1>Choose your skill</h1>
         </div>
-        <div className="grid md:grid-cols-4 py-[32px] grid-cols-2 gap-4">
+        <div className="grid lg:grid-cols-4 py-[32px] md:grid-cols-2 grid-cols-1 max-lg:gap-[40px]">
           <div
             data-aos="zoom-in"
             data-aos-offset="50"
             data-aos-duration="500"
             data-aos-delay="300"
-            className="m-auto cursor-pointer hover-scale flex flex-col px-[40px] py-[24px] bg-white rounded-full"
+            className="mx-auto cursor-pointer hover-scale flex flex-col px-[40px] py-[24px] bg-white rounded-full"
           >
             <ListeningIcon width={100} height={100} color="" />
             <div className="text-center text-[24px] font-bold text-orange-500">Listening</div>
@@ -53,7 +103,50 @@ const HomePage = () => {
           </div>
         </div>
       </div>
-      <div className="py-[60px]">
+      <div className="pt-[40px] pb-[100px] px-[20px] block md:hidden">
+        <div className="text-[48px] font-extrabold">
+          <div data-aos="fade-right" data-aos-duration="600">
+            Learn about
+          </div>
+          <div data-aos="fade-right" data-aos-duration="600" className="text-red-400">
+            our levels
+          </div>
+        </div>
+        <div>
+          <div data-aos="fade-up" data-aos-duration="600" className="font-bold text-[18px]">
+            Don't know your English level
+          </div>
+          <div data-aos="fade-up" data-aos-duration="600">
+            Each course is divided into specific learning
+            <br />
+            levels. We teach up to C1 in English and B2 in
+            <br />
+            Business English.
+          </div>
+        </div>
+        <div className="border-l-[5px] mt-[30px] pb-[30px] border-[#808080] relative flex flex-col gap-[20px]">
+          {DEGREES.map((degree: Degree, index: number) => (
+            <div
+              className={`${index === 0 ? 'mt-[-20px]' : ''} pl-[20px] ${
+                index === DEGREES.length - 1 ? 'absolute bottom-[-60px] pt-[10px]' : 'relative'
+              }`}
+              key={degree.id}
+            >
+              <div data-aos="zoom-in" data-aos-duration="600">
+                <div className="text-[24px] font-bold">{degree.degreeName}</div>
+                <div className="uppercase font-bold">{degree.aboutDegree}</div>
+                <div className="">{degree.content}</div>
+              </div>
+              <div
+                className={`w-[15px] h-[15px] bg-[#808080] rotate-45 absolute left-[-10.5px] ${
+                  index === DEGREES.length - 1 ? 'top-[22px]' : 'top-[14px]'
+                }`}
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="py-[60px] hidden md:block">
         <div className="relative w-fit h-fit mx-auto pl-[100px]">
           <div className="absolute z-100 left-[-50px] top-[30px]">
             <div className="text-[48px] font-extrabold">
