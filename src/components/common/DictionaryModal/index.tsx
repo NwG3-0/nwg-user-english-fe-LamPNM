@@ -34,64 +34,66 @@ export const DictionaryModal = ({
             <SearchIcon width={24} height={24} color="#000" />
           </div>
         </div>
-        {isLoading ? (
-          <div className="absolute top-[50%]  right-[50%] translate-y-[-50%] translate-x-[50%]">
-            <LoadingbtnAnimate />
-          </div>
-        ) : (
-          <>
-            <div className="absolute top-[64px] overflow-y-scroll h-[70%]">
-              <div>
-                <div className="font-bold ">Pronunciation:</div>
+        {word &&
+          (isLoading ? (
+            <div className="absolute top-[50%]  right-[50%] translate-y-[-50%] translate-x-[50%]">
+              <LoadingbtnAnimate />
+            </div>
+          ) : (
+            <>
+              <div className="absolute top-[64px] overflow-y-scroll h-[70%]">
+                <div>
+                  <div className="font-bold ">Pronunciation:</div>
+                  {word &&
+                    word[0]?.phonetics.map((spelling: any, index: number) => {
+                      return <div key={`spelling ${index}`}>{spelling.text}</div>
+                    })}
+                </div>
                 {word &&
-                  word[0]?.phonetics.map((spelling: any, index: number) => {
-                    return <div key={`spelling ${index}`}>{spelling.text}</div>
+                  word[0]?.meanings.map((mean: any, index: number) => {
+                    return (
+                      <div key={`word ${index}`}>
+                        <div className="font-bold">{mean?.partOfSpeech}:</div>
+                        <div>
+                          {mean?.definitions.map((define: any) => {
+                            return <div>{define.definition}</div>
+                          })}
+                        </div>
+                      </div>
+                    )
+                  })}
+                {word &&
+                  word[0]?.phonetics.map((voice: any, index: number) => {
+                    return (
+                      <div className="my-[16px]" key={`voice ${index}`}>
+                        <div className="font-bold text-blue-800">Spelling:</div>
+                        {voice.audio != '' && (
+                          <audio controls>
+                            <source src={voice.audio} type="audio/ogg" />
+                          </audio>
+                        )}
+                      </div>
+                    )
                   })}
               </div>
-              {word &&
-                word[0]?.meanings.map((mean: any, index: number) => {
-                  return (
-                    <div key={`word ${index}`}>
-                      <div className="font-bold">{mean?.partOfSpeech}:</div>
-                      <div>
-                        {mean?.definitions.map((define: any) => {
-                          return <div>{define.definition}</div>
-                        })}
-                      </div>
-                    </div>
-                  )
-                })}
-              {word &&
-                word[0]?.phonetics.map((voice: any, index: number) => {
-                  return (
-                    <div className="my-[16px]" key={`voice ${index}`}>
-                      <div className="font-bold text-blue-800">Spelling:</div>
-                      {voice.audio != '' && (
-                        <audio controls>
-                          <source src={voice.audio} type="audio/ogg" />
-                        </audio>
-                      )}
-                    </div>
-                  )
-                })}
-            </div>
-          </>
-        )}
+            </>
+          ))}
 
         <audio src="https://api.dictionaryapi.dev/media/pronunciations/en/hello-au.mp3"></audio>
-        <div className="absolute bottom-[-48px] right-[50%] translate-x-[50%] " onClick={onCloseDictionaryModal}>
-          <CloseIcon1 width={24} height={24} color="#000" />
+        <div className="absolute bottom-[-48px] right-[50%] translate-x-[50%]" onClick={onCloseDictionaryModal}>
+          <CloseIcon1 width={28} height={28} color="#000" />
         </div>
 
-        {isSave ? (
-          <div className="absolute right-[10%] top-[15%]">
-            <StarIcon width={24} height={24} color="yellow" />
-          </div>
-        ) : (
-          <div className="absolute right-[10%] top-[15%]">
-            <StarIcon width={24} height={24} color="#000" />
-          </div>
-        )}
+        {word &&
+          (isSave ? (
+            <div className="absolute right-[10%] top-[15%]">
+              <StarIcon width={24} height={24} color="yellow" />
+            </div>
+          ) : (
+            <div className="absolute right-[10%] top-[15%]">
+              <StarIcon width={24} height={24} color="#000" />
+            </div>
+          ))}
 
         <div>
           <button

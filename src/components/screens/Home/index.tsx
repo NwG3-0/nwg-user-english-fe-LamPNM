@@ -45,17 +45,6 @@ const DEGREES: Degree[] = [
 const HomePage = () => {
   return (
     <div className="w-full">
-      <div className="relative w-full h-[800px] bg-[url('/images/background-home.webp')] bg-cover overflow-hidden">
-        <div
-          data-aos="zoom-in"
-          data-aos-offset="50"
-          data-aos-duration="500"
-          data-aos-delay="300"
-          className="mx-auto md:absolute text-[#FFFFFF] drop-shadow-xl max-md:text-center max-md:mt-[300px] w-fit md:w-[720px] break-words top-[40%] right-[10px] text-[48px] md:text-[64px] font-bold"
-        >
-          IELTS is your future, time to learn it!
-        </div>
-      </div>
       <div className="bg-[url('/images/home-background-navbar.webp')] bg-cover w-full py-[50px]">
         <div data-aos="fade-up" data-aos-offset="0" className="home-title w-full text-center font-extrabold text-8xl ">
           <h1>Choose your skill</h1>
@@ -253,7 +242,7 @@ const HomePage = () => {
               data-aos-offset="-50"
               data-aos-duration="500"
               data-aos-delay="900"
-              className="bg-slate-50  pb-[20px] flex-1 "
+              className="bg-slate-50  pb-[20px] flex-1 shadow-xl"
             >
               <div className="aspect-auto">
                 <img className="w-full h-full" src="/images/becomeproimg1.jpg" />
@@ -271,7 +260,7 @@ const HomePage = () => {
               data-aos-offset="-50"
               data-aos-duration="500"
               data-aos-delay="900"
-              className="bg-slate-50 pb-[20px] flex-1"
+              className="bg-slate-50 pb-[20px] flex-1 shadow-xl"
             >
               <div className="aspect-auto">
                 <img className="w-full h-full" src="/images/becomeproimg2.jpg" />
@@ -289,7 +278,7 @@ const HomePage = () => {
               data-aos-offset="-50"
               data-aos-duration="500"
               data-aos-delay="900"
-              className="bg-slate-50 pb-[20px] flex-1"
+              className="bg-slate-50 pb-[20px] flex-1 shadow-xl"
             >
               <div className="aspect-auto">
                 <img className="w-full h-full" src="/images/becomeproimg3.jpg" />

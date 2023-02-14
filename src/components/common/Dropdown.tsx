@@ -1,22 +1,23 @@
-import Link from 'next/link'
 import { useRef, useState } from 'react'
-import { useClickOutside } from '@hooks/useClickOutSide'
+import Link from 'next/link'
 import { DropdownArrow } from './CustomIcon'
+import { useClickOutside } from '@hooks/useClickOutSide'
+import { Dropdown } from '@utils/common'
 
 export interface Props {
   title: string
   classNameCustom: string
-  subMenu: any[]
+  subMenu: Dropdown[]
 }
 
 export const DropdownMenu = ({ classNameCustom, title, subMenu }: Props) => {
-  const contentRef = useRef() as any
-  const childRef = useRef() as any
+  const contentRef = useRef() as React.MutableRefObject<HTMLDivElement>
+  const childRef = useRef() as React.MutableRefObject<HTMLDivElement>
   const [showDropdown, setShowDropdown] = useState<boolean>(false)
   useClickOutside(contentRef, childRef, (value) => setShowDropdown(value))
 
   return (
-    <div className="w-fit" onClick={() => setShowDropdown(!showDropdown)} ref={contentRef}>
+    <div className="w-fit relative" onClick={() => setShowDropdown(!showDropdown)} ref={contentRef}>
       <div
         className={`relative flex mx-[8px] font-bold text-[22px] py-[8px] cursor-pointer menu-link dropdown ${classNameCustom}`}
       >
@@ -24,7 +25,7 @@ export const DropdownMenu = ({ classNameCustom, title, subMenu }: Props) => {
         <div
           className={`m-auto origin-center pl-[4px] transition-all duration-700 ${
             showDropdown ? ' dropdown-open' : ''
-          } `}
+          }`}
         >
           <DropdownArrow width={16} height={16} color={'#FFFFFF'} />
         </div>
@@ -32,14 +33,16 @@ export const DropdownMenu = ({ classNameCustom, title, subMenu }: Props) => {
       {showDropdown && (
         <div
           ref={childRef}
-          className="absolute flex z-100 flex-col bg-slate-50 rounded-b-[8px] dropdown-menu drop-shadow-2xl "
+          className="absolute w-full flex z-100 flex-col bg-[#00000048] text-[#FFFFFF] rounded-b-[8px] dropdown-menu drop-shadow-2xl"
         >
-          {subMenu.map((tab) => (
-            <div className="dropdown-box ">
-              <div className=" z-200 mb-[8px] text-center font-bold text-[16px] py-[16px] px-[8px]  hover:opacity-115 hover:bg-slate-100">
-                <Link href={tab.path}>{tab.content}</Link>
+          {subMenu.map((tab: Dropdown) => (
+            <Link href={tab.path} key={tab.id}>
+              <div className="dropdown-box cursor-pointer">
+                <div className="mb-[8px] text-center font-bold text-[16px] py-[16px] px-[8px] hover:bg-[#FFFFFF] hover:text-[#000]">
+                  {tab.content}
+                </div>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       )}

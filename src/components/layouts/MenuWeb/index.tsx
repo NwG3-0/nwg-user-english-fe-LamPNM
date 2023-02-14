@@ -8,13 +8,15 @@ import { MessageIcon } from '@components/common/CustomIcon'
 import { DictionaryModal } from '@components/common/DictionaryModal'
 import { MessageModal } from '@components/common/MessageModal'
 import { QUERY_KEYS } from '@utils/keys'
-import { useDataLoginInfoStore } from '@src/zustand'
+import { useDataLoginInfoStore, useOpenHeaderStore } from '@src/zustand'
 
 const trueHotKeysWindow = 'alt+m'
 const trueHotKeysMacOS = 'command+m'
 
 export const MenuWeb = () => {
   const [userInfo, accessToken] = useDataLoginInfoStore((state: any) => [state.userInfo, state.accessToken])
+  const [isOpen] = useOpenHeaderStore((state: any) => [state.isOpen, state.setIsOpen])
+
   const [isOpenDictionary, setIsOpenDictionary] = useState<boolean>(false)
   const [isMessageModal, setIsMessageModal] = useState<boolean>(false)
   const [isOpenSaveCardModal, setIsSaveCardModal] = useState<boolean>(false)
@@ -73,7 +75,7 @@ export const MenuWeb = () => {
   }
 
   return (
-    <div className="relative z-[1000]">
+    <div className={`${isOpen && 'hidden'} relative z-100`}>
       <HotKeys keyName="alt+d" onKeyUp={onKeyUp}>
         {isOpenDictionary && (
           <DictionaryModal

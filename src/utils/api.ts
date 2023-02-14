@@ -1,4 +1,4 @@
-import { API_DICTIONARY_URL, AUTH_TOKEN, USER_INFO } from '@src/models/api'
+import { API_DICTIONARY_URL, AUTH_TOKEN, EarliestPostResponse, USER_INFO } from '@src/models/api'
 
 export const API_BASE_URL = process.env.API_BASE_URL ?? 'http://localhost:4000'
 
@@ -680,5 +680,25 @@ export const addSpeakingFile = async (input: {
     }
   } catch (error) {
     console.log(error)
+  }
+}
+
+export const getEarliestPost = async (userId: string, accessToken: string) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/earliest-post?userId=${userId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      },
+    })
+
+    const rawResponse = (await response.json()) as EarliestPostResponse
+
+    if (rawResponse) {
+      return rawResponse
+    }
+  } catch (error) {
+    return { success: false, data: null, message: 'Something went wrong' }
   }
 }

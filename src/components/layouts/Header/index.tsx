@@ -1,29 +1,20 @@
 import { MenuIcon } from '@components/common/CustomIcon'
 import { DropdownMenu } from '@components/common/Dropdown'
+import { DropdownMenuRelative } from '@components/common/DropdownMenu'
 import { useClickOutside } from '@hooks/useClickOutSide'
+import { useOpenHeaderStore } from '@src/zustand'
 import { isLogin } from '@utils/api'
-import { MENU_HEADER, DROPDOWN_TEST_MENU, DROPDOWN_USER_MENU, DROPDOWN_PRACTICE_MENU } from '@utils/common'
+import { MENU_HEADER, DROPDOWN_USER_MENU, DROPDOWN_PRACTICE_MENU } from '@utils/common'
 import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
-
-export const testSubMenu = [
-  {
-    content: 'Word Test',
-    type: 'link',
-  },
-  {
-    content: 'Total Test',
-    type: 'link',
-  },
-]
 
 const Header = () => {
   const contentRef = useRef() as any
   const childRef = useRef() as any
-  useClickOutside(contentRef, childRef, (value) => setMenuActive(value))
+  useClickOutside(contentRef, childRef, (value) => setIsOpen(value))
 
   const [showUpTop, setShowUpTop] = useState(false)
-  const [menuActive, setMenuActive] = useState(false)
+  const [isOpen, setIsOpen] = useOpenHeaderStore((state: any) => [state.isOpen, state.setIsOpen])
   const hiddenPosition = 300
 
   useEffect(() => {
@@ -35,6 +26,7 @@ const Header = () => {
   }, [])
 
   const handleScroll = () => {
+    setIsOpen(false)
     const scrollTop = document.body.scrollTop || document.documentElement.scrollTop
     if (scrollTop > hiddenPosition) {
       setShowUpTop(true)
@@ -77,30 +69,32 @@ const Header = () => {
   }
 
   return (
-    <div className="bg-[#00000048] fixed w-full z-50 top-0 left-0">
+    <div className={`${isOpen ? 'bg-[#4d4d4dfd]' : 'bg-[#00000048]'} fixed w-full z-50 top-0 left-0`}>
       <div className="flex justify-between items-center container lg:w-[1240px] mx-auto py-[20px]" ref={contentRef}>
-        <div data-aos-offset="0" data-aos="flip-left" data-aos-delay="500" className="">
+        <div data-aos-offset="0" data-aos="flip-left" data-aos-delay="500" className="max-sm:ml-[20px]">
           <Link href={'/'}>
-            <img src="/images/ielts-logo.png" className="w-[100px] object-contain max-md:px-[20px]" alt="Logo Web" />
+            <img src="/images/ielts-logo.png" className="w-[100px] object-contain" alt="Logo Web" />
           </Link>
         </div>
-        <div className="block md:hidden cursor-pointer px-[20px]" onClick={() => setMenuActive(!menuActive)}>
-          <MenuIcon width={35} height={35} color={menuActive ? '#FFFFFF' : '#808080'} />
+        <div className="block md:hidden cursor-pointer px-[20px]" onClick={() => setIsOpen(!isOpen)}>
+          <MenuIcon width={35} height={35} color={isOpen ? '#FFFFFF' : '#808080'} />
         </div>
-        {menuActive && (
+        {isOpen && (
           <div
-            className="absolute top-[75px] flex md:hidden flex-col bg-[#00000048] text-[white] w-full"
+            className="absolute z-100 h-screen w-full top-[78px] left-0 flex md:hidden flex-col bg-[#4d4d4dfd] text-[white]"
             ref={childRef}
           >
             {MENU_HEADER.map((item) => (
-              <Link className=" font-bold text-[22px] block relative menu-link p-[10px]" key={item.id} href={item.path}>
+              <Link className="px-[17px] font-bold text-[22px] block relative p-[10px]" key={item.id} href={item.path}>
                 {item.name}
               </Link>
             ))}
 
+            <DropdownMenuRelative classNameCustom="" title="Practice" list={DROPDOWN_PRACTICE_MENU} />
+
             {isLogin() ? (
               <div className="relative">
-                <DropdownMenu classNameCustom="" title="User Profile " subMenu={DROPDOWN_USER_MENU} />
+                <DropdownMenuRelative classNameCustom="" title="User Profile " list={DROPDOWN_USER_MENU} />
               </div>
             ) : (
               <Link className="font-bold text-[22px] p-[10px]" href={'/login'}>
@@ -121,7 +115,6 @@ const Header = () => {
                 {item.name}
               </Link>
             ))}
-            <DropdownMenu classNameCustom="" title="Test" subMenu={DROPDOWN_TEST_MENU} />
             <DropdownMenu classNameCustom="" title="Practice" subMenu={DROPDOWN_PRACTICE_MENU} />
 
             {isLogin() ? (
@@ -136,7 +129,9 @@ const Header = () => {
           </div>
         </div>
       </div>
-
+      <div className="w-full text-center text-[#FFFFFF] text-[18px] pb-[10px] hidden md:block">
+        Tips: Press Alt + M to open the dictionary
+      </div>
       {renderToTOP()}
     </div>
   )

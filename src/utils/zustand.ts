@@ -10,3 +10,8 @@ export interface DataLoginInfo {
   setUserInfo: (state: UserInfo) => void
   setAccessToken: (state: string) => void
 }
+
+export interface DataOpenMenu {
+  isOpen: boolean
+  setIsOpen: (state: boolean) => void
+}

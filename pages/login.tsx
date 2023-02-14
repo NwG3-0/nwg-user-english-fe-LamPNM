@@ -9,10 +9,11 @@ import { useRouter } from 'next/router'
 import React, { useRef } from 'react'
 
 const LoginPage: NextPage = () => {
-  const [setUserInfo, setAccessToken] = useDataLoginInfoStore((state: any) => [state.setUserInfo, state.setAccessToken])
+  const router = useRouter()
   const emailValue = useRef() as React.MutableRefObject<HTMLInputElement>
   const passwordValue = useRef() as React.MutableRefObject<HTMLInputElement>
-  const router = useRouter()
+
+  const [setUserInfo, setAccessToken] = useDataLoginInfoStore((state: any) => [state.setUserInfo, state.setAccessToken])
 
   const onLogin = async (e: { preventDefault: () => void }) => {
     try {
@@ -39,9 +40,14 @@ const LoginPage: NextPage = () => {
   return (
     <div className="relative bg-[url('/images/background.webp')] bg-cover h-screen w-full font-library">
       <div className="w-full h-full bg-[#00000075] relative z-1"></div>
-      <div className="absolute w-[500px] translate-x-[-50%] translate-y-[-50%] top-[50%] left-[50%] bg-[#BA8C63] z-100 rounded-md">
-        <div className="text-white text-center text-[32px] mt-[20px]">Login</div>
+      <div className="absolute w-[calc(100%-30px)] sm:w-[500px] translate-x-[-50%] translate-y-[-50%] top-[50%] left-[50%] bg-transparent sm:bg-[#BA8C63] z-100 sm:rounded-md">
         <form className="p-[20px]" onSubmit={onLogin}>
+          <div className="flex justify-start mt-[10px]">
+            <Link href="/" className="text-white underline">
+              Back to home
+            </Link>
+          </div>
+          <div className="text-white text-center text-[32px] mt-[20px]">Login</div>
           <div>
             <label htmlFor="email" className="block text-[18px] text-white">
               Email:

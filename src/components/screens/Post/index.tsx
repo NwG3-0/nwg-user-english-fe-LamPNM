@@ -1,19 +1,24 @@
+import { SearchIcon } from '@components/common/CustomIcon'
+import { EarliestPostResponse, EarliestPosts } from '@src/models/api'
+import { useDataLoginInfoStore } from '@src/zustand'
 import { useQuery } from '@tanstack/react-query'
-import { getPostList } from '@utils/api'
+import { getEarliestPost, getPostList } from '@utils/api'
 import { QUERY_KEYS } from '@utils/keys'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
-import React, { useEffect, useState } from 'react'
+import debounce from 'lodash.debounce'
+import React, { useCallback, useEffect, useState } from 'react'
 
 dayjs.extend(utc)
 
 export const Post = () => {
   const [limit] = useState<number>(5)
   const [page] = useState<number>(1)
-  const [keyword] = useState<string>('')
+  const [userInfo, accessToken] = useDataLoginInfoStore((state: any) => [state.userInfo, state.accessToken])
+  const [keyword, setKeyword] = useState<string>('')
 
-  const { data: post } = useQuery(
-    [QUERY_KEYS.POST_LIST],
+  const { data: post, isLoading: isPostLoading } = useQuery(
+    [QUERY_KEYS.POST_LIST, limit, page, keyword],
     async () => {
       try {
         const response = await getPostList({ limit, page, keyword })
@@ -28,8 +33,34 @@ export const Post = () => {
     },
   )
 
-  const onChangeText = (value: any) => {
-    console.log(value.target.value)
+  const { data: earliest_post } = useQuery(
+    [QUERY_KEYS.EARLIEST_POST_LIST, userInfo, accessToken],
+    async () => {
+      try {
+        const response = (await getEarliestPost(userInfo?.id, accessToken)) as EarliestPostResponse
+
+        return response
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    {
+      refetchInterval: false,
+      enabled: !!accessToken && !!userInfo,
+    },
+  )
+
+  const onChangeKeyword = (e: { target: { value: string } }) => {
+    debounceInput(e.target.value)
+  }
+
+  const debounceInput = useCallback(
+    debounce((keyword) => debounceKeyword(keyword), 1000),
+    [],
+  )
+
+  const debounceKeyword = (keyword: string) => {
+    setKeyword(keyword)
   }
 
   useEffect(() => {
@@ -39,10 +70,6 @@ export const Post = () => {
       console.log(input)
     }, 2000)
   }, [post])
-
-  const convertText = (string: string) => {
-    return string?.replaceAll('concak', `<input className="input-text" />`)
-  }
 
   return (
     <div>
@@ -55,23 +82,52 @@ export const Post = () => {
           </div>
         </div>
       </div>
-      <div>Blogs</div>
-      <div className="w-[calc(100%-150px)] flex justify-between mx-auto py-[50px]">
-        <div className="grid w-[100%] xl:w-[1200px] grid-cols-1 md:grid-cols-3 gap-4">
-          {post?.data.map((p: { imageTitle: string; title: string; description: string; day: number }) => (
-            <div className="bg-slate-100 cursor-pointer">
-              <img className="w-full h-[300px] object-cover" src={p.imageTitle}></img>
-              <div className="flex justify-between items-center py-[10px] px-[10px]">
-                <div className="text-center text-lg py-[4px] ">{p.title}</div>
-                <div className="text-[12px] text-[#808080]">{dayjs(p.day).utc().format('HH:mm:ss YYYY, MMMM DD')}</div>
-              </div>
-              <div className="mt-[8px]" dangerouslySetInnerHTML={{ __html: p.description }}></div>
+      <div className="container xl:w-[calc(100%-200px)] flex justify-between mx-auto py-[50px] gap-[50px]">
+        <div className="w-full xl:w-[1200px]">
+          <div className="w-full flex justify-between items-center mx-auto pt-[20px] pb-[20px]">
+            <div className="text-[24px] font-bold">Blogs</div>
+            <div className="flex gap-[10px] rounded-lg py-[5px] px-[10px] border-[1px] border-[#808080] items-center">
+              <input className="outline-none" placeholder="Search blogs" onChange={onChangeKeyword} />
+              <SearchIcon width={25} height={25} color="#808080" />
             </div>
-          ))}
+          </div>
+          {isPostLoading ? (
+            <div>Loading</div>
+          ) : (
+            <div className="grid w-full grid-cols-1 md:grid-cols-3 gap-4">
+              {post?.data.map((p: { imageTitle: string; title: string; description: string; day: number }) => (
+                <div className="bg-slate-100 cursor-pointer">
+                  <img className="w-full h-[300px] object-cover" src={p.imageTitle}></img>
+                  <div className="flex justify-between items-center py-[10px] px-[10px]">
+                    <div className="text-center text-lg py-[4px] ">{p.title}</div>
+                    <div className="text-[12px] text-[#808080]">
+                      {dayjs(p.day).utc().format('HH:mm:ss YYYY, MMMM DD')}
+                    </div>
+                  </div>
+                  <div className="mt-[8px]" dangerouslySetInnerHTML={{ __html: p.description }}></div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
-        <div className="w-[300px]">
-          <div>Best Blogs</div>
-          <div className="mt-[8px]" dangerouslySetInnerHTML={{ __html: convertText(post?.data[0]?.description) }}></div>
+        <div className="w-[400px] hidden xl:block">
+          <div className="text-center py-[20px] font-bold text-[24px]">Latest Blogs</div>
+          <div className="flex flex-col gap-[20px]">
+            {earliest_post &&
+              earliest_post?.data?.posts?.map((post: EarliestPosts) => (
+                <div
+                  className="flex gap-[20px] items-center p-[20px] bg-[#fafafa] rounded-xl shadow-2xl"
+                  key={post._id}
+                >
+                  <img src={post.ImageTitle} className="object-cover w-[100px] h-[100px]" />
+                  <div>
+                    <div className="text-[18px] font-bold">{post.Title}</div>
+                    <div>{post.Description}</div>
+                    <div>{post.CreatedAt}</div>
+                  </div>
+                </div>
+              ))}
+          </div>
         </div>
       </div>
     </div>

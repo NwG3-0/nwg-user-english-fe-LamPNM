@@ -7,7 +7,7 @@ import { QUERY_KEYS } from '@utils/keys'
 import EmojiPicker from 'emoji-picker-react'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import * as io from 'socket.io-client'
-import { CloseIcon2, EmojiIcon } from '../CustomIcon'
+import { CloseMessageIcon, EmojiIcon, UserIcon } from '../CustomIcon'
 import { GifPopUp } from '../GifPopUp'
 import { StickerPopUp } from '../StickerPopUp'
 
@@ -154,12 +154,16 @@ export const MessageModal = ({ onOpenMessageModal }: Props) => {
     <div
       data-aos-offset="50"
       data-aos="fade-left"
-      className=" fixed pt-[5px] z-1 top-[20%] shadow-2xl right-[16px] bg-slate-50 h-[60vh] w-[320px] rounded-[24px]"
+      className="fixed z-1 top-[20%] shadow-2xl right-[16px] bg-slate-50 h-[60vh] w-[320px] rounded-lg overflow-hidden"
     >
       <div className="relative w-full h-full">
-        <div className="w-full shadow-2xl rounded-[24px] border-b-2 border-slate-400 py-[4px] float-right">
-          <div onClick={onOpenMessageModal} className="float-right mr-[12px]">
-            <CloseIcon2 width={24} height={24} color="#6096db" />
+        <div className="w-full bg-[#808080] p-[10px] flex items-center justify-between">
+          <div className="flex items-center gap-[10px]">
+            <UserIcon width={24} height={24} color="#FFFFFF" />
+            <div className="text-[#FFF]">Admin</div>
+          </div>
+          <div onClick={onOpenMessageModal} className="mr-[10px] cursor-pointer">
+            <CloseMessageIcon width={18} height={18} color="#FFFFFF" />
           </div>
         </div>
         <div className="w-full flex-col-reverse flex overflow-y-scroll h-[80%]">
