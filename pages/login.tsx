@@ -1,12 +1,12 @@
-import InputPassword from '@components/common/InputPassword'
+import React, { useRef } from 'react'
+import type { NextPage } from 'next'
+import { useRouter } from 'next/router'
+import Link from 'next/link'
 import { AUTH_TOKEN, USER_INFO } from '@src/models/api'
 import { useDataLoginInfoStore } from '@src/zustand'
+import InputPassword from '@components/common/InputPassword'
 import { login } from '@utils/api'
 import { NOTIFICATION_TYPE, notify } from '@utils/notify'
-import type { NextPage } from 'next'
-import Link from 'next/link'
-import { useRouter } from 'next/router'
-import React, { useRef } from 'react'
 
 const LoginPage: NextPage = () => {
   const router = useRouter()

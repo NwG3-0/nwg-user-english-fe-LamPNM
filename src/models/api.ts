@@ -25,3 +25,19 @@ export interface EarliestPosts {
   CreatedAt: number
   UpdatedAt: number
 }
+
+export interface PostDetailResponse {
+  data: PostDetailResponseData
+  message: string
+  success: boolean
+}
+
+export interface PostDetailResponseData {
+  _id: string
+  Title: string
+  Description: string
+  ImageTitle: string
+  Device: string
+  CreatedAt: number
+  UpdatedAt: number
+}

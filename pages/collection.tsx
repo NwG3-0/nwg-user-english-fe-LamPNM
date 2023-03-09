@@ -1,7 +1,10 @@
-import { Banner } from '@components/layouts/Banner'
-import Header from '@components/layouts/Header'
 import type { NextPage } from 'next'
 import dynamic from 'next/dynamic'
+import { Banner } from '@components/layouts/Banner'
+
+const Header = dynamic<any>(() => import('@components/layouts/Header').then((mod) => mod.Header), {
+  ssr: false,
+})
 
 const Collection = dynamic<any>(() => import('@components/screens/Collection/index').then((mod) => mod.Collection), {
   ssr: false,

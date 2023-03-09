@@ -23,7 +23,13 @@ export const MENU_HEADER = [
     name: 'Collection',
     path: '/collection',
   },
+  {
+    id: 3,
+    name: 'News',
+    path: '/news',
+  },
 ]
+
 export const DROPDOWN_PRACTICE_MENU = [
   {
     id: 1,
@@ -80,4 +86,9 @@ export enum TYPE_MESSAGE {
   TEXT = 'text',
   GIF = 'gif',
   STICKER = 'sticker',
+}
+
+export const DEVICES = {
+  MOBILE: 'mobile',
+  WEB: 'web',
 }

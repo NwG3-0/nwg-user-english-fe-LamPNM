@@ -5,7 +5,11 @@ const Header = dynamic<any>(() => import('@components/layouts/Header').then((mod
   ssr: false,
 })
 
-const ListeningPage = dynamic<any>(() => import('@components/screens/Listening').then((mod) => mod.ListeningPage), {
+const PostDetail = dynamic<any>(() => import('@components/screens/Post/PostDetail').then((mod) => mod.PostDetail), {
+  ssr: false,
+})
+
+const MenuWeb = dynamic<any>(() => import('@components/layouts/MenuWeb').then((mod) => mod.MenuWeb), {
   ssr: false,
 })
 
@@ -13,14 +17,15 @@ const Footer = dynamic<any>(() => import('@components/layouts/Footer').then((mod
   ssr: false,
 })
 
-const Home: NextPage = () => {
+const PostPage: NextPage = () => {
   return (
-    <>
+    <div>
       <Header />
-      <ListeningPage />
+      <MenuWeb />
+      <PostDetail />
       <Footer />
-    </>
+    </div>
   )
 }
 
-export default Home
+export default PostPage

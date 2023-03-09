@@ -8,7 +8,7 @@ import { MENU_HEADER, DROPDOWN_USER_MENU, DROPDOWN_PRACTICE_MENU } from '@utils/
 import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
 
-const Header = () => {
+export const Header = () => {
   const contentRef = useRef() as any
   const childRef = useRef() as any
   useClickOutside(contentRef, childRef, (value) => setIsOpen(value))
@@ -136,5 +136,3 @@ const Header = () => {
     </div>
   )
 }
-
-export default Header

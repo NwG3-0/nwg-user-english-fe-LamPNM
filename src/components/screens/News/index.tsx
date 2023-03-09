@@ -1,29 +1,28 @@
-import dayjs from 'dayjs'
-import utc from 'dayjs/plugin/utc'
-import React, { useCallback, useState } from 'react'
-import Link from 'next/link'
-import debounce from 'lodash.debounce'
-import { useQuery } from '@tanstack/react-query'
 import { SearchIcon } from '@components/common/CustomIcon'
 import { EarliestPostResponse, EarliestPosts } from '@src/models/api'
 import { useDataLoginInfoStore } from '@src/zustand'
+import { useQuery } from '@tanstack/react-query'
+import { getEarliestPost, getNewsList } from '@utils/api'
 import { deleteWhiteSpace } from '@utils/index'
 import { QUERY_KEYS } from '@utils/keys'
-import { getEarliestPost, getPostList } from '@utils/api'
+import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
+import debounce from 'lodash.debounce'
+import React, { useCallback, useState } from 'react'
 
 dayjs.extend(utc)
 
-export const Post = () => {
+export const News = () => {
   const [limit] = useState<number>(5)
   const [page] = useState<number>(1)
   const [userInfo, accessToken] = useDataLoginInfoStore((state: any) => [state.userInfo, state.accessToken])
   const [keyword, setKeyword] = useState<string>('')
 
-  const { data: post, isLoading: isPostLoading } = useQuery(
-    [QUERY_KEYS.POST_LIST, limit, page, keyword],
+  const { data: news, isLoading: isPostLoading } = useQuery(
+    [QUERY_KEYS.NEWS_LIST, limit, page, keyword],
     async () => {
       try {
-        const response = await getPostList({ limit, page, keyword })
+        const response = await getNewsList({ limit, page, keyword })
 
         return response
       } catch (error) {
@@ -69,7 +68,6 @@ export const Post = () => {
     <div>
       <div className="relative w-full h-[800px] bg-[url('/images/Post/banner_post.png')] bg-cover overflow-hidden">
         <div className="absolute top-[50%] left-[50%] text-center -translate-x-[50%] -translate-y-[50%]">
-          {/* <div>Welcome to our blog</div> */}
           <div className="text-white font-bold text-[32px]">
             Our IELTS blog is your one-stop destination for all things IELTS, from practice materials to success
             stories.
@@ -79,7 +77,7 @@ export const Post = () => {
       <div className="container xl:w-[calc(100%-200px)] flex justify-between mx-auto py-[50px] gap-[50px]">
         <div className="w-full xl:w-[1200px]">
           <div className="w-full flex justify-between items-center mx-auto pt-[20px] pb-[20px]">
-            <div className="text-[24px] font-bold">Blogs</div>
+            <div className="text-[24px] font-bold">News</div>
             <div className="flex gap-[10px] rounded-lg py-[5px] px-[10px] border-[1px] border-[#808080] items-center">
               <input className="outline-none" placeholder="Search blogs" onChange={onChangeKeyword} />
               <SearchIcon width={25} height={25} color="#808080" />
@@ -89,25 +87,23 @@ export const Post = () => {
             <div>Loading</div>
           ) : (
             <div className="grid w-full grid-cols-1 md:grid-cols-3 gap-4">
-              {post &&
-                post?.data?.length > 0 &&
-                post?.data.map(
-                  (p: { id: string; imageTitle: string; title: string; description: string; day: number }) => (
-                    <Link href={`/post/${p.id}`} className="bg-slate-100 cursor-pointer rounded-md p-[10px]">
-                      <img className="w-full h-[300px] object-cover" src={p.imageTitle}></img>
-                      <div className="flex justify-between items-center py-[5px] mx-auto">
-                        <div className="text-left text-[10px] py-[4px] break-words">{p.title}</div>
-                        <div className="text-[8px] text-[#808080] text-right">
-                          {dayjs(p.day).utc().format('YYYY, MMMM DD')}
-                        </div>
+              {news &&
+                news?.data?.length > 0 &&
+                news?.data.map((p: { image: string; title: string; content: string; day: number }) => (
+                  <div className="bg-slate-100 cursor-pointer rounded-md p-[10px]">
+                    <img className="w-full h-[300px] object-cover" src={p.image}></img>
+                    <div className="flex justify-between items-center py-[5px]  mx-auto">
+                      <div className="text-left text-sm py-[4px] break-words">{p.title}</div>
+                      <div className="text-[10px] text-[#808080] text-right">
+                        {dayjs(p.day).utc().format('HH:mm:ss YYYY, MMMM DD')}
                       </div>
-                      <div
-                        className="mt-[8px] w-full pb-[10px] text-[12px] h-[90px] overflow-y-hidden text-ellipsis"
-                        dangerouslySetInnerHTML={{ __html: deleteWhiteSpace(p.description) }}
-                      />
-                    </Link>
-                  ),
-                )}
+                    </div>
+                    <div
+                      className="mt-[8px] pb-[10px] text-[12px] h-[120px] overflow-y-hidden text-ellipsis"
+                      dangerouslySetInnerHTML={{ __html: deleteWhiteSpace(p.content) }}
+                    ></div>
+                  </div>
+                ))}
             </div>
           )}
         </div>
