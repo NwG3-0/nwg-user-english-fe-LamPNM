@@ -496,13 +496,13 @@ export const checkUserId = async (userId: string, accessToken: string) => {
 
 //Word test result
 export const addResultWordTest = async (input: {
-  resultExam: string
+  resultTest: string
   topicName: string
   userId: string
   accessToken: string
 }) => {
   try {
-    const { resultExam, topicName, userId, accessToken } = input
+    const { resultTest, topicName, userId, accessToken } = input
 
     if (!topicName || topicName === '') {
       return { success: false, data: null, message: 'Please enter your title' }
@@ -510,13 +510,13 @@ export const addResultWordTest = async (input: {
     if (!topicName || topicName === '') {
       return { success: false, data: null, message: 'Please enter your title' }
     }
-    const response = await fetch(`${API_BASE_URL}/api/result-exam/add`, {
+    const response = await fetch(`${API_BASE_URL}/api/result-test/add`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${accessToken}`,
       },
-      body: JSON.stringify({ resultExam, topicName, userId }),
+      body: JSON.stringify({ resultTest, topicName, userId }),
     })
 
     const rawResponse = await response.json()

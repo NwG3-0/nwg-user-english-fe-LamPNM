@@ -15,29 +15,25 @@ import {
 import { QUERY_KEYS } from '@utils/keys'
 import { NOTIFICATION_TYPE, notify } from '@utils/notify'
 
+interface Status {
+  isFalse: boolean
+  isCorrect: boolean
+  isStart: boolean
+  isFinish: boolean
+  isOnProcess: boolean
+}
+
 export const WordTest = () => {
   const queryClient = useQueryClient()
   const [userInfo, accessToken] = useDataLoginInfoStore((state: any) => [state.userInfo, state.accessToken])
 
-  const [isStatus, setIsStatus] = useState<{
-    isFalse: boolean
-    isCorrect: boolean
-    isStart: boolean
-    isFinish: boolean
-    isOnProcess: boolean
-  }>({
+  const [isStatus, setIsStatus] = useState<Status>({
     isFalse: false,
     isCorrect: false,
     isStart: false,
     isFinish: false,
     isOnProcess: false,
   })
-
-  const [isFalse, setIsFalse] = useState<boolean>(false)
-  const [isCorrect, setIsCorrect] = useState<boolean>(false)
-  const [isStart, setIsStart] = useState<boolean>(false)
-  const [isFinish, setIsFinish] = useState<boolean>(false)
-  const [isOnProcess, setIsOnProcess] = useState<boolean>(false)
 
   const [openSetupModal, setOpenSetupModal] = useState<boolean>(false)
 
@@ -97,7 +93,7 @@ export const WordTest = () => {
   )
 
   const { data: rdWord } = useQuery(
-    [QUERY_KEYS.WORD_TEST, userInfo, accessToken, isStart],
+    [QUERY_KEYS.WORD_TEST, userInfo, accessToken, isStatus.isStart],
     async () => {
       if (accessToken && userInfo) {
         try {
@@ -111,7 +107,7 @@ export const WordTest = () => {
     {
       refetchInterval: false,
       refetchOnWindowFocus: false,
-      enabled: !!accessToken && !!userInfo && isStart,
+      enabled: !!accessToken && !!userInfo && isStatus.isStart,
     },
   )
 
@@ -125,27 +121,26 @@ export const WordTest = () => {
         wordMeaning: JSON.parse(rdWord.data[0]?.Meanings ?? '{}')[0]?.definitions[0].definition,
       })
     }
-  }, [rdWord, isStart])
+  }, [rdWord, isStatus.isStart])
 
   useEffect(() => {
-    if (wordData && wordData?.length > 0 && (isCorrect || isFalse)) {
+    if (wordData && wordData?.length > 0 && (isStatus.isCorrect || isStatus.isFalse)) {
       const arrWordData = wordData.filter((_word: any, index: number) => index !== 0)
       setWordData(arrWordData)
 
-      setIsFalse(false)
-      setIsCorrect(false)
+      setIsStatus((prev: Status) => ({ ...prev, isFalse: false, isCorrect: false }))
 
       setWord({
-        wordToGuess: wordData[0]?.Word,
-        wordPhonetic: wordData[0]?.Phonetic,
-        wordMeaning: JSON.parse(wordData[0]?.Meanings ?? '{}')[0]?.definitions[0].definition,
+        wordToGuess: arrWordData[0]?.Word,
+        wordPhonetic: arrWordData[0]?.Phonetic,
+        wordMeaning: JSON.parse(arrWordData[0]?.Meanings ?? '{}')[0]?.definitions[0].definition,
       })
 
       setResult((prev: any) => [...prev, { word: word.wordToGuess, fault: inCorrectLetter.length }])
 
       setGuessedLetter([])
     }
-  }, [isCorrect, isFalse])
+  }, [isStatus.isCorrect, isStatus.isFalse])
 
   useEffect(() => {
     if (deck && deck.data?.length > 0) {
@@ -164,15 +159,19 @@ export const WordTest = () => {
             topicName: topicName,
             level: level || 'easy,normal,hard',
           })
+
           if (success) {
             notify(NOTIFICATION_TYPE.SUCCESS, 'Saved success')
             queryClient.invalidateQueries([QUERY_KEYS.WORD_TEST])
             setGuessedLetter([])
             setOpenSetupModal(false)
-            setIsStart(true)
+
+            setIsStatus((prev: Status) => ({ ...prev, isStart: true }))
           }
         }
-      } catch (error) {}
+      } catch (error) {
+        console.log(error)
+      }
     } else {
       try {
         if (accessToken) {
@@ -187,10 +186,13 @@ export const WordTest = () => {
             notify(NOTIFICATION_TYPE.SUCCESS, 'Update success')
             setGuessedLetter([])
             setOpenSetupModal(false)
-            setIsStart(true)
+
+            setIsStatus((prev: Status) => ({ ...prev, isStart: true }))
           }
         }
-      } catch (error) {}
+      } catch (error) {
+        console.log(error)
+      }
     }
   }
 
@@ -202,13 +204,17 @@ export const WordTest = () => {
     const incorrectLetter = guessedLetters.filter((letter) => !word.wordToGuess.includes(letter))
 
     setInCorrectLetter(incorrectLetter)
-    setIsFalse(incorrectLetter.length > 2)
-    setIsCorrect(word.wordToGuess?.split('').every((letter: string) => guessedLetters.includes(letter)))
+
+    setIsStatus((prev: Status) => ({
+      ...prev,
+      isFalse: incorrectLetter.length > 2,
+      isCorrect: word.wordToGuess?.split('').every((letter: string) => guessedLetters.includes(letter)),
+    }))
   }, [guessedLetters, word.wordToGuess])
 
   const addGuessedLetter = useCallback(
     (letter: string) => {
-      if (guessedLetters.includes(letter) || isCorrect || isFalse) return
+      if (guessedLetters.includes(letter) || isStatus.isCorrect || isStatus.isFalse) return
       setGuessedLetter((currentLetters) => [...currentLetters, letter])
     },
     [guessedLetters],
@@ -231,8 +237,7 @@ export const WordTest = () => {
 
   useEffect(() => {
     if (wordData.length === 0) {
-      setIsFinish(true)
-      setIsOnProcess(false)
+      setIsStatus((prev: Status) => ({ ...prev, isFinish: true, isOnProcess: false }))
     }
   }, [wordData])
 
@@ -248,41 +253,41 @@ export const WordTest = () => {
     }
   }, [inCorrectLetter.length])
 
-  const onRetry = () => {
-    setIsStart(true)
-    setIsFinish(false)
-    queryClient.invalidateQueries([QUERY_KEYS.WORD_TEST])
-  }
-
   const onSaveResult = async () => {
     try {
-      {
-        if (accessToken) {
-          result.shift()
-          setResult(result)
-          const { success } = await addResultWordTest({
-            resultExam: JSON.stringify(result),
-            topicName: topicName,
-            accessToken,
-            userId: userInfo.id,
+      if (accessToken) {
+        const { success } = await addResultWordTest({
+          resultTest: JSON.stringify(result),
+          topicName: topicName,
+          accessToken,
+          userId: userInfo.id,
+        })
+
+        if (success) {
+          setIsStatus({
+            isFalse: false,
+            isCorrect: false,
+            isStart: false,
+            isFinish: false,
+            isOnProcess: false,
           })
-          if (success) {
-            notify(NOTIFICATION_TYPE.SUCCESS, 'Saved success')
-          }
+          setResult([])
+          notify(NOTIFICATION_TYPE.SUCCESS, 'Save the result successfully')
         }
       }
     } catch (error) {
-      notify(NOTIFICATION_TYPE.ERROR, 'Save fail')
+      notify(NOTIFICATION_TYPE.ERROR, 'Save the result fail')
     }
   }
+
   return (
     <div className="w-full">
       <div className="relative w-full h-[800px] bg-[url('/images/Post/banner_post.png')] bg-cover overflow-hidden">
         <div className="absolute top-[50%] left-[50%] text-center -translate-x-[50%] -translate-y-[50%]">
-          <div className="text-white font-bold text-[32px]">
+          <p className="text-white font-bold text-[32px]">
             Our IELTS blog is your one-stop destination for all things IELTS, from practice materials to success
             stories.
-          </div>
+          </p>
         </div>
       </div>
       <div className="w-[1100px] h-[400px] relative m-auto flex flex-col mt-[40px] mb-[40px]">
@@ -307,7 +312,7 @@ export const WordTest = () => {
                 </select>
               </div>
               <div className="w-full">
-                <div className="">Choose the difficult of word :</div>
+                <p className="">Choose the difficult of word :</p>
                 <div className="flex items-center gap-[4px]">
                   <input
                     onChange={() => setLevel('easy')}
@@ -316,7 +321,9 @@ export const WordTest = () => {
                     type="checkbox"
                     className=" checked:bg-blue-500 block"
                   />
-                  <div>Easy</div>
+                  <div>
+                    <p>Easy</p>
+                  </div>
                 </div>
                 <div className="flex items-center gap-[4px]">
                   <input
@@ -326,7 +333,9 @@ export const WordTest = () => {
                     type="checkbox"
                     className=" checked:bg-blue-500 block"
                   />
-                  <div>Normal</div>
+                  <div>
+                    <p>Normal</p>
+                  </div>
                 </div>
                 <div className="flex items-center gap-[4px]">
                   <input
@@ -336,7 +345,9 @@ export const WordTest = () => {
                     type="checkbox"
                     className=" checked:bg-blue-500 block"
                   />
-                  <div>Hard</div>
+                  <div>
+                    <p>Hard</p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -345,41 +356,37 @@ export const WordTest = () => {
             </button>
           </div>
         )}
-        {!isStart ? (
-          <div className="bg-[url(/images/readybg.webp)] h-full w-[1100px] mx-auto bg-contain bg-no-repeat">
+        {!isStatus.isStart ? (
+          <div className="h-full mx-auto">
+            <img src="/images/readybg.webp" alt="Ready Background" />
             <button
-              className="absolute bottom-0 right-[50%] translate-x-[50%] bg-gradient-to-r mx-auto block from-green-400 to-blue-500 hover:from-pink-500 hover:to-yellow-500 px-[48px] py-[16px] rounded-full hover:animate-pulse"
+              className="bg-gradient-to-r mx-auto block from-green-400 to-blue-500 mt-[10px] px-[48px] py-[16px] rounded-full"
               onClick={() => {
-                setIsStart(true)
-                setIsOnProcess(true)
+                setIsStatus((prev: Status) => ({ ...prev, isStart: true, isOnProcess: true, isFinish: false }))
               }}
             >
               Lets Go
             </button>
           </div>
-        ) : isOnProcess ? (
+        ) : isStatus.isOnProcess ? (
           <div className="relative w-full h-full border-solid border-2 border-indigo-600">
             <div className=" text-[24px] mt-[40px] p-[40px]">{word.wordMeaning}</div>
             <div className="text-[20px] text-center mt-[20px]">{word.wordPhonetic}</div>
             <div className="absolute right-[50%] bottom-[4px] translate-x-[50%]">
-              {result.length}/{rdWord?.data.length}
+              {result.length + 1}/{rdWord?.data.length}
             </div>
-            <div className="absolute bottom-[40px] right-[4px]">You have 3 chance each word</div>
-            <div className="absolute bottom-[4px] right-[4px]  flex">
+            <div className="absolute bottom-[40px] right-[4px]">
+              <p>You have 3 chance each word</p>
+            </div>
+            <div className="absolute bottom-[4px] right-[4px] flex">
               {heart.map(() => (
-                <img className="w-[32px] h-[32px]" src="/images/HeartIcon.gif" />
+                <img className="w-[32px] h-[32px]" src="/images/HeartIcon.gif" alt="Heart Icon" />
               ))}
             </div>
           </div>
         ) : (
-          isFinish && (
-            <div className=" bg-[url(/images/finishbg.webp)] h-full w-full bg-contain bg-no-repeat ">
-              <button
-                onClick={onRetry}
-                className="absolute bottom-0 right-[50%] translate-x-[50%] bg-gradient-to-r mx-auto block from-green-400 to-blue-500 hover:from-pink-500 hover:to-yellow-500 px-[48px] py-[16px] rounded-full"
-              >
-                Try again
-              </button>
+          isStatus.isFinish && (
+            <div className=" bg-[url(/images/finishbg.webp)] h-full w-full bg-contain bg-no-repeat">
               <button
                 onClick={onSaveResult}
                 className="absolute bottom-[40px] right-[50%] translate-x-[50%] bg-gradient-to-r mx-auto block from-green-400 to-blue-500 hover:from-pink-500 hover:to-yellow-500 px-[48px] py-[16px] rounded-full"
@@ -391,7 +398,7 @@ export const WordTest = () => {
         )}
       </div>
 
-      {isStart && (
+      {!isStatus.isFinish && isStatus.isStart && (
         <div className="w-[800px] mx-auto pb-[30px]">
           <FillWord guessedLetters={guessedLetters} wordToGuess={word.wordToGuess} />
           <div className="self-stretch">

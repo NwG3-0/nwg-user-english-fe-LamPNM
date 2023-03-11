@@ -30,28 +30,6 @@ export const MENU_HEADER = [
   },
 ]
 
-export const DROPDOWN_PRACTICE_MENU = [
-  {
-    id: 1,
-    content: 'Listening',
-    path: '/listening',
-  },
-  {
-    id: 2,
-    content: 'Reading',
-    path: '/reading',
-  },
-  {
-    id: 3,
-    content: 'Speaking',
-    path: '/speaking',
-  },
-  {
-    id: 4,
-    content: 'Writing',
-    path: '/writing',
-  },
-]
 export const DROPDOWN_TEST_MENU = [
   {
     id: 1,

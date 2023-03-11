@@ -7,9 +7,10 @@ import { useEffect, useState } from 'react'
 
 interface Props {
   word: any
+  onRequestClose: () => void
 }
 
-export const SaveCardModal = ({ word }: Props) => {
+export const SaveCardModal = ({ word, onRequestClose }: Props) => {
   const [level, setLevel] = useState<string>('')
   const [topicName, setTopicName] = useState<string>('')
   const [userInfo, accessToken] = useDataLoginInfoStore((state) => [state.userInfo, state.accessToken])
@@ -58,6 +59,7 @@ export const SaveCardModal = ({ word }: Props) => {
           userId: userInfo.id,
         })
 
+        onRequestClose()
         notify(NOTIFICATION_TYPE.SUCCESS, 'Save successful')
       }
     } catch (error) {
@@ -71,7 +73,7 @@ export const SaveCardModal = ({ word }: Props) => {
       <div className="flex w-full gap-[10px] items-center flex-col">
         {word && <div className="text-[22px] font-semibold">{word.word}</div>}
         <div className="w-full flex items-center gap-[20px]">
-          <div className="">Choose the topic name of word :</div>
+          <p className="">Choose the topic name of word :</p>
           {deck && (
             <select
               onChange={handleTopicName}
