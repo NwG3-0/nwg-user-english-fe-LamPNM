@@ -27,7 +27,7 @@ const VerifyPage: NextPage = () => {
   return (
     <div className="relative bg-[url('/images/background.webp')] bg-cover h-screen w-full font-library">
       <div className="w-full h-full bg-[#00000075] relative z-1"></div>
-      <div className="absolute w-[500px] translate-x-[-50%] translate-y-[-50%] top-[50%] left-[50%] bg-[#BA8C63] z-100 rounded-md">
+      <div className="absolute w-[calc(100%-30px)] sm:w-[500px] translate-x-[-50%] translate-y-[-50%] top-[50%] left-[50%] bg-transparent sm:bg-[#BA8C63] z-100 sm:rounded-md">
         <div className="text-white text-center text-[32px] mt-[20px]">Verify Code</div>
         <form className="p-[20px]" onSubmit={onVerify}>
           <div>

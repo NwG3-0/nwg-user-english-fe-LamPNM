@@ -1,4 +1,5 @@
-import { API_DICTIONARY_URL, AUTH_TOKEN, USER_INFO } from '@src/models/api'
+import { API_DICTIONARY_URL, AUTH_TOKEN, EarliestPostResponse, PostDetailResponse, USER_INFO } from '@src/models/api'
+import { DEVICES } from './common'
 
 export const API_BASE_URL = process.env.API_BASE_URL ?? 'http://localhost:4000'
 
@@ -108,62 +109,21 @@ export const logout = async (accessToken: string) => {
   }
 }
 
-export const createPost = async (input: {
-  title: string
-  imageTitle: string
-  description: string
-  accessToken: string
-}) => {
-  try {
-    const { title, imageTitle, description, accessToken } = input
-
-    if (!title || title === '') {
-      return { success: false, data: null, message: 'Please enter your title' }
-    }
-
-    if (!imageTitle || imageTitle === '') {
-      return { success: false, data: null, message: 'Please enter your image title' }
-    }
-
-    if (!description || description === '') {
-      return { success: false, data: null, message: 'Please enter your description' }
-    }
-
-    if (!accessToken) {
-      return { success: false, data: null, message: 'Access Token is invalid' }
-    }
-
-    const response = await fetch(`${API_BASE_URL}/api/post/create`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${accessToken}`,
-      },
-      body: JSON.stringify({ title, imageTitle, description }),
-    })
-
-    const rawResponse = await response.json()
-
-    if (rawResponse) {
-      return rawResponse
-    }
-  } catch (error) {
-    return { success: false, data: null, message: 'Something went wrong' }
-  }
-}
-
 export const getPostList = async (input: { limit: number; page: number; keyword: string }) => {
   try {
     const limit = input.limit ?? 10
     const page = input.page ?? 1
     const keyword = input.keyword ?? ''
 
-    const response = await fetch(`${API_BASE_URL}/api/post?limit=${limit}&page=${page}&keyword=${keyword}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
+    const response = await fetch(
+      `${API_BASE_URL}/api/post?limit=${limit}&page=${page}&keyword=${keyword}&device=${DEVICES.WEB}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
       },
-    })
+    )
 
     const rawResponse = await response.json()
 
@@ -336,6 +296,34 @@ export const createCard = async (input: {
       return { success: false, data: null, message: 'Please enter your title' }
     }
 
+    if (!word || word === '') {
+      return { success: false, data: null, message: 'Please enter your word' }
+    }
+
+    if (!phonetic || phonetic === '') {
+      return { success: false, data: null, message: 'Please enter your phonetic' }
+    }
+
+    if (!audio || audio === '') {
+      return { success: false, data: null, message: 'Please enter your audio' }
+    }
+
+    if (!meanings || meanings === '') {
+      return { success: false, data: null, message: 'Please enter your meanings' }
+    }
+
+    if (!userId || userId === '') {
+      return { success: false, data: null, message: 'Please enter your userId' }
+    }
+
+    if (!level || level === '') {
+      return { success: false, data: null, message: 'Please enter your level' }
+    }
+
+    if (!accessToken || accessToken === '') {
+      return { success: false, data: null, message: 'Please enter your accessToken' }
+    }
+
     const response = await fetch(`${API_BASE_URL}/api/card/create`, {
       method: 'POST',
       headers: {
@@ -346,7 +334,7 @@ export const createCard = async (input: {
     })
 
     const rawResponse = await response.json()
-
+    console.log(response)
     if (rawResponse) {
       return rawResponse
     }
@@ -674,6 +662,77 @@ export const addSpeakingFile = async (input: {
     })
 
     const rawResponse = await response.json()
+
+    if (rawResponse) {
+      return rawResponse
+    }
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export const getEarliestPost = async (userId: string, accessToken: string) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/earliest-post?userId=${userId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      },
+    })
+
+    const rawResponse = (await response.json()) as EarliestPostResponse
+
+    if (rawResponse) {
+      return rawResponse
+    }
+  } catch (error) {
+    return { success: false, data: null, message: 'Something went wrong' }
+  }
+}
+
+export const getNewsList = async (input: { limit: number; page: number; keyword: string }) => {
+  try {
+    const limit = input.limit ?? 10
+    const page = input.page ?? 1
+    const keyword = input.keyword ?? ''
+
+    const response = await fetch(
+      `${API_BASE_URL}/api/news?limit=${limit}&page=${page}&keyword=${keyword}&device=${DEVICES.WEB}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+    )
+
+    const rawResponse = await response.json()
+
+    if (rawResponse) {
+      return rawResponse
+    }
+  } catch (error) {
+    return { success: false, data: null, message: 'Something went wrong' }
+  }
+}
+
+export const getPostDetail = async (input: { post_id: string }) => {
+  try {
+    const { post_id } = input
+
+    if (!post_id || post_id === '') {
+      return { success: false, data: null, message: 'Invalid Post Id' }
+    }
+
+    const response = await fetch(`${API_BASE_URL}/api/post/detail?post_id=${post_id}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+
+    const rawResponse = (await response.json()) as PostDetailResponse
 
     if (rawResponse) {
       return rawResponse

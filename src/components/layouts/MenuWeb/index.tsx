@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { checkCard, getDictionary } from '@utils/api'
+import { checkCard } from '@utils/api'
 import { useState } from 'react'
 import HotKeys from 'react-hot-keys'
 import { CustomModal } from '@components/common/CustomModal'
@@ -8,13 +8,16 @@ import { MessageIcon } from '@components/common/CustomIcon'
 import { DictionaryModal } from '@components/common/DictionaryModal'
 import { MessageModal } from '@components/common/MessageModal'
 import { QUERY_KEYS } from '@utils/keys'
-import { useDataLoginInfoStore } from '@src/zustand'
+import { useDataLoginInfoStore, useOpenHeaderStore } from '@src/zustand'
+import { NOTIFICATION_TYPE, notify } from '@utils/notify'
 
 const trueHotKeysWindow = 'alt+m'
 const trueHotKeysMacOS = 'command+m'
 
 export const MenuWeb = () => {
   const [userInfo, accessToken] = useDataLoginInfoStore((state: any) => [state.userInfo, state.accessToken])
+  const [isOpen] = useOpenHeaderStore((state: any) => [state.isOpen, state.setIsOpen])
+
   const [isOpenDictionary, setIsOpenDictionary] = useState<boolean>(false)
   const [isMessageModal, setIsMessageModal] = useState<boolean>(false)
   const [isOpenSaveCardModal, setIsSaveCardModal] = useState<boolean>(false)
@@ -22,12 +25,20 @@ export const MenuWeb = () => {
   const [saveChecked, setSaveChecked] = useState<boolean>(false)
 
   const { data: wordDetail, isLoading: isLoadingWord } = useQuery(
-    [QUERY_KEYS.DICTIONARY_SEARCH, searchWordValue],
+    [QUERY_KEYS.NEW_WORD, searchWordValue],
     async () => {
       try {
-        const response = await getDictionary(searchWordValue)
+        const response = await fetch(`/api/get-meaning-word?searchWord=${searchWordValue}`, {
+          method: 'GET',
+        })
 
-        return response
+        const { data, success } = await response.json()
+
+        if (success) {
+          return data
+        }
+
+        return
       } catch (error) {
         console.log(error)
       }
@@ -35,23 +46,25 @@ export const MenuWeb = () => {
     {
       refetchInterval: false,
       enabled: searchWordValue !== '' && isOpenDictionary,
+      refetchOnWindowFocus: false,
     },
   )
 
   const onSearch = async (wordSearch: string) => {
     setSearchWordValue(wordSearch)
-    let word = wordSearch
     try {
       const userId = userInfo?.id
       if (accessToken) {
-        const { data: dataCheck } = await checkCard({ word, userId })
+        const { data: dataCheck } = await checkCard({ word: wordSearch, userId })
         if (dataCheck) {
           setSaveChecked(true)
         } else {
           setSaveChecked(false)
         }
       }
-    } catch (error) {}
+    } catch (error) {
+      notify(NOTIFICATION_TYPE.ERROR, 'Invalid word')
+    }
   }
 
   const onCloseDictionaryModal = () => {
@@ -71,9 +84,10 @@ export const MenuWeb = () => {
       setIsOpenDictionary((prev) => !prev)
     }
   }
+  console.log(wordDetail)
 
   return (
-    <div className="relative z-[1000]">
+    <div className={`${isOpen && 'hidden'} relative z-100`}>
       <HotKeys keyName="alt+d" onKeyUp={onKeyUp}>
         {isOpenDictionary && (
           <DictionaryModal

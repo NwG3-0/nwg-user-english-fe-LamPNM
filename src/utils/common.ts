@@ -1,3 +1,17 @@
+export interface AuthToken {
+  email: string
+  exp: number
+  iat: number
+  manager_id: string
+  role: number
+}
+
+export interface Dropdown {
+  id: number
+  content: string
+  path: string
+}
+
 export const MENU_HEADER = [
   {
     id: 1,
@@ -9,31 +23,33 @@ export const MENU_HEADER = [
     name: 'Collection',
     path: '/collection',
   },
+  {
+    id: 3,
+    name: 'News',
+    path: '/news',
+  },
 ]
+
 export const DROPDOWN_PRACTICE_MENU = [
   {
     id: 1,
     content: 'Listening',
-    path: '/post',
-    type: 'link',
+    path: '/listening',
   },
   {
     id: 2,
     content: 'Reading',
-    path: '/book-hire',
-    type: 'link',
+    path: '/reading',
   },
   {
     id: 3,
     content: 'Speaking',
-    path: '/post',
-    type: 'link',
+    path: '/speaking',
   },
   {
     id: 4,
-    content: 'Writting',
-    path: '/book-hire',
-    type: 'link',
+    content: 'Writing',
+    path: '/writing',
   },
 ]
 export const DROPDOWN_TEST_MENU = [
@@ -65,8 +81,14 @@ export const DROPDOWN_USER_MENU = [
     type: 'div',
   },
 ]
+
 export enum TYPE_MESSAGE {
   TEXT = 'text',
   GIF = 'gif',
   STICKER = 'sticker',
+}
+
+export const DEVICES = {
+  MOBILE: 'mobile',
+  WEB: 'web',
 }

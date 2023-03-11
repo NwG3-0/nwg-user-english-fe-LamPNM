@@ -1,5 +1,9 @@
-import { SettingIcon } from '@components/common/CustomIcon'
+import { useCallback, useEffect, useState } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { FillWord } from './FillWord'
+import { KeyBoard } from './KeyBoard'
+import { SettingIcon } from '@components/common/CustomIcon'
+import { useDataLoginInfoStore } from '@src/zustand'
 import {
   addResultWordTest,
   checkUserId,
@@ -10,33 +14,49 @@ import {
 } from '@utils/api'
 import { QUERY_KEYS } from '@utils/keys'
 import { NOTIFICATION_TYPE, notify } from '@utils/notify'
-import { useCallback, useEffect, useState } from 'react'
-import { FillWord } from './FillWord'
-import { KeyBoard } from './KeyBoard'
-import { useDataLoginInfoStore } from '@src/zustand'
 
 export const WordTest = () => {
   const queryClient = useQueryClient()
   const [userInfo, accessToken] = useDataLoginInfoStore((state: any) => [state.userInfo, state.accessToken])
 
-  const [wordToGuess, setWordToGuess] = useState<string>('')
-  const [level, setLevel] = useState<string>('')
+  const [isStatus, setIsStatus] = useState<{
+    isFalse: boolean
+    isCorrect: boolean
+    isStart: boolean
+    isFinish: boolean
+    isOnProcess: boolean
+  }>({
+    isFalse: false,
+    isCorrect: false,
+    isStart: false,
+    isFinish: false,
+    isOnProcess: false,
+  })
+
   const [isFalse, setIsFalse] = useState<boolean>(false)
   const [isCorrect, setIsCorrect] = useState<boolean>(false)
-  const [inCorrectLetter, setInCorrectLetter] = useState<string[]>([])
-  const [isStart, setIsStart] = useState<boolean>(true)
+  const [isStart, setIsStart] = useState<boolean>(false)
   const [isFinish, setIsFinish] = useState<boolean>(false)
   const [isOnProcess, setIsOnProcess] = useState<boolean>(false)
+
+  const [openSetupModal, setOpenSetupModal] = useState<boolean>(false)
+
+  const [level, setLevel] = useState<string>('')
+
+  const [inCorrectLetter, setInCorrectLetter] = useState<string[]>([])
   const [wordData, setWordData] = useState<any[]>([])
-  const [wordMeaning, setWordMeaning] = useState<string[]>([])
-  const [wordPhonetic, setWordPhonetic] = useState<string[]>([])
-  const [Heart, setHeart] = useState<string[]>(['3', '2', '1'])
+  const [word, setWord] = useState({
+    wordToGuess: '',
+    wordMeaning: '',
+    wordPhonetic: '',
+  })
+
+  const [heart, setHeart] = useState<string[]>(['3', '2', '1'])
   const [result, setResult] = useState<any>([])
+  const [guessedLetters, setGuessedLetter] = useState<string[]>([])
 
   const [numberWord] = useState<number>(5)
-  const [guessedLetters, setGuessedLetter] = useState<string[]>([])
   const [topicName, setTopicName] = useState<string>('')
-  const [openSetupModal, setOpenSetupModal] = useState<boolean>(false)
 
   const { data: checkUser } = useQuery(
     [QUERY_KEYS.USER_RANDOM_CHECK],
@@ -77,7 +97,7 @@ export const WordTest = () => {
   )
 
   const { data: rdWord } = useQuery(
-    [QUERY_KEYS.WORD_TEST],
+    [QUERY_KEYS.WORD_TEST, userInfo, accessToken, isStart],
     async () => {
       if (accessToken && userInfo) {
         try {
@@ -91,34 +111,37 @@ export const WordTest = () => {
     {
       refetchInterval: false,
       refetchOnWindowFocus: false,
-      enabled: !!accessToken && !!userInfo,
+      enabled: !!accessToken && !!userInfo && isStart,
     },
   )
 
   useEffect(() => {
     if (rdWord && rdWord.data?.length > 0) {
-      setWordData(rdWord.data.map((w: any) => w))
-      if (wordData) {
-        setWordToGuess(wordData[0]?.Word)
-        setWordPhonetic(wordData[0]?.Phonetic)
-        setWordMeaning(JSON.parse(wordData[0]?.Meanings ?? '{}')[0]?.definitions[0].definition)
-      }
+      setWordData([...rdWord.data])
+
+      setWord({
+        wordToGuess: rdWord.data[0]?.Word,
+        wordPhonetic: rdWord.data[0]?.Phonetic,
+        wordMeaning: JSON.parse(rdWord.data[0]?.Meanings ?? '{}')[0]?.definitions[0].definition,
+      })
     }
   }, [rdWord, isStart])
 
   useEffect(() => {
-    if (isCorrect || isFalse) {
-      wordData.shift()
-      setWordData(wordData)
+    if (wordData && wordData?.length > 0 && (isCorrect || isFalse)) {
+      const arrWordData = wordData.filter((_word: any, index: number) => index !== 0)
+      setWordData(arrWordData)
 
       setIsFalse(false)
       setIsCorrect(false)
-      if (wordData) {
-        setWordToGuess(wordData[0]?.Word)
-        setWordPhonetic(wordData[0]?.Phonetic)
-        setWordMeaning(JSON.parse(wordData[0]?.Meanings ?? '{}')[0]?.definitions[0].definition)
-        setResult((prev: any) => [...prev, { word: wordToGuess, fault: inCorrectLetter.length }])
-      }
+
+      setWord({
+        wordToGuess: wordData[0]?.Word,
+        wordPhonetic: wordData[0]?.Phonetic,
+        wordMeaning: JSON.parse(wordData[0]?.Meanings ?? '{}')[0]?.definitions[0].definition,
+      })
+
+      setResult((prev: any) => [...prev, { word: word.wordToGuess, fault: inCorrectLetter.length }])
 
       setGuessedLetter([])
     }
@@ -133,42 +156,38 @@ export const WordTest = () => {
   const onSetupWord = async () => {
     if (!checkUser.success) {
       try {
-        {
-          if (accessToken) {
-            const { success } = await setUpRandomWord({
-              number: numberWord,
-              userId: userInfo.id,
-              isActivated: true,
-              topicName: topicName,
-              level: level || 'easy,normal,hard',
-            })
-            if (success) {
-              notify(NOTIFICATION_TYPE.SUCCESS, 'Saved success')
-              queryClient.invalidateQueries([QUERY_KEYS.WORD_TEST])
-              setGuessedLetter([])
-              setOpenSetupModal(false)
-              setIsStart(true)
-            }
+        if (accessToken) {
+          const { success } = await setUpRandomWord({
+            number: numberWord,
+            userId: userInfo.id,
+            isActivated: true,
+            topicName: topicName,
+            level: level || 'easy,normal,hard',
+          })
+          if (success) {
+            notify(NOTIFICATION_TYPE.SUCCESS, 'Saved success')
+            queryClient.invalidateQueries([QUERY_KEYS.WORD_TEST])
+            setGuessedLetter([])
+            setOpenSetupModal(false)
+            setIsStart(true)
           }
         }
       } catch (error) {}
     } else {
       try {
-        {
-          if (accessToken) {
-            const { success } = await UpdateSetUpRandomWord({
-              number: numberWord,
-              userId: userInfo.id,
-              topicName: topicName,
-              level: level || 'easy,normal,hard',
-            })
-            if (success) {
-              queryClient.invalidateQueries([QUERY_KEYS.WORD_TEST])
-              notify(NOTIFICATION_TYPE.SUCCESS, 'Update success')
-              setGuessedLetter([])
-              setOpenSetupModal(false)
-              setIsStart(true)
-            }
+        if (accessToken) {
+          const { success } = await UpdateSetUpRandomWord({
+            number: numberWord,
+            userId: userInfo.id,
+            topicName: topicName,
+            level: level || 'easy,normal,hard',
+          })
+          if (success) {
+            queryClient.invalidateQueries([QUERY_KEYS.WORD_TEST])
+            notify(NOTIFICATION_TYPE.SUCCESS, 'Update success')
+            setGuessedLetter([])
+            setOpenSetupModal(false)
+            setIsStart(true)
           }
         }
       } catch (error) {}
@@ -180,12 +199,13 @@ export const WordTest = () => {
   }
 
   useEffect(() => {
-    const incorrectLetter = guessedLetters.filter((letter) => !wordToGuess.includes(letter))
+    const incorrectLetter = guessedLetters.filter((letter) => !word.wordToGuess.includes(letter))
 
     setInCorrectLetter(incorrectLetter)
     setIsFalse(incorrectLetter.length > 2)
-    setIsCorrect(wordToGuess?.split('').every((letter: string) => guessedLetters.includes(letter)))
-  }, [guessedLetters, wordToGuess])
+    setIsCorrect(word.wordToGuess?.split('').every((letter: string) => guessedLetters.includes(letter)))
+  }, [guessedLetters, word.wordToGuess])
+
   const addGuessedLetter = useCallback(
     (letter: string) => {
       if (guessedLetters.includes(letter) || isCorrect || isFalse) return
@@ -214,7 +234,7 @@ export const WordTest = () => {
       setIsFinish(true)
       setIsOnProcess(false)
     }
-  })
+  }, [wordData])
 
   useEffect(() => {
     if (inCorrectLetter.length === 0) {
@@ -228,9 +248,7 @@ export const WordTest = () => {
     }
   }, [inCorrectLetter.length])
 
-  console.log(inCorrectLetter, Heart.length)
-
-  const onReTry = () => {
+  const onRetry = () => {
     setIsStart(true)
     setIsFinish(false)
     queryClient.invalidateQueries([QUERY_KEYS.WORD_TEST])
@@ -253,11 +271,21 @@ export const WordTest = () => {
           }
         }
       }
-    } catch (error) {}
+    } catch (error) {
+      notify(NOTIFICATION_TYPE.ERROR, 'Save fail')
+    }
   }
   return (
-    <div className="flex w-[60%] m-auto flex-col mt-[40px] mb-[40px]">
-      <div className=" w-full h-[400px] mb-[20px] relative ">
+    <div className="w-full">
+      <div className="relative w-full h-[800px] bg-[url('/images/Post/banner_post.png')] bg-cover overflow-hidden">
+        <div className="absolute top-[50%] left-[50%] text-center -translate-x-[50%] -translate-y-[50%]">
+          <div className="text-white font-bold text-[32px]">
+            Our IELTS blog is your one-stop destination for all things IELTS, from practice materials to success
+            stories.
+          </div>
+        </div>
+      </div>
+      <div className="w-[1100px] h-[400px] relative m-auto flex flex-col mt-[40px] mb-[40px]">
         <button
           className="absolute align-center right-[4px] top-[4px] flex z-1 hover:animate-spin"
           onClick={() => {
@@ -317,12 +345,12 @@ export const WordTest = () => {
             </button>
           </div>
         )}
-        {isStart ? (
-          <div className="bg-[url(/images/readybg.webp)] h-full w-full bg-contain bg-no-repeat ">
+        {!isStart ? (
+          <div className="bg-[url(/images/readybg.webp)] h-full w-[1100px] mx-auto bg-contain bg-no-repeat">
             <button
               className="absolute bottom-0 right-[50%] translate-x-[50%] bg-gradient-to-r mx-auto block from-green-400 to-blue-500 hover:from-pink-500 hover:to-yellow-500 px-[48px] py-[16px] rounded-full hover:animate-pulse"
               onClick={() => {
-                setIsStart(false)
+                setIsStart(true)
                 setIsOnProcess(true)
               }}
             >
@@ -330,51 +358,45 @@ export const WordTest = () => {
             </button>
           </div>
         ) : isOnProcess ? (
-          <div
-            data-aos="fade-right"
-            data-aos-offset="50"
-            data-aos-duration="500"
-            data-aos-delay="300"
-            className="relative w-full h-full border-solid border-2 border-indigo-600"
-          >
-            <div className=" text-[24px] mt-[40px] p-[40px]">{wordMeaning}</div>
-            <div className="text-[20px] text-center mt-[20px]">{wordPhonetic}</div>
+          <div className="relative w-full h-full border-solid border-2 border-indigo-600">
+            <div className=" text-[24px] mt-[40px] p-[40px]">{word.wordMeaning}</div>
+            <div className="text-[20px] text-center mt-[20px]">{word.wordPhonetic}</div>
             <div className="absolute right-[50%] bottom-[4px] translate-x-[50%]">
               {result.length}/{rdWord?.data.length}
             </div>
             <div className="absolute bottom-[40px] right-[4px]">You have 3 chance each word</div>
             <div className="absolute bottom-[4px] right-[4px]  flex">
-              {Heart.map(() => (
+              {heart.map(() => (
                 <img className="w-[32px] h-[32px]" src="/images/HeartIcon.gif" />
               ))}
             </div>
           </div>
-        ) : isFinish ? (
-          <div className=" bg-[url(/images/finishbg.webp)] h-full w-full bg-contain bg-no-repeat ">
-            <button
-              onClick={onReTry}
-              className="absolute bottom-0 right-[50%] translate-x-[50%] bg-gradient-to-r mx-auto block from-green-400 to-blue-500 hover:from-pink-500 hover:to-yellow-500 px-[48px] py-[16px] rounded-full"
-            >
-              Try again
-            </button>
-            <button
-              onClick={onSaveResult}
-              className="absolute bottom-[40px] right-[50%] translate-x-[50%] bg-gradient-to-r mx-auto block from-green-400 to-blue-500 hover:from-pink-500 hover:to-yellow-500 px-[48px] py-[16px] rounded-full"
-            >
-              Finish
-            </button>
-          </div>
         ) : (
-          <div></div>
+          isFinish && (
+            <div className=" bg-[url(/images/finishbg.webp)] h-full w-full bg-contain bg-no-repeat ">
+              <button
+                onClick={onRetry}
+                className="absolute bottom-0 right-[50%] translate-x-[50%] bg-gradient-to-r mx-auto block from-green-400 to-blue-500 hover:from-pink-500 hover:to-yellow-500 px-[48px] py-[16px] rounded-full"
+              >
+                Try again
+              </button>
+              <button
+                onClick={onSaveResult}
+                className="absolute bottom-[40px] right-[50%] translate-x-[50%] bg-gradient-to-r mx-auto block from-green-400 to-blue-500 hover:from-pink-500 hover:to-yellow-500 px-[48px] py-[16px] rounded-full"
+              >
+                Finish
+              </button>
+            </div>
+          )
         )}
       </div>
 
-      {!isStart && (
-        <div>
-          <FillWord guessedLetters={guessedLetters} wordToGuess={wordToGuess} />
+      {isStart && (
+        <div className="w-[800px] mx-auto pb-[30px]">
+          <FillWord guessedLetters={guessedLetters} wordToGuess={word.wordToGuess} />
           <div className="self-stretch">
             <KeyBoard
-              activeLetter={guessedLetters.filter((letter) => wordToGuess.includes(letter))}
+              activeLetter={guessedLetters.filter((letter) => word.wordToGuess.includes(letter))}
               inactiveLetter={inCorrectLetter}
               addGuessedLetter={addGuessedLetter}
             />

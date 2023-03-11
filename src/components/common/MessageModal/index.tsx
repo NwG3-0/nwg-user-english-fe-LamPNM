@@ -7,11 +7,11 @@ import { QUERY_KEYS } from '@utils/keys'
 import EmojiPicker from 'emoji-picker-react'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import * as io from 'socket.io-client'
-import { CloseIcon2, EmojiIcon } from '../CustomIcon'
+import { CloseMessageIcon, EmojiIcon, UserIcon } from '../CustomIcon'
 import { GifPopUp } from '../GifPopUp'
-import { StickerPopUp } from '../StickerPopUp'
+// import { StickerPopUp } from '../StickerPopUp'
 
-const socket = io.connect('http://localhost:4000/')
+const socket = io.connect('https://nwg-ielts-backend.onrender.com/')
 
 interface Props {
   onOpenMessageModal: () => void
@@ -34,11 +34,6 @@ export const MessageModal = ({ onOpenMessageModal }: Props) => {
       return safeParseJSON(localStorage.getItem(USER_INFO) as string)
     }
   }, [])
-  // const accessToken = useMemo(() => {
-  //   if (typeof window !== 'undefined') {
-  //     return localStorage.getItem(AUTH_TOKEN)
-  //   }
-  // }, [])
 
   useEffect(() => {
     if (userInfo) {
@@ -148,18 +143,22 @@ export const MessageModal = ({ onOpenMessageModal }: Props) => {
     } catch (error) {}
   }
 
-  console.log(messageData)
-
   return (
     <div
       data-aos-offset="50"
       data-aos="fade-left"
-      className=" fixed pt-[5px] z-1 top-[20%] shadow-2xl right-[16px] bg-slate-50 h-[60vh] w-[320px] rounded-[24px]"
+      className="fixed z-1 top-[20%] shadow-2xl right-[16px] bg-slate-50 h-[60vh] w-[320px] rounded-lg overflow-hidden"
     >
       <div className="relative w-full h-full">
-        <div className="w-full shadow-2xl rounded-[24px] border-b-2 border-slate-400 py-[4px] float-right">
-          <div onClick={onOpenMessageModal} className="float-right mr-[12px]">
-            <CloseIcon2 width={24} height={24} color="#6096db" />
+        <div className="w-full bg-[#808080] p-[10px] flex items-center justify-between">
+          <div className="flex items-center gap-[10px]">
+            <UserIcon width={24} height={24} color="#FFFFFF" />
+            <div>
+              <p className="text-[#FFF]">Admin</p>
+            </div>
+          </div>
+          <div onClick={onOpenMessageModal} className="mr-[10px] cursor-pointer">
+            <CloseMessageIcon width={18} height={18} color="#FFFFFF" />
           </div>
         </div>
         <div className="w-full flex-col-reverse flex overflow-y-scroll h-[80%]">
@@ -232,7 +231,7 @@ export const MessageModal = ({ onOpenMessageModal }: Props) => {
             />
             {showStickerPopup && (
               <div className="absolute bottom-[36px] left-[-50px] w-[400px]">
-                <StickerPopUp stickerUrl={onSetSticker} />
+                {/* <StickerPopUp stickerUrl={onSetSticker} /> */}
               </div>
             )}
           </div>
