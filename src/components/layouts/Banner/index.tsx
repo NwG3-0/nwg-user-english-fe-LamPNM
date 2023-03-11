@@ -9,9 +9,9 @@ export const Banner = ({ path }: Props) => {
         data-aos-offset="50"
         data-aos-duration="500"
         data-aos-delay="300"
-        className="mx-auto md:absolute text-[#FFFFFF] drop-shadow-xl max-md:text-center max-md:mt-[300px] w-fit md:w-[720px] break-words top-[40%] right-[10px] text-[48px] md:text-[64px] font-bold"
+        className="mx-auto md:absolute drop-shadow-xl max-md:text-center max-md:mt-[300px] w-fit md:w-[720px] break-words top-[40%] right-[10px] text-[48px] md:text-[64px]"
       >
-        IELTS is your future, time to learn it!
+        <p className="text-[#FFFFFF] font-bold">IELTS is your future, time to learn it!</p>
       </div>
     </div>
   )

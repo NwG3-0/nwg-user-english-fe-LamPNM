@@ -58,7 +58,7 @@ const HomePage = () => {
             className="mx-auto cursor-pointer hover-scale flex flex-col px-[40px] py-[24px] bg-white rounded-full"
           >
             <ListeningIcon width={100} height={100} color="" />
-            <div className="text-center text-[24px] font-bold text-orange-500">Listening</div>
+            <p className="text-center text-[24px] font-bold text-orange-500">Listening</p>
           </div>
           <div
             data-aos="zoom-in"
@@ -68,7 +68,7 @@ const HomePage = () => {
             className="m-auto cursor-pointer hover-scale flex flex-col px-[40px] py-[24px] bg-white rounded-full"
           >
             <ReadingIcon width={100} height={100} color="" />
-            <div className="text-center text-[24px] font-bold text-orange-500">Reading</div>
+            <p className="text-center text-[24px] font-bold text-orange-500">Reading</p>
           </div>
           <div
             data-aos="zoom-in"
@@ -78,7 +78,7 @@ const HomePage = () => {
             className="m-auto cursor-pointer hover-scale flex flex-col px-[40px] py-[24px] bg-white rounded-full"
           >
             <WritingIcon width={100} height={100} color="" />
-            <div className="text-center text-[24px] font-bold text-orange-500">Writing</div>
+            <p className="text-center text-[24px] font-bold text-orange-500">Writing</p>
           </div>
           <div
             data-aos="zoom-in"
@@ -88,29 +88,31 @@ const HomePage = () => {
             className="m-auto cursor-pointer hover-scale flex flex-col px-[40px] py-[24px] bg-white rounded-full"
           >
             <SpeakingIcon width={100} height={100} color="" />
-            <div className="text-center text-[24px] font-bold text-orange-500">Speaking</div>
+            <p className="text-center text-[24px] font-bold text-orange-500">Speaking</p>
           </div>
         </div>
       </div>
       <div className="pt-[40px] pb-[100px] px-[20px] block md:hidden">
         <div className="text-[48px] font-extrabold">
           <div data-aos="fade-right" data-aos-duration="600">
-            Learn about
+            <p>Learn about</p>
           </div>
           <div data-aos="fade-right" data-aos-duration="600" className="text-red-400">
-            our levels
+            <p>our levels</p>
           </div>
         </div>
         <div>
           <div data-aos="fade-up" data-aos-duration="600" className="font-bold text-[18px]">
-            Don't know your English level
+            <p>Don't know your English level</p>
           </div>
           <div data-aos="fade-up" data-aos-duration="600">
-            Each course is divided into specific learning
-            <br />
-            levels. We teach up to C1 in English and B2 in
-            <br />
-            Business English.
+            <p>
+              Each course is divided into specific learning
+              <br />
+              levels. We teach up to C1 in English and B2 in
+              <br />
+              Business English.
+            </p>
           </div>
         </div>
         <div className="border-l-[5px] mt-[30px] pb-[30px] border-[#808080] relative flex flex-col gap-[20px]">
@@ -122,9 +124,9 @@ const HomePage = () => {
               key={degree.id}
             >
               <div data-aos="zoom-in" data-aos-duration="600">
-                <div className="text-[24px] font-bold">{degree.degreeName}</div>
-                <div className="uppercase font-bold">{degree.aboutDegree}</div>
-                <div className="">{degree.content}</div>
+                <p className="text-[24px] font-bold">{degree.degreeName}</p>
+                <p className="uppercase font-bold">{degree.aboutDegree}</p>
+                <p className="">{degree.content}</p>
               </div>
               <div
                 className={`w-[15px] h-[15px] bg-[#808080] rotate-45 absolute left-[-10.5px] ${
@@ -140,22 +142,24 @@ const HomePage = () => {
           <div className="absolute z-100 left-[-50px] top-[30px]">
             <div className="text-[48px] font-extrabold">
               <div data-aos="fade-right" data-aos-duration="600">
-                Learn about
+                <p>Learn about</p>
               </div>
               <div data-aos="fade-right" data-aos-duration="600" className="text-red-400">
-                our levels
+                <p>our levels</p>
               </div>
             </div>
             <div>
               <div data-aos="fade-up" data-aos-duration="600" className="font-bold text-[18px]">
-                Don't know your English level
+                <p>Don't know your English level</p>
               </div>
               <div data-aos="fade-up" data-aos-duration="600">
-                Each course is divided into specific learning
-                <br />
-                levels. We teach up to C1 in English and B2 in
-                <br />
-                Business English.
+                <p>
+                  Each course is divided into specific learning
+                  <br />
+                  levels. We teach up to C1 in English and B2 in
+                  <br />
+                  Business English.
+                </p>
               </div>
             </div>
           </div>
@@ -173,43 +177,43 @@ const HomePage = () => {
             </div>
             <div className="absolute rounded-full top-[20px] left-[50%] translate-x-[-50%] text-center py-[35px] w-[165px] bg-[#eebb76] border-[1px] border-[#000]">
               <div className="font-bold text-[24px]">A1</div>
-              <div className="uppercase text-[14px] font-medium">absolute beginner</div>
-              <div className="text-[12px]">
+              <p className="uppercase text-[14px] font-medium">absolute beginner</p>
+              <p className="text-[12px]">
                 Basic words
                 <br />& phrases
-              </div>
+              </p>
             </div>
             <div className="absolute rounded-full bottom-[90px] left-[70px] text-center w-[130px] py-[20px] bg-[#b6e0d9] border-[1px] border-[#000]">
-              <div className="font-bold text-[24px]">A2</div>
-              <div className="uppercase text-[14px] font-medium">beginner</div>
-              <div className="text-[12px]">
+              <p className="font-bold text-[24px]">A2</p>
+              <p className="uppercase text-[14px] font-medium">beginner</p>
+              <p className="text-[12px]">
                 Simple
                 <br />
                 Interactions
-              </div>
+              </p>
             </div>
             <div className="absolute rounded-full top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] text-center w-[130px] py-[20px] bg-[#dc7672] border-[1px] border-[#000]">
-              <div className="font-bold text-[24px]">B1</div>
-              <div className="uppercase text-[14px] font-medium">intermediate</div>
-              <div className="text-[12px]">
+              <p className="font-bold text-[24px]">B1</p>
+              <p className="uppercase text-[14px] font-medium">intermediate</p>
+              <p className="text-[12px]">
                 Everyday
                 <br />
                 conversation
-              </div>
+              </p>
             </div>
             <div className="absolute rounded-full bottom-[20px] left-[60%] translate-x-[-60%] text-center w-[160px] bg-[#eebb76] border-[1px] border-[#000] py-[40px]">
-              <div className="font-bold text-[24px]">B2</div>
-              <div className="uppercase text-[14px] font-medium">upper-intermediate</div>
-              <div className="text-[12px]">Complex topics</div>
+              <p className="font-bold text-[24px]">B2</p>
+              <p className="uppercase text-[14px] font-medium">upper-intermediate</p>
+              <p className="text-[12px]">Complex topics</p>
             </div>
             <div className="absolute right-[50px] rounded-full top-[40%] translate-y-[-40%] text-center w-[130px] py-[20px] bg-[#b6e0d9] border-[1px] border-[#000]">
-              <div className="font-bold text-[24px]">C1</div>
-              <div className="uppercase text-[14px] font-medium">advanced</div>
-              <div className="text-[12px]">
+              <p className="font-bold text-[24px]">C1</p>
+              <p className="uppercase text-[14px] font-medium">advanced</p>
+              <p className="text-[12px]">
                 Proficient
                 <br />
                 language use
-              </div>
+              </p>
             </div>
           </div>
         </div>
@@ -221,18 +225,18 @@ const HomePage = () => {
             data-aos-offset="-50"
             data-aos-duration="600"
             data-aos-delay="900"
-            className="text-white text-[40px] text-center font-bold pt-[80px]"
+            className="pt-[80px]"
           >
-            Become a Pro with these Course
+            <p className="text-white text-[40px] text-center font-bold">Become a Pro with these Course</p>
           </div>
           <div
             data-aos="fade-right"
             data-aos-offset="-50"
             data-aos-duration="600"
             data-aos-delay="900"
-            className="text-white text-center mt-[20px] mb-[80px]"
+            className="mt-[20px] mb-[80px]"
           >
-            JUST PICK WHAT YOU NEED TO LEARN
+            <p className="text-white text-center">JUST PICK WHAT YOU NEED TO LEARN</p>
           </div>
         </div>
         <div className="absolute top-[320px] w-[80%] right-[50%] translate-x-[50%]">
@@ -298,11 +302,11 @@ const HomePage = () => {
               data-aos-offset="-50"
               data-aos-duration="500"
               data-aos-delay="700"
-              className="text-[64px] font-bold py-[36px]"
+              className="py-[36px]"
             >
-              Start a Journey. Enroll Now
+              <p className="text-[64px] font-bold">Start a Journey. Enroll Now</p>
             </div>
-            <div className="opacity-75 uppercase mb-[48px]">LEARN SOMETHING WHEREVER YOU ARE</div>
+            <p className="opacity-75 uppercase mb-[48px]">LEARN SOMETHING WHEREVER YOU ARE</p>
 
             <Link
               data-aos="fade-right"

@@ -1,3 +1,5 @@
+import { useEffect, useRef, useState } from 'react'
+import Link from 'next/link'
 import { MenuIcon } from '@components/common/CustomIcon'
 import { DropdownMenu } from '@components/common/Dropdown'
 import { DropdownMenuRelative } from '@components/common/DropdownMenu'
@@ -5,8 +7,6 @@ import { useClickOutside } from '@hooks/useClickOutSide'
 import { useOpenHeaderStore } from '@src/zustand'
 import { isLogin } from '@utils/api'
 import { MENU_HEADER, DROPDOWN_USER_MENU, DROPDOWN_PRACTICE_MENU } from '@utils/common'
-import Link from 'next/link'
-import { useEffect, useRef, useState } from 'react'
 
 export const Header = () => {
   const contentRef = useRef() as any
@@ -129,8 +129,8 @@ export const Header = () => {
           </div>
         </div>
       </div>
-      <div className="w-full text-center text-[#FFFFFF] text-[18px] pb-[10px] hidden md:block">
-        Tips: Press Alt + M to open the dictionary
+      <div className="w-full pb-[10px] hidden md:block">
+        <p className="text-center text-[#FFFFFF] text-[18px]">Tips: Press Alt + M to open the dictionary</p>
       </div>
       {renderToTOP()}
     </div>

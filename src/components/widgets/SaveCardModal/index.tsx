@@ -1,10 +1,9 @@
-import { AUTH_TOKEN, USER_INFO } from '@src/models/api'
+import { useDataLoginInfoStore } from '@src/zustand'
 import { useQuery } from '@tanstack/react-query'
 import { createCard, getDeckList } from '@utils/api'
-import { safeParseJSON } from '@utils/json'
 import { QUERY_KEYS } from '@utils/keys'
 import { NOTIFICATION_TYPE, notify } from '@utils/notify'
-import { useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 interface Props {
   word: any
@@ -13,25 +12,17 @@ interface Props {
 export const SaveCardModal = ({ word }: Props) => {
   const [level, setLevel] = useState<string>('')
   const [topicName, setTopicName] = useState<string>('')
-
-  const userInfo: any = useMemo(() => {
-    if (typeof window !== 'undefined') {
-      return safeParseJSON(localStorage.getItem(USER_INFO) as string)
-    }
-  }, [])
-  const accessToken = useMemo(() => {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem(AUTH_TOKEN)
-    }
-  }, [])
+  const [userInfo, accessToken] = useDataLoginInfoStore((state) => [state.userInfo, state.accessToken])
 
   const { data: deck } = useQuery(
     [QUERY_KEYS.TOPIC_LIST],
     async () => {
       try {
-        const response = await getDeckList(userInfo?.id)
+        if (userInfo) {
+          const response = await getDeckList(userInfo?.id)
 
-        return response
+          return response
+        }
       } catch (error) {
         console.log(error)
       }
@@ -39,79 +30,99 @@ export const SaveCardModal = ({ word }: Props) => {
     {
       refetchInterval: false,
       enabled: !!userInfo,
+      refetchOnWindowFocus: false,
     },
   )
+
+  useEffect(() => {
+    if (deck) {
+      setTopicName(deck?.data[0]?.topicName)
+    }
+  }, [deck])
 
   const handleTopicName = (e: any) => {
     setTopicName(e.target.value)
   }
+
   const onCreate = async () => {
     try {
-      {
-        if (accessToken) {
-          const { success } = await createCard({
-            topicName: topicName,
-            word: word[0].word,
-            phonetic: JSON.stringify(word[0].phonetics[1].text) || 'emty',
-            audio: JSON.stringify(word[0].phonetics[0].audio) || 'emty',
-            meanings: JSON.stringify(word[0].meanings) || 'emty',
-            level: level,
-            accessToken,
-            userId: userInfo.id,
-          })
-          if (success) {
-            notify(NOTIFICATION_TYPE.SUCCESS, 'Saved success')
-          }
-        }
+      if (accessToken && userInfo) {
+        await createCard({
+          topicName: topicName,
+          word: word.word,
+          phonetic: JSON.stringify(word?.phonetics[1]?.text ?? ''),
+          audio: JSON.stringify(word?.phonetics[0]?.audio ?? ''),
+          meanings: JSON.stringify(word?.meanings ?? ''),
+          level: level,
+          accessToken,
+          userId: userInfo.id,
+        })
+
+        notify(NOTIFICATION_TYPE.SUCCESS, 'Save successful')
       }
-    } catch (error) {}
+    } catch (error) {
+      console.log(error)
+      notify(NOTIFICATION_TYPE.ERROR, 'Save fail')
+    }
   }
+
   return (
-    <div className="w-[500px] h-[400px]">
+    <div className="w-[400px]">
       <div className="flex w-full gap-[10px] items-center flex-col">
-        <div className="w-full">
-          <div>Choose the topic name of word :</div>
-          <select onChange={handleTopicName} name="topic" id="topic">
-            {deck?.data?.map((tpName: any) => {
-              return <option>{tpName.topicName}</option>
-            })}
-          </select>
+        {word && <div className="text-[22px] font-semibold">{word.word}</div>}
+        <div className="w-full flex items-center gap-[20px]">
+          <div className="">Choose the topic name of word :</div>
+          {deck && (
+            <select
+              onChange={handleTopicName}
+              name="topic"
+              id="topic"
+              defaultValue={topicName}
+              className="border-[#808080] text-[18px] py-[5px] border-[0.5px]"
+            >
+              {deck?.data?.map((tpName: any) => {
+                return <option>{tpName.topicName}</option>
+              })}
+            </select>
+          )}
         </div>
         <div className="w-full">
           <div className="">Choose the difficult of word :</div>
-          <div className="flex items-center gap-[4px]">
-            <input
-              onChange={() => setLevel('easy')}
-              checked={level === 'easy'}
-              value={'easy'}
-              type="checkbox"
-              className=" checked:bg-blue-500 block"
-            />
-            <div>Easy</div>
-          </div>
-          <div className="flex items-center gap-[4px]">
-            <input
-              onChange={() => setLevel('normal')}
-              checked={level === 'normal'}
-              value={'normal'}
-              type="checkbox"
-              className=" checked:bg-blue-500 block"
-            />
-            <div>Normal</div>
-          </div>
-          <div className="flex items-center gap-[4px]">
-            <input
-              onChange={() => setLevel('hard')}
-              checked={level === 'hard'}
-              value={'hard'}
-              type="checkbox"
-              className=" checked:bg-blue-500 block"
-            />
-            <div>Hard</div>
+          <div className="flex items-center justify-between mt-[10px]">
+            <div className="flex items-center gap-[4px]">
+              <input
+                onChange={() => setLevel('easy')}
+                checked={level === 'easy'}
+                value={'easy'}
+                type="checkbox"
+                className=" checked:bg-blue-500 block mt-[1px] cursor-pointer"
+              />
+              <div className="text-[18px]">Easy</div>
+            </div>
+            <div className="flex items-center gap-[4px]">
+              <input
+                onChange={() => setLevel('normal')}
+                checked={level === 'normal'}
+                value={'normal'}
+                type="checkbox"
+                className=" checked:bg-blue-500 block mt-[1px] cursor-pointer"
+              />
+              <div className="text-[18px]">Normal</div>
+            </div>
+            <div className="flex items-center gap-[4px]">
+              <input
+                onChange={() => setLevel('hard')}
+                checked={level === 'hard'}
+                value={'hard'}
+                type="checkbox"
+                className=" checked:bg-blue-500 block mt-[1px] cursor-pointer"
+              />
+              <div className="text-[18px]">Hard</div>
+            </div>
           </div>
         </div>
       </div>
-      <button onClick={onCreate} className="">
+      <button onClick={onCreate} className="w-full text-center text-[#FFFFFF] py-[10px] bg-[#0ca3a3] mt-[10px]">
         Create
       </button>
     </div>

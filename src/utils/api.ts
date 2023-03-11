@@ -296,6 +296,34 @@ export const createCard = async (input: {
       return { success: false, data: null, message: 'Please enter your title' }
     }
 
+    if (!word || word === '') {
+      return { success: false, data: null, message: 'Please enter your word' }
+    }
+
+    if (!phonetic || phonetic === '') {
+      return { success: false, data: null, message: 'Please enter your phonetic' }
+    }
+
+    if (!audio || audio === '') {
+      return { success: false, data: null, message: 'Please enter your audio' }
+    }
+
+    if (!meanings || meanings === '') {
+      return { success: false, data: null, message: 'Please enter your meanings' }
+    }
+
+    if (!userId || userId === '') {
+      return { success: false, data: null, message: 'Please enter your userId' }
+    }
+
+    if (!level || level === '') {
+      return { success: false, data: null, message: 'Please enter your level' }
+    }
+
+    if (!accessToken || accessToken === '') {
+      return { success: false, data: null, message: 'Please enter your accessToken' }
+    }
+
     const response = await fetch(`${API_BASE_URL}/api/card/create`, {
       method: 'POST',
       headers: {
@@ -306,7 +334,7 @@ export const createCard = async (input: {
     })
 
     const rawResponse = await response.json()
-
+    console.log(response)
     if (rawResponse) {
       return rawResponse
     }
