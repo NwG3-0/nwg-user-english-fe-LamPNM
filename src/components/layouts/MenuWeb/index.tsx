@@ -135,7 +135,7 @@ export const MenuWeb = () => {
         isOpen={isOpenSaveCardModal}
         onRequestClose={() => setIsSaveCardModal(false)}
       >
-        <SaveCardModal word={wordDetail} />
+        <SaveCardModal word={wordDetail} onRequestClose={() => setIsSaveCardModal(false)} />
       </CustomModal>
     </div>
   )

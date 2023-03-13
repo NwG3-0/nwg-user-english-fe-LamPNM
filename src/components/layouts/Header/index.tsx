@@ -6,7 +6,7 @@ import { DropdownMenuRelative } from '@components/common/DropdownMenu'
 import { useClickOutside } from '@hooks/useClickOutSide'
 import { useOpenHeaderStore } from '@src/zustand'
 import { isLogin } from '@utils/api'
-import { MENU_HEADER, DROPDOWN_USER_MENU, DROPDOWN_PRACTICE_MENU } from '@utils/common'
+import { MENU_HEADER, DROPDOWN_USER_MENU } from '@utils/common'
 
 export const Header = () => {
   const contentRef = useRef() as any
@@ -90,8 +90,6 @@ export const Header = () => {
               </Link>
             ))}
 
-            <DropdownMenuRelative classNameCustom="" title="Practice" list={DROPDOWN_PRACTICE_MENU} />
-
             {isLogin() ? (
               <div className="relative">
                 <DropdownMenuRelative classNameCustom="" title="User Profile " list={DROPDOWN_USER_MENU} />
@@ -115,7 +113,6 @@ export const Header = () => {
                 {item.name}
               </Link>
             ))}
-            <DropdownMenu classNameCustom="" title="Practice" subMenu={DROPDOWN_PRACTICE_MENU} />
 
             {isLogin() ? (
               <div className="relative">

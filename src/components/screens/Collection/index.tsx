@@ -151,6 +151,14 @@ export const Collection = () => {
     }
   }
 
+  if (!userInfo && !accessToken) {
+    return (
+      <div>
+        <div>Please login to access the collection</div>
+      </div>
+    )
+  }
+
   return (
     <div className="w-[80%] grid grid-cols-6 m-auto gap-x-[48px] gap-y-[32px] my-[48px]">
       <div className="col-span-4 h-[550px] border-[#808080] border-[1px] bg-[#e9e8e8] p-[15px] flex flex-col justify-center">
