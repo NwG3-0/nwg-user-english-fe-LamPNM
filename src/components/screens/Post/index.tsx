@@ -14,9 +14,9 @@ import { getEarliestPost, getPostList } from '@utils/api'
 dayjs.extend(utc)
 
 export const Post = () => {
+  const [userInfo, accessToken] = useDataLoginInfoStore((state: any) => [state.userInfo, state.accessToken])
   const [limit] = useState<number>(5)
   const [page] = useState<number>(1)
-  const [userInfo, accessToken] = useDataLoginInfoStore((state: any) => [state.userInfo, state.accessToken])
   const [keyword, setKeyword] = useState<string>('')
 
   const { data: post, isLoading: isPostLoading } = useQuery(

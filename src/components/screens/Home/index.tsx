@@ -1,6 +1,6 @@
-import { ListeningIcon, ReadingIcon, SpeakingIcon, WritingIcon } from '@components/common/CustomIcon'
 import Link from 'next/link'
 import React from 'react'
+import { AboutUs } from './AboutUs'
 
 interface Degree {
   id: number
@@ -44,54 +44,10 @@ const DEGREES: Degree[] = [
 
 const HomePage = () => {
   return (
-    <div className="w-full">
-      <div className="bg-[url('/images/home-background-navbar.webp')] bg-cover w-full py-[50px]">
-        <div data-aos="fade-up" data-aos-offset="0" className="home-title w-full text-center font-extrabold text-8xl ">
-          <h1>Choose your skill</h1>
-        </div>
-        <div className="grid lg:grid-cols-4 py-[32px] md:grid-cols-2 grid-cols-1 max-lg:gap-[40px]">
-          <div
-            data-aos="zoom-in"
-            data-aos-offset="50"
-            data-aos-duration="500"
-            data-aos-delay="300"
-            className="mx-auto cursor-pointer hover-scale flex flex-col px-[40px] py-[24px] bg-white rounded-full"
-          >
-            <ListeningIcon width={100} height={100} color="" />
-            <p className="text-center text-[24px] font-bold text-orange-500">Listening</p>
-          </div>
-          <div
-            data-aos="zoom-in"
-            data-aos-offset="-50"
-            data-aos-duration="500"
-            data-aos-delay="500"
-            className="m-auto cursor-pointer hover-scale flex flex-col px-[40px] py-[24px] bg-white rounded-full"
-          >
-            <ReadingIcon width={100} height={100} color="" />
-            <p className="text-center text-[24px] font-bold text-orange-500">Reading</p>
-          </div>
-          <div
-            data-aos="zoom-in"
-            data-aos-offset="-50"
-            data-aos-duration="500"
-            data-aos-delay="700"
-            className="m-auto cursor-pointer hover-scale flex flex-col px-[40px] py-[24px] bg-white rounded-full"
-          >
-            <WritingIcon width={100} height={100} color="" />
-            <p className="text-center text-[24px] font-bold text-orange-500">Writing</p>
-          </div>
-          <div
-            data-aos="zoom-in"
-            data-aos-offset="-50"
-            data-aos-duration="500"
-            data-aos-delay="900"
-            className="m-auto cursor-pointer hover-scale flex flex-col px-[40px] py-[24px] bg-white rounded-full"
-          >
-            <SpeakingIcon width={100} height={100} color="" />
-            <p className="text-center text-[24px] font-bold text-orange-500">Speaking</p>
-          </div>
-        </div>
-      </div>
+    <main className="w-full">
+      <section id="aboutUs" className="feature">
+        <AboutUs />
+      </section>
       <div className="pt-[40px] pb-[100px] px-[20px] block md:hidden">
         <div className="text-[48px] font-extrabold">
           <div data-aos="fade-right" data-aos-duration="600">
@@ -322,7 +278,7 @@ const HomePage = () => {
         </div>
       </div>
       <div className=" w-full bg-[url('/images/background-footer.webp')] h-[490px] bg-cover"></div>
-    </div>
+    </main>
   )
 }
 

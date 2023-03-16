@@ -338,3 +338,7 @@ background-position:1293px;
 .slide-collection .slick-prev:before, .slick-next:before {
   color: #000;
 }
+
+.features {
+  min-height: calc(100vh - 56px);
+}
