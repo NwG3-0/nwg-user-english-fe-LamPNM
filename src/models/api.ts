@@ -32,11 +32,29 @@ export interface PostDetailResponse {
   success: boolean
 }
 
+export interface NewsDetailResponse {
+  data: NewsDetailResponseData
+  message: string
+  success: boolean
+}
+
 export interface PostDetailResponseData {
   _id: string
   Title: string
   Description: string
   ImageTitle: string
+  Device: string
+  CreatedAt: number
+  UpdatedAt: number
+}
+
+export interface NewsDetailResponseData {
+  _id: string
+  Title: string
+  Type: string
+  Content: string
+  View: number
+  Image: string
   Device: string
   CreatedAt: number
   UpdatedAt: number

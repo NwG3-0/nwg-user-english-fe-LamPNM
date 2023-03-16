@@ -1,4 +1,11 @@
-import { API_DICTIONARY_URL, AUTH_TOKEN, EarliestPostResponse, PostDetailResponse, USER_INFO } from '@src/models/api'
+import {
+  API_DICTIONARY_URL,
+  AUTH_TOKEN,
+  EarliestPostResponse,
+  NewsDetailResponse,
+  PostDetailResponse,
+  USER_INFO,
+} from '@src/models/api'
 import { DEVICES } from './common'
 
 export const API_BASE_URL = process.env.API_BASE_URL ?? 'http://localhost:4000'
@@ -38,13 +45,26 @@ export const login = async ({ email, password }: { email: string; password: stri
   }
 }
 
-export const register = async ({ email, password }: { email: string; password: string }) => {
+export const register = async ({
+  email,
+  hobbies,
+  password,
+}: {
+  email: string
+  hobbies: string[]
+  password: string
+}) => {
   try {
     if (email === '') {
       return { success: false, data: null, message: 'Please enter your email' }
     }
+
     if (password === '') {
       return { success: false, data: null, message: 'Please enter your password' }
+    }
+
+    if (hobbies.length < 3) {
+      return { success: false, data: null, message: 'Your hobbies must be 3' }
     }
 
     const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
@@ -52,7 +72,7 @@ export const register = async ({ email, password }: { email: string; password: s
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ email, password, hobbies }),
     })
 
     const rawResponse = await response.json()
@@ -89,14 +109,24 @@ export const verify = async ({ email, otpCode }: { email: string; otpCode: strin
   }
 }
 
-export const logout = async (accessToken: string) => {
+export const logout = async (input: { token: string; expiredAt: number }) => {
   try {
+    const { token, expiredAt } = input
+
+    if (!token) {
+      return { success: false, data: null, message: 'Please enter your OTP Code' }
+    }
+
+    if (!expiredAt) {
+      return { success: false, data: null, message: 'Please enter your OTP Code' }
+    }
+
     const response = await fetch(`${API_BASE_URL}/api/auth/logout`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ accessToken }),
+      body: JSON.stringify({ token, expiredAt }),
     })
 
     const rawResponse = await response.json()
@@ -427,6 +457,7 @@ export const setUpRandomWord = async (input: {
     if (topicName === '') {
       return { success: false, data: null, message: 'Please enter your email' }
     }
+
     const response = await fetch(`${API_BASE_URL}/api/setup`, {
       method: 'POST',
       headers: {
@@ -444,6 +475,7 @@ export const setUpRandomWord = async (input: {
     return { success: false, data: null, message: 'Something went wrong' }
   }
 }
+
 export const UpdateSetUpRandomWord = async (input: {
   number: number
   userId: string
@@ -733,6 +765,131 @@ export const getPostDetail = async (input: { post_id: string }) => {
     })
 
     const rawResponse = (await response.json()) as PostDetailResponse
+
+    if (rawResponse) {
+      return rawResponse
+    }
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export const getNewsDetail = async (input: { news_id: string }) => {
+  try {
+    const { news_id } = input
+
+    if (!news_id || news_id === '') {
+      return { success: false, data: null, message: 'Invalid Post Id' }
+    }
+
+    const response = await fetch(`${API_BASE_URL}/api/news/detail?news_id=${news_id}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+
+    const rawResponse = (await response.json()) as NewsDetailResponse
+
+    if (rawResponse) {
+      return rawResponse
+    }
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export const checkViewNews = async (input: { newsId: string; userId: string; accessToken: string }) => {
+  try {
+    const { newsId, userId, accessToken } = input
+
+    if (!newsId || newsId === '') {
+      return { success: false, data: null, message: 'Invalid News Id' }
+    }
+
+    if (!userId || userId === '') {
+      return { success: false, data: null, message: 'Invalid Post Id' }
+    }
+
+    if (!accessToken || accessToken === '') {
+      return { success: false, data: null, message: 'Invalid Post Id' }
+    }
+
+    const response = await fetch(`${API_BASE_URL}/api/news/check-views?newsId=${newsId}&userId=${userId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      },
+    })
+
+    const rawResponse = await response.json()
+
+    if (rawResponse) {
+      return rawResponse
+    }
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export const addViewNews = async (input: { newsId: string; userId: string; accessToken: string }) => {
+  try {
+    const { newsId, userId, accessToken } = input
+
+    if (!newsId || newsId === '') {
+      return { success: false, data: null, message: 'Invalid News Id' }
+    }
+
+    if (!userId || userId === '') {
+      return { success: false, data: null, message: 'Invalid User Id' }
+    }
+
+    if (!accessToken || accessToken === '') {
+      return { success: false, data: null, message: 'Invalid access token' }
+    }
+
+    const response = await fetch(`${API_BASE_URL}/api/view-news/create`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({ newsId, userId }),
+    })
+
+    const rawResponse = await response.json()
+
+    if (rawResponse) {
+      return rawResponse
+    }
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export const updateViewNews = async (input: { newsId: string; accessToken: string }) => {
+  try {
+    const { newsId, accessToken } = input
+
+    if (!newsId || newsId === '') {
+      return { success: false, data: null, message: 'Invalid News Id' }
+    }
+
+    if (!accessToken || accessToken === '') {
+      return { success: false, data: null, message: 'Invalid access token' }
+    }
+
+    const response = await fetch(`${API_BASE_URL}/api/news/update-views`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({ newsId }),
+    })
+
+    const rawResponse = await response.json()
 
     if (rawResponse) {
       return rawResponse

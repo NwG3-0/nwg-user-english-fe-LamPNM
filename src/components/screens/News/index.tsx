@@ -1,13 +1,12 @@
 import { SearchIcon } from '@components/common/CustomIcon'
-import { EarliestPostResponse, EarliestPosts } from '@src/models/api'
-import { useDataLoginInfoStore } from '@src/zustand'
 import { useQuery } from '@tanstack/react-query'
-import { getEarliestPost, getNewsList } from '@utils/api'
+import { getNewsList } from '@utils/api'
 import { deleteWhiteSpace } from '@utils/index'
 import { QUERY_KEYS } from '@utils/keys'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import debounce from 'lodash.debounce'
+import Link from 'next/link'
 import React, { useCallback, useState } from 'react'
 
 dayjs.extend(utc)
@@ -15,7 +14,6 @@ dayjs.extend(utc)
 export const News = () => {
   const [limit] = useState<number>(5)
   const [page] = useState<number>(1)
-  const [userInfo, accessToken] = useDataLoginInfoStore((state: any) => [state.userInfo, state.accessToken])
   const [keyword, setKeyword] = useState<string>('')
 
   const { data: news, isLoading: isPostLoading } = useQuery(
@@ -31,23 +29,6 @@ export const News = () => {
     },
     {
       refetchInterval: false,
-    },
-  )
-
-  const { data: earliest_post } = useQuery(
-    [QUERY_KEYS.EARLIEST_POST_LIST, userInfo, accessToken],
-    async () => {
-      try {
-        const response = (await getEarliestPost(userInfo?.id, accessToken)) as EarliestPostResponse
-
-        return response
-      } catch (error) {
-        console.log(error)
-      }
-    },
-    {
-      refetchInterval: false,
-      enabled: !!accessToken && !!userInfo,
     },
   )
 
@@ -89,8 +70,8 @@ export const News = () => {
             <div className="grid w-full grid-cols-1 md:grid-cols-3 gap-4">
               {news &&
                 news?.data?.length > 0 &&
-                news?.data.map((p: { image: string; title: string; content: string; day: number }) => (
-                  <div className="bg-slate-100 cursor-pointer rounded-md p-[10px]">
+                news?.data.map((p: { id: string; image: string; title: string; content: string; day: number }) => (
+                  <Link href={`news/${p.id}`} className="bg-slate-100 cursor-pointer rounded-md p-[10px]">
                     <img className="w-full h-[300px] object-cover" src={p.image}></img>
                     <div className="flex justify-between items-center py-[5px]  mx-auto">
                       <div className="text-left text-sm py-[4px] break-words">{p.title}</div>
@@ -101,30 +82,11 @@ export const News = () => {
                     <div
                       className="mt-[8px] pb-[10px] text-[12px] h-[120px] overflow-y-hidden text-ellipsis"
                       dangerouslySetInnerHTML={{ __html: deleteWhiteSpace(p.content) }}
-                    ></div>
-                  </div>
+                    />
+                  </Link>
                 ))}
             </div>
           )}
-        </div>
-        <div className="w-[400px] hidden xl:block">
-          <div className="text-center py-[20px] font-bold text-[24px]">Latest Blogs</div>
-          <div className="flex flex-col gap-[20px]">
-            {earliest_post &&
-              earliest_post?.data?.posts?.map((post: EarliestPosts) => (
-                <div
-                  className="flex gap-[20px] items-center p-[20px] bg-[#fafafa] rounded-xl shadow-2xl"
-                  key={post._id}
-                >
-                  <img src={post.ImageTitle} className="object-cover w-[100px] h-[100px]" />
-                  <div>
-                    <div className="text-[18px] font-bold">{post.Title}</div>
-                    <div>{post.Description}</div>
-                    <div>{post.CreatedAt}</div>
-                  </div>
-                </div>
-              ))}
-          </div>
         </div>
       </div>
     </div>
