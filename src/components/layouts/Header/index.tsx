@@ -6,7 +6,7 @@ import { DropdownMenuRelative } from '@components/common/DropdownMenu'
 import { useClickOutside } from '@hooks/useClickOutSide'
 import { useOpenHeaderStore } from '@src/zustand'
 import { isLogin } from '@utils/api'
-import { MENU_HEADER, DROPDOWN_USER_MENU } from '@utils/common'
+import { MENU_HEADER, DROPDOWN_USER_MENU, MenuHeader } from '@utils/common'
 
 export const Header = () => {
   const contentRef = useRef() as any
@@ -35,6 +35,14 @@ export const Header = () => {
     }
   }
 
+  const handleClickMenu = (id: string) => {
+    const menuEl = document.getElementById(id)
+    if (menuEl) {
+      menuEl.scrollIntoView({ behavior: 'smooth' })
+      setShowUpTop(true)
+    }
+  }
+
   const renderToTOP = () => {
     const backToTop = () => {
       window.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
@@ -42,12 +50,11 @@ export const Header = () => {
     }
 
     return (
-      <div className="hidden md:block fixed right-[30px] bottom-[100px] z-[101]">
+      <div className="hidden md:block fixed right-[30px] bottom-[100px] z-100">
         <div className={showUpTop === false ? 'hidden' : ''}>
           <button
-            className="bg-black
-          bg-opacity-50 hover:bg-opacity-70 rounded-lg sm:flex flex-col justify-center px-[12px]
-          py-[3px]  hidden"
+            className="bg-black bg-opacity-50 hover:bg-opacity-70 rounded-lg sm:flex flex-col justify-center px-[12px]
+          py-[3px] hidden"
             onClick={backToTop}
           >
             <div className="self-center">
@@ -69,11 +76,11 @@ export const Header = () => {
   }
 
   return (
-    <div className={`${isOpen ? 'bg-[#4d4d4dfd]' : 'bg-[#00000048]'} fixed w-full z-50 top-0 left-0`}>
+    <div className={`bg-transparent fixed w-full z-50 top-0 left-0`}>
       <div className="flex justify-between items-center container lg:w-[1240px] mx-auto py-[20px]" ref={contentRef}>
         <div data-aos-offset="0" data-aos="flip-left" data-aos-delay="500" className="max-sm:ml-[20px]">
           <Link href={'/'}>
-            <img src="/images/ielts-logo.png" className="w-[100px] object-contain" alt="Logo Web" />
+            <img src="/images/logo.svg" alt="Logo Web" />
           </Link>
         </div>
         <div className="block md:hidden cursor-pointer px-[20px]" onClick={() => setIsOpen(!isOpen)}>
@@ -84,8 +91,17 @@ export const Header = () => {
             className="absolute z-100 h-screen w-full top-[78px] left-0 flex md:hidden flex-col bg-[#4d4d4dfd] text-[white]"
             ref={childRef}
           >
-            {MENU_HEADER.map((item) => (
-              <Link className="px-[17px] font-bold text-[22px] block relative p-[10px]" key={item.id} href={item.path}>
+            {MENU_HEADER.map((item: MenuHeader) => (
+              <Link
+                href={{
+                  pathname: '/',
+                  hash: item.id,
+                }}
+                scroll={false}
+                key={`sub_${item.id}`}
+                onClick={() => handleClickMenu(item.id)}
+                role="menuitem"
+              >
                 {item.name}
               </Link>
             ))}
@@ -109,7 +125,15 @@ export const Header = () => {
         >
           <div className="flex items-center gap-[20px] text-[#FFFFFF]">
             {MENU_HEADER.map((item) => (
-              <Link className=" font-bold text-[22px] relative menu-link" key={item.id} href={item.path}>
+              <Link
+                className="font-bold text-[22px] relative menu-link"
+                href={{
+                  pathname: '/',
+                  hash: item.id,
+                }}
+                scroll={false}
+                key={`sub_${item.id}`}
+              >
                 {item.name}
               </Link>
             ))}

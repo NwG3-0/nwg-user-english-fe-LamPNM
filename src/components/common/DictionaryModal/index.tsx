@@ -1,6 +1,8 @@
 import React, { useRef } from 'react'
 import { CloseIcon1, SearchIcon } from '../CustomIcon'
 import { LoadingbtnAnimate } from '../LoadingButton/LoadingbtnAnimate'
+import { useDataLoginInfoStore } from '@src/zustand'
+import Link from 'next/link'
 
 interface Props {
   isLoading: boolean
@@ -19,6 +21,7 @@ export const DictionaryModal = ({
   onOpenSaveCardModal,
   isSave,
 }: Props) => {
+  const [accessToken, userInfo] = useDataLoginInfoStore((state: any) => [state.userInfo, state.accessToken])
   const searchWordInput = useRef() as React.MutableRefObject<HTMLInputElement>
 
   const onKeyDown = (e: any) => {
@@ -92,8 +95,8 @@ export const DictionaryModal = ({
               </>
             ))}
         </div>
-
-        {word &&
+        {userInfo && accessToken ? (
+          word &&
           (isSave ? (
             <button
               disabled={true}
@@ -108,7 +111,15 @@ export const DictionaryModal = ({
             >
               Save
             </button>
-          ))}
+          ))
+        ) : (
+          <Link
+            href={'/login'}
+            className="block cursor-not-allowed rounded-lg bg-cyan-400 py-[16px] mx-auto w-[150px] text-center"
+          >
+            Login
+          </Link>
+        )}
       </div>
     </div>
   )
