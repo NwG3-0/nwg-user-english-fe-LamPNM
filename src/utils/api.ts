@@ -3,6 +3,8 @@ import {
   AUTH_TOKEN,
   EarliestPostResponse,
   NewsDetailResponse,
+  NewsHighestViewsDataResponse,
+  NewsListDataResponse,
   PostDetailResponse,
   USER_INFO,
 } from '@src/models/api'
@@ -730,7 +732,7 @@ export const getNewsList = async (input: { limit: number; page: number; keyword:
     const keyword = input.keyword ?? ''
 
     const response = await fetch(
-      `${API_BASE_URL}/api/news?limit=${limit}&page=${page}&keyword=${keyword}&device=${DEVICES.WEB}`,
+      `${API_BASE_URL}/api/news?limit=${limit}&page=${page}&keyword=${keyword}&device=${DEVICES.MOBILE}`,
       {
         method: 'GET',
         headers: {
@@ -739,7 +741,7 @@ export const getNewsList = async (input: { limit: number; page: number; keyword:
       },
     )
 
-    const rawResponse = await response.json()
+    const rawResponse = (await response.json()) as NewsListDataResponse
 
     if (rawResponse) {
       return rawResponse
@@ -896,5 +898,50 @@ export const updateViewNews = async (input: { newsId: string; accessToken: strin
     }
   } catch (error) {
     console.log(error)
+  }
+}
+
+export const getHighestNewsList = async (input: { limit: number }) => {
+  try {
+    const { limit } = input
+
+    const response = await fetch(`${API_BASE_URL}/api/news/highest-views?device=${DEVICES.WEB}&limit=${limit ?? 5}`, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+
+    const rawResponse = (await response.json()) as NewsHighestViewsDataResponse
+
+    if (rawResponse) {
+      return rawResponse
+    }
+  } catch (error) {}
+}
+
+export const getNewsListByType = async (input: { limit: number; page: number; keyword: string; type: string }) => {
+  try {
+    const limit = input.limit ?? 10
+    const page = input.page ?? 1
+    const keyword = input.keyword ?? ''
+    const type = input.type
+
+    const response = await fetch(
+      `${API_BASE_URL}/api/news-type?limit=${limit}&page=${page}&keyword=${keyword}&device=${DEVICES.MOBILE}&type=${type}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+    )
+
+    const rawResponse = (await response.json()) as NewsListDataResponse
+
+    if (rawResponse) {
+      return rawResponse
+    }
+  } catch (error) {
+    return { success: false, data: null, message: 'Something went wrong' }
   }
 }

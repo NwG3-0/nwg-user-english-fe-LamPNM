@@ -1,5 +1,6 @@
 import type { NextPage } from 'next'
 import dynamic from 'next/dynamic'
+import Head from 'next/head'
 
 const Header = dynamic<any>(() => import('@components/layouts/Header').then((mod) => mod.Header), {
   ssr: false,
@@ -19,12 +20,15 @@ const Footer = dynamic<any>(() => import('@components/layouts/Footer').then((mod
 
 const PostPage: NextPage = () => {
   return (
-    <div>
+    <>
+      <Head>
+        <title>News</title>
+      </Head>
       <Header />
       <MenuWeb />
       <News />
       <Footer />
-    </div>
+    </>
   )
 }
 

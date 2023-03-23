@@ -53,7 +53,7 @@ export const DropdownMenu = ({ classNameCustom, title, subMenu }: Props) => {
       <div
         className={`relative flex mx-[8px] font-bold text-[22px] py-[8px] cursor-pointer menu-link dropdown ${classNameCustom}`}
       >
-        {title}
+        <span>{title}</span>
         <div
           className={`m-auto origin-center pl-[4px] transition-all duration-700 ${
             showDropdown ? ' dropdown-open' : ''

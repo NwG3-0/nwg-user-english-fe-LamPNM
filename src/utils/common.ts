@@ -8,6 +8,11 @@ export interface AuthToken {
   role: number
 }
 
+export interface MenuHeader {
+  id: string
+  name: string
+}
+
 export interface Dropdown {
   id: number
   content: string
@@ -21,21 +26,14 @@ export interface NewsList {
   value: string
 }
 
-export const MENU_HEADER = [
+export const MENU_HEADER: MenuHeader[] = [
   {
-    id: 1,
-    name: 'Blog',
-    path: '/post',
+    id: 'aboutUs',
+    name: 'About Us',
   },
   {
-    id: 2,
-    name: 'Collection',
-    path: '/collection',
-  },
-  {
-    id: 3,
-    name: 'News',
-    path: '/news',
+    id: 'roadMap',
+    name: 'Road Map',
   },
 ]
 

@@ -17,6 +17,22 @@ export interface EarliestPostResponseData {
   date: number
 }
 
+export interface NewsHighestViewsDataResponse {
+  success: boolean
+  data: NewsHighestViewsData[]
+}
+
+export interface NewsListDataResponse {
+  success: boolean
+  data: NewsHighestViewsData[]
+  pagination: {
+    limit: number
+    startPage: number
+    totalPages: number
+    totalRecords: number
+  }
+}
+
 export interface EarliestPosts {
   _id: string
   Description: string
@@ -58,4 +74,22 @@ export interface NewsDetailResponseData {
   Device: string
   CreatedAt: number
   UpdatedAt: number
+}
+
+export interface NewsHighestViewsData {
+  content: string
+  day: number
+  id: string
+  image: string
+  title: string
+  view: number
+}
+
+export interface NewsListData {
+  content: string
+  day: number
+  id: string
+  image: string
+  title: string
+  view: number
 }

@@ -84,7 +84,6 @@ export const MenuWeb = () => {
       setIsOpenDictionary((prev) => !prev)
     }
   }
-  console.log(wordDetail)
 
   return (
     <div className={`${isOpen && 'hidden'} relative z-100`}>
