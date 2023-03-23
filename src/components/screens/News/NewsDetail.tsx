@@ -85,7 +85,11 @@ export const NewsDetail = () => {
           <img src={news_detail?.data?.Image} className="w-full mt-[20px]" />
           <div className="text-right mt-[20px] text-[12px]">
             <p>{news_detail.data.View} Views</p>
-            <p>{dayjs(news_detail.data.UpdatedAt).utc().format('HH:mm:ss YYYY, MMMM DD')}</p>
+            <p>
+              {dayjs(news_detail.data.UpdatedAt * 1000)
+                .utc()
+                .format('HH:mm:ss YYYY, MMMM DD')}
+            </p>
           </div>
           <div dangerouslySetInnerHTML={{ __html: news_detail.data.Content ?? '' }} className="mt-[10px] text-[18px]" />
         </div>

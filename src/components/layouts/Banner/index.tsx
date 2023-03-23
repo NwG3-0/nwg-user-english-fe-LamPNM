@@ -43,7 +43,7 @@ export const Banner = ({ path }: Props) => {
         <div className="sm:w-[373px] pt-10 mx-auto">
           <img src="/images/logo_background.svg" alt="The logo background" />
           <div className="text-[42px] w-[250px] bg-[#1a9664] py-[6px] rounded-md text-center font-semibold text-[#FFFFFF] mx-auto cursor-pointer mt-[10px]">
-            Discovery
+            Discover
           </div>
           <div className="grid grid-cols-2 gap-4 md:flex justify-between pt-5 text-center">
             <div className="hover:scale-105 transition-all duration-300 cursor-pointer flex justify-center">

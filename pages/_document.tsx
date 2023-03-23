@@ -12,17 +12,21 @@ class MyDocument extends Document {
       <Html lang="en">
         <Head>
           <meta charSet="utf-8" />
-          <meta name="keywords" content="The website is using to teach people" />
+          <meta
+            name="keywords"
+            content="Nwg english is use for the person who need to improve their skill in english."
+          />
           <meta
             name="description"
             // eslint-disable-next-line max-len
-            content="The only official domain: Lam Pham"
+            content="The Nwg English provide to you some features that help you improve your skills in english. On
+          the other hand, there are some games that interested the your mind and help you learn faster"
           />
 
-          <meta name="application-name" content="Lam Pham" />
+          <meta name="application-name" content="Nwg English" />
           <meta name="apple-mobile-web-app-capable" content="yes" />
           <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-          <meta name="apple-mobile-web-app-title" content="Lam Pham" />
+          <meta name="apple-mobile-web-app-title" content="Nwg English" />
 
           <meta name="format-detection" content="telephone=no" />
           <meta name="mobile-web-app-capable" content="yes" />
@@ -33,17 +37,21 @@ class MyDocument extends Document {
           <meta name="twitter:title" content="Lam Pham" />
 
           <meta property="og:type" content="website" />
-          <meta property="og:title" content="Lam Pham Portfolio" />
+          <meta
+            property="og:title"
+            content="Nwg english is use for the person who need to improve their skill in english."
+          />
           <meta
             property="og:description"
             // eslint-disable-next-line max-len
-            content="Hi! My name is Lam. Iam a web developer and welcome to my portfolio."
+            content="The Nwg English provide to you some features that help you improve your skills in english. On
+          the other hand, there are some games that interested the your mind and help you learn faster"
           />
           <meta property="og:site_name" content="Titan Hunters" />
           <meta property="og:url" content="https://ielts.lampnm.com" />
           <meta
             property="og:image"
-            content="https://media.discordapp.net/attachments/1048815885265141770/1070630351430488105/IMG_2192.jpeg?width=507&height=676"
+            content="https://res.cloudinary.com/website-selling-game/image/upload/v1679454331/english-project/Screenshot_19_pw4tnj.png"
           />
 
           <link rel="apple-touch-icon" sizes="152x152" href="/app-icons/152.png" />
@@ -56,8 +64,8 @@ class MyDocument extends Document {
 
           <link rel="manifest" href="/manifest.json" />
 
-          <link rel="icon" href="/favicon.ico" />
-          <link rel="shortcut icon" href="/favicon.ico" />
+          <link rel="icon" href="/images/logo.svg" />
+          <link rel="shortcut icon" href="/images/logo.svg" />
           <link rel="preconnect" href="https://fonts.googleapis.com" />
           <link rel="preconnect" href="https://fonts.gstatic.com" />
           <link rel="preconnect" href="https://cdn-homepage.cloudfront.net" />

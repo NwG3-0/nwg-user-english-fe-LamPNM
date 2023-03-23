@@ -60,7 +60,7 @@ export const DropdownMenuRelative = ({ title, list, classNameCustom }: Props) =>
               return (
                 <div className="text-[18px] flex gap-[10px] items-center" key={li.path} onClick={onLogout}>
                   <div className="w-[6px] h-[6px] rounded-full bg-[#FFFFFF]" />
-                  <p>{li.content}a</p>
+                  <p>{li.content}</p>
                 </div>
               )
             } else {

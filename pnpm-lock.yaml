@@ -34,6 +34,7 @@ specifiers:
   react-infinite-scroll-component: ^6.1.0
   react-intersection-observer: ^9.4.1
   react-lazyload: ^3.2.0
+  react-loading-skeleton: ^3.2.0
   react-modal: ^3.16.1
   react-quill: ^2.0.0
   react-slick: ^0.29.0
@@ -63,6 +64,7 @@ dependencies:
   react-infinite-scroll-component: 6.1.0_react@18.2.0
   react-intersection-observer: 9.4.1_react@18.2.0
   react-lazyload: 3.2.0_biqbaboplfbrettd7655fr4n2y
+  react-loading-skeleton: 3.2.0_react@18.2.0
   react-modal: 3.16.1_biqbaboplfbrettd7655fr4n2y
   react-quill: 2.0.0_biqbaboplfbrettd7655fr4n2y
   react-slick: 0.29.0_biqbaboplfbrettd7655fr4n2y
@@ -2841,6 +2843,14 @@ packages:
 
   /react-lifecycles-compat/3.0.4:
     resolution: {integrity: sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA==}
+    dev: false
+
+  /react-loading-skeleton/3.2.0_react@18.2.0:
+    resolution: {integrity: sha512-kN12x4Ud69jbksr2EdhYywAFeW4bPdvFQ9p3ID1OM/QeFjgwFSmSUY2a6P6uOb5ACzWp3ozY8C+7+04KR6+PHA==}
+    peerDependencies:
+      react: '>=16.8.0'
+    dependencies:
+      react: 18.2.0
     dev: false
 
   /react-modal/3.16.1_biqbaboplfbrettd7655fr4n2y:

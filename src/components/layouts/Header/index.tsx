@@ -13,7 +13,7 @@ export const Header = () => {
   const childRef = useRef() as any
   useClickOutside(contentRef, childRef, (value) => setIsOpen(value))
 
-  const [showUpTop, setShowUpTop] = useState(false)
+  const [showUpTop, setShowUpTop] = useState<boolean>(false)
   const [isOpen, setIsOpen] = useOpenHeaderStore((state: any) => [state.isOpen, state.setIsOpen])
   const hiddenPosition = 300
 
@@ -78,7 +78,7 @@ export const Header = () => {
   return (
     <div className={`bg-transparent fixed w-full z-50 top-0 left-0`}>
       <div className="flex justify-between items-center container lg:w-[1240px] mx-auto py-[20px]" ref={contentRef}>
-        <div data-aos-offset="0" data-aos="flip-left" data-aos-delay="500" className="max-sm:ml-[20px]">
+        <div className="max-sm:ml-[20px]">
           <Link href={'/'}>
             <img src="/images/logo.svg" alt="Logo Web" />
           </Link>
@@ -117,12 +117,7 @@ export const Header = () => {
             )}
           </div>
         )}
-        <div
-          data-aos-offset="0"
-          data-aos="fade-left"
-          data-aos-delay="1000"
-          className="hidden md:flex gap-[20px] items-center"
-        >
+        <div className="hidden md:flex gap-[20px] items-center">
           <div className="flex items-center gap-[20px] text-[#FFFFFF]">
             {MENU_HEADER.map((item) => (
               <Link
