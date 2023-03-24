@@ -26,8 +26,6 @@ export const News = () => {
     }
   }, [query])
 
-  console.log(types.split(',').includes('sport'))
-
   const { data: news, isLoading: isNewsLoading } = useQuery(
     [QUERY_KEYS.NEWS_LIST, limit, page, keyword, types],
     async () => {
@@ -95,6 +93,7 @@ export const News = () => {
   }
 
   const onChangePage = (p: number) => {
+    setPage(p)
     router.push({
       query: {
         page: p,
@@ -133,13 +132,13 @@ export const News = () => {
         </div>
       </div>
       <div className="container xl:w-[calc(100%-200px)] flex justify-between mx-auto py-[50px] gap-[50px]">
-        <div className="w-[400px] pt-[20px]">
+        <div className="w-[400px] py-[20px] px-[10px] border-[#808080] border-[1px] rounded-xl">
           <p className="text-[24px] font-bold">News</p>
           <div className="flex gap-[10px] rounded-lg py-[5px] px-[10px] border-[1px] border-[#808080] items-center">
             <input className="outline-none flex-1" placeholder="Search blogs" onChange={onChangeKeyword} />
             <SearchIcon width={25} height={25} color="#808080" />
           </div>
-          <div className="cursor-pointer rounded-lg py-[5px] px-[10px]">
+          <div className="cursor-pointer rounded-lg py-[5px] px-[10px] mt-[10px]">
             {NEWS_LIST.map((news: NewsList) => (
               <div key={news.id} className="flex gap-[10px] items-center">
                 <input
@@ -147,13 +146,14 @@ export const News = () => {
                   type="checkbox"
                   name="type"
                   value={news.value}
+                  className="w-[20px] h-[20px]"
                   onChange={onSelectTypes}
                 />
-                <label>{news.name}</label>
+                <label className="text-[20px]">{news.name}</label>
               </div>
             ))}
           </div>
-          <p className="text-[26px] font-extrabold">The highest view news</p>
+          <p className="text-[26px] font-extrabold mt-[10px]">The highest view news</p>
           <div className="flex flex-col gap-[10px] mt-[20px]">
             {news_highest_views &&
               news_highest_views.data.map((news: NewsHighestViewsData) => (
@@ -170,20 +170,20 @@ export const News = () => {
               ))}
           </div>
         </div>
-        <div className="w-full xl:w-[1200px]">
+        <div className="w-full xl:w-[1200px] border-[1px] border-[#808080] p-[10px]">
           {news && isNewsLoading ? (
             <div>Loading</div>
           ) : (
-            <div className="grid w-full grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid w-full grid-cols-1 md:grid-cols-3 gap-4 h-[calc(450px*3)]">
               {news &&
                 news.data?.length > 0 &&
                 news.data.map((p: NewsListData) => (
                   <Link
                     href={`news/${p.id}`}
-                    className="bg-slate-100 cursor-pointer rounded-md p-[10px] shadow-2xl"
+                    className="bg-slate-100 cursor-pointer rounded-md p-[10px] shadow-2xl h-[420px] overflow-hidden"
                     key={p.id}
                   >
-                    <img className="w-full h-[200px] object-cover" src={p.image}></img>
+                    <img className="w-full h-[200px] object-cover" src={p.image} />
                     <div className="flex justify-between items-center py-[5px]  mx-auto">
                       <div className="text-left text-sm py-[4px] break-words">{p.title}</div>
                       <div className="text-[10px] text-[#808080] text-right">
