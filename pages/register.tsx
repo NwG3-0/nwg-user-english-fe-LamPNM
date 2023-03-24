@@ -1,14 +1,18 @@
+import React, { useRef, useState } from 'react'
+import type { NextPage } from 'next'
+import Link from 'next/link'
+import { useRouter } from 'next/router'
 import InputPassword from '@components/common/InputPassword'
 import { register } from '@utils/api'
-import type { NextPage } from 'next'
-import React, { useRef, useState } from 'react'
-import { useRouter } from 'next/router'
+import { NEWS_LIST, NewsList } from '@utils/common'
 import { NOTIFICATION_TYPE, notify } from '@utils/notify'
 
 const RegisterPage: NextPage = () => {
   const emailValue = useRef() as React.MutableRefObject<HTMLInputElement>
   const passwordValue = useRef() as React.MutableRefObject<HTMLInputElement>
   const confirmPasswordValue = useRef() as React.MutableRefObject<HTMLInputElement>
+
+  const [hobbies, setHobbies] = useState<string[]>([])
 
   const router = useRouter()
 
@@ -17,6 +21,18 @@ const RegisterPage: NextPage = () => {
     password: '',
     confirmPassword: '',
   })
+
+  const onSelectHobbies = (e: { target: { value: string; checked: boolean } }) => {
+    if (e.target.checked) {
+      setHobbies((prev: string[]) => [...prev, e.target.value])
+    } else {
+      const arrHobbies: string[] = [...hobbies]
+
+      const arrHobbiesFilter = arrHobbies.filter((hobby: string) => hobby !== e.target.value)
+
+      setHobbies(arrHobbiesFilter)
+    }
+  }
 
   const onRegister = async (e: { preventDefault: () => void }) => {
     try {
@@ -28,6 +44,7 @@ const RegisterPage: NextPage = () => {
       ) {
         const { success, data } = await register({
           email: emailValue.current.value,
+          hobbies,
           password: passwordValue.current.value,
         })
 
@@ -37,7 +54,9 @@ const RegisterPage: NextPage = () => {
           router.push('/verify')
         }
       }
-    } catch (error) {}
+    } catch (error) {
+      notify(NOTIFICATION_TYPE.ERROR, 'Something went wrong')
+    }
   }
 
   const onChangeEmail = (e: { target: { value: string } }) => {
@@ -54,7 +73,7 @@ const RegisterPage: NextPage = () => {
   return (
     <div className="relative bg-[url('/images/background.webp')] bg-cover h-screen w-full font-library">
       <div className="w-full h-full bg-[#00000075] relative z-1"></div>
-      <div className="absolute w-[500px] translate-x-[-50%] translate-y-[-50%] top-[50%] left-[50%] bg-[#BA8C63] z-100 rounded-md">
+      <div className="absolute w-[calc(100%-30px)] sm:w-[500px] translate-x-[-50%] translate-y-[-50%] top-[50%] left-[50%] bg-transparent sm:bg-[#BA8C63] z-100 sm:rounded-md">
         <div className="text-white text-center text-[32px] mt-[20px]">Register</div>
         <form className="p-[20px]" onSubmit={onRegister}>
           <div>
@@ -81,6 +100,24 @@ const RegisterPage: NextPage = () => {
               Confirm Password:
             </label>
             <InputPassword classNameCustom="text-[#ffffffb6] mt-[5px] rounded-sm" ref={confirmPasswordValue} />
+          </div>
+          <div className="mt-[10px]">
+            <label htmlFor="hobbies" className="block text-[18px] text-white">
+              Hobbies
+            </label>
+            <div className="flex flex-wrap gap-[10px]">
+              {NEWS_LIST.map((news: NewsList) => (
+                <div key={news.id} className="flex gap-[5px]">
+                  <input type="checkbox" value={news.value} onChange={onSelectHobbies} />
+                  <label className="text-[#FFFFFF]">{news.name}</label>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="flex justify-end mt-[10px]">
+            <Link href="/login" className="text-white underline">
+              Already have a account ?
+            </Link>
           </div>
           <button className="w-full py-[8px] bg-[#FFFFFF] mt-[20px] rounded-sm" type="submit">
             Register

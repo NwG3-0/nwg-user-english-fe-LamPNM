@@ -11,6 +11,42 @@ body {
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
 }
 
+body::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+body::-webkit-scrollbar {
+  width: 10px;
+}
+
+body::-webkit-scrollbar-thumb {
+  background: #808080;
+  border-radius: 8px;
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.2);
+}
+
+body::-webkit-scrollbar-thumb:hover {
+  background: #585858;
+}
+
+.dictionary::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.dictionary::-webkit-scrollbar {
+  width: 3px;
+}
+
+.dictionary::-webkit-scrollbar-thumb {
+  background: #bebebe;
+  border-radius: 8px;
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.2);
+}
+
+.dictionary::-webkit-scrollbar-thumb:hover {
+  background: #585858;
+}
+
 a {
   color: inherit;
   text-decoration: none;
@@ -51,15 +87,13 @@ a {
 }
 
 .dropdown-menu{
-transition :opacity 150ms ease-in-out, transform 150ms ease-in-out;
+  transition: opacity 150ms ease-in-out, transform 150ms ease-in-out;
 }
 
 .dropdown > .link:focus + .dropdown-menu {
-opacity: 1;
-transform :translateY(0);
-pointer-events :auto;
-
-
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
 }
 
 @keyframes spin {
@@ -267,22 +301,6 @@ background-position:1293px;
   }
 }
 
-.dictionary {
-    animation : dictionary 0.5s ease-out;
-    transform-origin:center right;
-}
-
-@keyframes dictionary{
-  0%{
-    transform:scale(0);
-
-  }
-    100%{
-    transform:scale(1);
-
-  }
-}
-
 .dropdown-open {
   transform: rotateX(180deg);
   transition: 0.7s;
@@ -315,4 +333,12 @@ background-position:1293px;
   z-index: 9999999;
   mix-blend-mode: difference;
   opacity: 0;
+}
+
+.slide-collection .slick-prev:before, .slick-next:before {
+  color: #000;
+}
+
+.features {
+  min-height: calc(100vh - 56px);
 }

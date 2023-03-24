@@ -1,8 +1,12 @@
-import Header from '@components/layouts/Header'
 import type { NextPage } from 'next'
 import dynamic from 'next/dynamic'
+import { Banner } from '@components/layouts/Banner'
 
-const Collection = dynamic(() => import('@components/screens/Collection/index').then((mod) => mod.Collection), {
+const Header = dynamic<any>(() => import('@components/layouts/Header').then((mod) => mod.Header), {
+  ssr: false,
+})
+
+const Collection = dynamic<any>(() => import('@components/screens/Collection/index').then((mod) => mod.Collection), {
   ssr: false,
 })
 
@@ -14,6 +18,7 @@ const PostPage: NextPage = () => {
   return (
     <div>
       <Header />
+      <Banner path="/images/background-home.webp" />
       <Collection />
       <Footer />
     </div>
