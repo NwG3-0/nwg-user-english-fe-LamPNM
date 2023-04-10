@@ -10,7 +10,7 @@ import {
 } from '@src/models/api'
 import { DEVICES } from './common'
 
-export const API_BASE_URL = process.env.API_BASE_URL ?? 'https://englishbe.lampnm.com'
+export const API_BASE_URL = process.env.API_BASE_URL ?? 'http://localhost:4000'
 
 export const isLogin = () => {
   if (typeof window !== 'undefined') {
@@ -186,10 +186,13 @@ export const getDictionary = async (searchWord: string) => {
 }
 
 //Topic
-export const getDeckList = async (userId: string) => {
+export const getDeckList = async (userId: string, accessToken: string) => {
   try {
     const response = await fetch(`${API_BASE_URL}/api/topic-deck?userId=${userId}`, {
       method: 'GET',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
     })
 
     const rawResponse = await response.json()
@@ -725,14 +728,22 @@ export const getEarliestPost = async (userId: string, accessToken: string) => {
   }
 }
 
-export const getNewsList = async (input: { limit: number; page: number; keyword: string }) => {
+export const getNewsList = async (input: {
+  limit: number
+  page: number
+  keyword: string
+  startDate: number
+  endDate: number
+}) => {
   try {
     const limit = input.limit ?? 10
     const page = input.page ?? 1
     const keyword = input.keyword ?? ''
+    const startDate = input.startDate
+    const endDate = input.endDate
 
     const response = await fetch(
-      `${API_BASE_URL}/api/news?limit=${limit}&page=${page}&keyword=${keyword}&device=${DEVICES.MOBILE}`,
+      `${API_BASE_URL}/api/news?limit=${limit}&page=${page}&keyword=${keyword}&device=${DEVICES.MOBILE}&startDate=${startDate}&endDate=${endDate}`,
       {
         method: 'GET',
         headers: {

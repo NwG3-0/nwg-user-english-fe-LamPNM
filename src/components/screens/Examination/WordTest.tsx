@@ -75,10 +75,10 @@ export const WordTest = () => {
   )
 
   const { data: deck } = useQuery(
-    [QUERY_KEYS.TOPIC_LIST],
+    [QUERY_KEYS.TOPIC_LIST, userInfo, accessToken],
     async () => {
       try {
-        const response = await getDeckList(userInfo?.id)
+        const response = await getDeckList(userInfo?.id, accessToken)
 
         return response
       } catch (error) {
