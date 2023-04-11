@@ -55,7 +55,7 @@ export const WordTest = () => {
   const [topicName, setTopicName] = useState<string>('')
 
   const { data: checkUser } = useQuery(
-    [QUERY_KEYS.USER_RANDOM_CHECK],
+    [QUERY_KEYS.USER_RANDOM_CHECK, userInfo, accessToken],
     async () => {
       if (accessToken && userInfo) {
         try {
@@ -88,9 +88,10 @@ export const WordTest = () => {
     {
       refetchInterval: false,
       refetchOnWindowFocus: false,
-      enabled: !!userInfo,
+      enabled: !!userInfo && !!accessToken,
     },
   )
+  console.log({ deck })
 
   const { data: rdWord } = useQuery(
     [QUERY_KEYS.WORD_TEST, userInfo, accessToken, isStatus.isStart],
