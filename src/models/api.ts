@@ -93,3 +93,23 @@ export interface NewsListData {
   title: string
   view: number
 }
+
+export interface LearningVideoResponseData {
+  success: boolean
+  data: LearningVideoData[]
+  pagination: {
+    startPage: number
+    limit: number
+    totalPages: number
+    totalRecords: number
+  }
+}
+
+export interface LearningVideoData {
+  id: string
+  title: string
+  image: string
+  like: number
+  view: number
+  day: number
+}

@@ -1,8 +1,15 @@
 import dayjs from '@utils/dayjs'
-import { SearchIcon } from '@components/common/CustomIcon'
-import { NewsHighestViewsData, NewsHighestViewsDataResponse, NewsListData, NewsListDataResponse } from '@src/models/api'
+import { PlayIcon, SearchIcon } from '@components/common/CustomIcon'
+import {
+  LearningVideoData,
+  LearningVideoResponseData,
+  NewsHighestViewsData,
+  NewsHighestViewsDataResponse,
+  NewsListData,
+  NewsListDataResponse,
+} from '@src/models/api'
 import { useQuery } from '@tanstack/react-query'
-import { getHighestNewsList, getNewsList, getNewsListByType } from '@utils/api'
+import { getHighestNewsList, getLearningVideoList, getNewsList, getNewsListByType } from '@utils/api'
 import { deleteWhiteSpace } from '@utils/index'
 import { QUERY_KEYS } from '@utils/keys'
 import debounce from 'lodash.debounce'
@@ -83,6 +90,23 @@ export const News = () => {
     },
   )
 
+  const { data: learning_video, isLoading: isLearningVideoLoading } = useQuery(
+    [QUERY_KEYS.LEARNING_VIDEO],
+    async () => {
+      try {
+        const response = (await getLearningVideoList({ limit: 6, page: 1 })) as LearningVideoResponseData
+
+        return response
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    {
+      refetchInterval: false,
+      refetchOnWindowFocus: false,
+    },
+  )
+
   const onChangeKeyword = (e: { target: { value: string } }) => {
     debounceInput(e.target.value)
   }
@@ -110,20 +134,12 @@ export const News = () => {
   }
 
   return (
-    <div>
-      <div className="relative w-full h-[800px] bg-[url('/images/Post/banner_post.png')] bg-cover overflow-hidden">
-        <div className="absolute top-[50%] left-[50%] text-center -translate-x-[50%] -translate-y-[50%]">
-          <div className="text-white font-bold text-[32px]">
-            Our Nwg English is your one-stop destination for all things English, from practice materials to success
-            stories.
-          </div>
-        </div>
-      </div>
-      <div className="container xl:w-[1300px] flex gap-[20px] mx-auto mt-[20px]">
+    <div className="container xl:w-[1300px] mx-auto mt-[110px]">
+      <div className="w-full flex gap-[20px]">
         <div className="flex-1">
           <div className="cursor-pointer flex">
             <div
-              className={`px-[15px] py-[10px] ${types === '' && 'bg-blue-500 text-white'}`}
+              className={`px-[15px] py-[10px] ${types === '' && 'bg-[#808080] text-white'}`}
               onClick={() => onSelectTypes('')}
             >
               <p>All</p>
@@ -131,7 +147,7 @@ export const News = () => {
             {NEWS_LIST.map((news: NewsList) => (
               <div
                 key={news.id}
-                className={`px-[15px] py-[10px] ${types === news.value && 'bg-blue-500 text-white'}`}
+                className={`px-[15px] py-[10px] ${types === news.value && 'bg-[#808080] text-white'}`}
                 onClick={() => onSelectTypes(news.value)}
               >
                 <p>{news.name}</p>
@@ -156,14 +172,14 @@ export const News = () => {
                       return (
                         <Link
                           href={`news/${p.id}`}
-                          className="cursor-pointer flex overflow-hidden gap-[20px] group hover:text-blue-500"
+                          className="cursor-pointer flex overflow-hidden gap-[20px] group hover:text-[#808080]"
                           key={p.id}
                         >
                           <img className="w-[50%] h-[400px] object-cover" src={p.image} />
                           <div className="flex-1">
-                            <div className="w-[100px] h-[10px] bg-black group-hover:bg-blue-500" />
+                            <div className="w-[100px] h-[10px] bg-black group-hover:bg-[#808080]" />
                             <div className="py-[4px] break-words text-[32px] font-[600]">{p.title}</div>
-                            <div className="text-[10px] py-[10px] text-[#808080] group-hover:text-blue-500">
+                            <div className="text-[10px] py-[10px] text-[#808080]">
                               {dayjs.utc(p.day * 1000).format('HH:mm:ss YYYY, MMMM DD')}
                             </div>
                             <div
@@ -177,13 +193,13 @@ export const News = () => {
                       return (
                         <Link
                           href={`news/${p.id}`}
-                          className="cursor-pointer flex overflow-hidden gap-[20px] group hover:text-blue-500"
+                          className="cursor-pointer flex overflow-hidden gap-[20px] group hover:text-[#808080]"
                           key={p.id}
                         >
                           <div className="flex-1 flex flex-col items-end">
-                            <div className="w-[100px] h-[10px] bg-black group-hover:bg-blue-500" />
+                            <div className="w-[100px] h-[10px] bg-black group-hover:bg-[#808080]" />
                             <div className="py-[4px] break-words text-[32px] font-[600]">{p.title}</div>
-                            <div className="text-[10px] py-[10px] text-[#808080] group-hover:text-blue-500">
+                            <div className="text-[10px] py-[10px] text-[#808080]">
                               {dayjs.utc(p.day * 1000).format('HH:mm:ss YYYY, MMMM DD')}
                             </div>
                             <div
@@ -210,14 +226,14 @@ export const News = () => {
                       return (
                         <Link
                           href={`news/${p.id}`}
-                          className="cursor-pointer flex overflow-hidden gap-[20px] group hover:text-blue-500"
+                          className="cursor-pointer flex overflow-hidden gap-[20px] group hover:text-[#808080]"
                           key={p.id}
                         >
                           <img className="w-[50%] h-[400px] object-cover" src={p.image} />
                           <div className="flex-1">
                             <div className="w-[100px] h-[10px] bg-black group-hover:bg-blue-500" />
                             <div className="py-[4px] break-words text-[32px] font-[600]">{p.title}</div>
-                            <div className="text-[10px] py-[10px] text-[#808080] group-hover:text-blue-500">
+                            <div className="text-[10px] py-[10px] text-[#808080] group-hover:text-[#808080]">
                               {dayjs.utc(p.day * 1000).format('HH:mm:ss YYYY, MMMM DD')}
                             </div>
                             <div
@@ -272,6 +288,46 @@ export const News = () => {
                 />
               )}
             </div>
+          </div>
+        </div>
+        <div className="w-[300px] py-[10px] px-[10px]">
+          <p className="text-[26px] font-extrabold">The highest view news</p>
+          <div className="flex flex-col gap-[20px] mt-[20px]">
+            {news_highest_views &&
+              news_highest_views.data.map((news: NewsHighestViewsData) => (
+                <Link href={`news/${news.id}`} key={news.id} className="flex flex-col gap-[10px] group">
+                  <div className="w-[100px] h-[10px] bg-black group-hover:bg-blue-500" />
+                  <img src={news.image} className="w-[150px] object-cover" />
+                  <div className="break-words">
+                    <p className="text-[14px] font-semibold">{news.title}</p>
+                    <p>
+                      {news.view} {news.view > 1 ? 'views' : 'view'}
+                    </p>
+                    <p className="text-[12px]">{dayjs.utc(news.day * 1000).format('HH:mm:ss YYYY, MMMM DD')} UTC</p>
+                  </div>
+                </Link>
+              ))}
+          </div>
+        </div>
+      </div>
+      <div className="w-full flex gap-[20px]">
+        <div className="flex-1 border-t-[0.5px] border-[#808080]">
+          <p className="font-[600] mt-[5px] text-[24px]">Video</p>
+          <div className="w-full grid grid-cols-3 gap-[20px] mt-[20px]">
+            {learning_video &&
+              learning_video.data.map((item: LearningVideoData) => (
+                <div className="w-full cursor-pointer group" key={item.id}>
+                  <div className="relative w-full h-fit">
+                    <img src={item.image} alt={item.title} className="w-full object-cover" />
+                    <div className="w-full h-full absolute top-0 left-0 bg-[#00000075] invisible group-hover:visible">
+                      <div className="absolute top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%]">
+                        <PlayIcon width={45} height={45} color="#FFFFFF" />
+                      </div>
+                    </div>
+                  </div>
+                  <p className="mt-[10px]">{item.title}</p>
+                </div>
+              ))}
           </div>
         </div>
         <div className="w-[300px] py-[10px] px-[10px]">

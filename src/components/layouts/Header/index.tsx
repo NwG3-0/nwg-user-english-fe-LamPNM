@@ -7,8 +7,10 @@ import { useClickOutside } from '@hooks/useClickOutSide'
 import { useOpenHeaderStore } from '@src/zustand'
 import { isLogin } from '@utils/api'
 import { MENU_HEADER, DROPDOWN_USER_MENU, MenuHeader } from '@utils/common'
+import { useRouter } from 'next/router'
 
 export const Header = () => {
+  const router = useRouter()
   const contentRef = useRef() as any
   const childRef = useRef() as any
   useClickOutside(contentRef, childRef, (value) => setIsOpen(value))
@@ -76,7 +78,7 @@ export const Header = () => {
   }
 
   return (
-    <div className={`bg-transparent fixed w-full z-50 top-0 left-0`}>
+    <div className={`${router.pathname === '/' ? 'bg-transparent' : 'bg-[#808080]'} fixed w-full z-50 top-0 left-0`}>
       <div className="flex justify-between items-center container lg:w-[1240px] mx-auto py-[20px]" ref={contentRef}>
         <div className="max-sm:ml-[20px]">
           <Link href={'/'}>
@@ -145,9 +147,9 @@ export const Header = () => {
           </div>
         </div>
       </div>
-      <div className="w-full pb-[10px] hidden md:block">
+      {/* <div className="w-full pb-[10px] hidden md:block">
         <p className="text-center text-[#FFFFFF] text-[18px]">Tips: Press Alt + M to open the dictionary</p>
-      </div>
+      </div> */}
       {renderToTOP()}
     </div>
   )

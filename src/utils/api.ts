@@ -2,6 +2,7 @@ import {
   API_DICTIONARY_URL,
   AUTH_TOKEN,
   EarliestPostResponse,
+  LearningVideoResponseData,
   NewsDetailResponse,
   NewsHighestViewsDataResponse,
   NewsListDataResponse,
@@ -917,6 +918,7 @@ export const getHighestNewsList = async (input: { limit: number }) => {
     const { limit } = input
 
     const response = await fetch(`${API_BASE_URL}/api/news/highest-views?device=${DEVICES.WEB}&limit=${limit ?? 5}`, {
+      method: 'GET',
       headers: {
         'Content-Type': 'application/json',
       },
@@ -948,6 +950,48 @@ export const getNewsListByType = async (input: { limit: number; page: number; ke
     )
 
     const rawResponse = (await response.json()) as NewsListDataResponse
+
+    if (rawResponse) {
+      return rawResponse
+    }
+  } catch (error) {
+    return { success: false, data: null, message: 'Something went wrong' }
+  }
+}
+
+export const getLearningVideoList = async (input: { limit: number; page: number }) => {
+  try {
+    const { limit, page } = input
+
+    const response = await fetch(`${API_BASE_URL}/api/learning-video?limit=${limit ?? 5}&page=${page ?? 1}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+
+    const rawResponse = (await response.json()) as LearningVideoResponseData
+
+    if (rawResponse) {
+      return rawResponse
+    }
+  } catch (error) {
+    return { success: false, data: null, message: 'Something went wrong' }
+  }
+}
+
+export const getLearningVideoDetail = async (input: { video_id: string }) => {
+  try {
+    const { video_id } = input
+
+    const response = await fetch(`${API_BASE_URL}/api/learning-video-detail?learning_video_id${video_id}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+
+    const rawResponse = (await response.json()) as LearningVideoResponseData
 
     if (rawResponse) {
       return rawResponse
