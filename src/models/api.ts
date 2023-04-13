@@ -4,6 +4,18 @@ export const AUTH_TOKEN = '@token_user_ielts'
 export const API_BASE_URL = process.env.API_BASE_URL ?? 'http://localhost:4000'
 export const API_DICTIONARY_URL = process.env.API_DICTIONARY_URL ?? 'https://api.dictionaryapi.dev/api/v2/entries/en/'
 
+export type Error = {
+  code: string
+  message: string
+  innererror?: any
+}
+
+export type Response<T> = {
+  success: boolean
+  data: T | null
+  error?: Error
+}
+
 export interface EarliestPostResponse {
   data: EarliestPostResponseData
   message: string

@@ -5,14 +5,18 @@ interface Props {
   content: string
   isLoading: boolean
   classNameCustom?: string
+  onClick: () => void
 }
 
-export const LoadingButton = ({ type, content, isLoading, classNameCustom }: Props) => {
+export const LoadingButton = ({ type, content, isLoading, classNameCustom = '', onClick }: Props) => {
   return (
     <button
       type={type}
-      className={`bg-blue-500 text-white px-[10px] py-[5px] flex items-center gap-[5px] ${classNameCustom}`}
+      className={`bg-blue-500 text-white px-5 py-3 w-[168px] flex items-center gap-x-2 rounded-md
+      transition hover:opacity-80 focus:opacity-80 ${isLoading ? 'opacity-70' : ''}
+      ${classNameCustom}`}
       disabled={isLoading}
+      onClick={onClick}
     >
       {isLoading ? (
         <>

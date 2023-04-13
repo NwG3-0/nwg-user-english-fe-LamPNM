@@ -11,7 +11,7 @@ import {
   USER_INFO,
   VideoDataResponse,
 } from '@src/models/api'
-import { DEVICES } from './common'
+import { DEVICES } from '../common'
 
 export const API_BASE_URL = process.env.API_BASE_URL ?? 'https://englishbe.lampnm.com'
 
