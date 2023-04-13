@@ -34,7 +34,9 @@ export const Step2Creation = () => {
     setFormData((prev) => ({ ...prev, [name]: value }))
   }
 
-  const onSubmit = () => {}
+  const onSubmit = () => {
+    console.log(1)
+  }
 
   return (
     <div className="w-[600px] py-[200px] mx-auto">

@@ -25,7 +25,7 @@ module.exports = {
       version: 'detect',
     },
   },
-  plugins: ['eslint-plugin-jsdoc', 'eslint-plugin-prefer-arrow', '@typescript-eslint'],
+  plugins: ['eslint-plugin-prefer-arrow', '@typescript-eslint'],
   rules: {
     'react/prop-types': 0,
     'react/react-in-jsx-scope': 0,

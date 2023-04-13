@@ -8,7 +8,7 @@ interface ButtonProps {
   onClick: () => void
 }
 const Button = ({ label, className = '', color = 'default', onClick }: ButtonProps) => {
-  let baseClassName: string = ''
+  let baseClassName = ''
 
   if (color === 'green') {
     baseClassName =
@@ -32,7 +32,7 @@ export const Step1 = () => {
   const router = useRouter()
 
   const onButtonClick = ({ type }: { type: 'create' | 'join' | 'playOnline' }) => {
-    let queryString = {
+    const queryString = {
       step: QUERY_STRING_STEP.STEP_1,
     }
     if (type === 'create') {

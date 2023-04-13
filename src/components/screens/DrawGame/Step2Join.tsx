@@ -49,7 +49,9 @@ export const Step2Join = () => {
     setFormData((prev) => ({ ...prev, roomId, roomName: name }))
   }
 
-  const onSubmit = () => {}
+  const onSubmit = () => {
+    console.log(1)
+  }
 
   return (
     <div className="w-[800px] py-[200px] mx-auto flex gap-x-10">

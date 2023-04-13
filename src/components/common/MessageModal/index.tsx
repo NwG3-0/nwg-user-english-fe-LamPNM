@@ -127,6 +127,22 @@ export const MessageModal = ({ onOpenMessageModal }: Props) => {
     }
   }, [getMessage])
 
+  // const onSetSticker = async (stickerUrl: any) => {
+  //   try {
+  //     const { success } = await sendMessage({
+  //       from: userInfo.id,
+  //       to: '6376f1cced1e5d49d84de006',
+  //       message: stickerUrl?.url,
+  //       type: 'sticker',
+  //     })
+
+  //     if (success) {
+  //       queryClient.invalidateQueries([QUERY_KEYS.MESSAGE_LIST])
+  //       setShowStickerPopup(false)
+  //     }
+  //   } catch (error) {}
+  // }
+
   return (
     <div
       data-aos-offset="50"
