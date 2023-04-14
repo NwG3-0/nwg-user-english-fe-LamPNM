@@ -316,7 +316,7 @@ export const News = () => {
           <div className="w-full grid grid-cols-3 gap-[20px] mt-[20px]">
             {learning_video &&
               learning_video.data.map((item: LearningVideoData) => (
-                <div className="w-full cursor-pointer group" key={item.id}>
+                <Link href={`/video/${item.id}`} className="w-full cursor-pointer group" key={item.id}>
                   <div className="relative w-full h-fit">
                     <img src={item.image} alt={item.title} className="w-full object-cover" />
                     <div className="w-full h-full absolute top-0 left-0 bg-[#00000075] invisible group-hover:visible">
@@ -326,7 +326,7 @@ export const News = () => {
                     </div>
                   </div>
                   <p className="mt-[10px]">{item.title}</p>
-                </div>
+                </Link>
               ))}
           </div>
         </div>
