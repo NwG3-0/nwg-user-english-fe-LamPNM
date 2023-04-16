@@ -8,9 +8,7 @@ const VideoDetailPage: NextPage = () => {
   return (
     <>
       <Header />
-      <Banner path="/images/background-home.webp" />
       <VideoDetail />
-      <Footer />
     </>
   )
 }

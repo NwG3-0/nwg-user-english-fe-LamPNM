@@ -14,7 +14,7 @@ import { deleteWhiteSpace } from '@utils/index'
 import { QUERY_KEYS } from '@utils/keys'
 import debounce from 'lodash.debounce'
 import Link from 'next/link'
-import React, { useCallback, useEffect, useLayoutEffect, useState } from 'react'
+import React, { useCallback, useLayoutEffect, useState } from 'react'
 import { Pagination } from '@components/common/Pagination'
 import { useRouter } from 'next/router'
 import { NEWS_LIST, NewsList } from '@utils/common'
@@ -25,8 +25,8 @@ export const News = () => {
 
   const [limit] = useState<number>(9)
   const [page, setPage] = useState<number>(Number(query?.page ?? 1))
-  const [startDate, setStartDate] = useState<number>(dayjs.utc().subtract(3, 'months').unix())
-  const [endDate, setEndDate] = useState<number>(dayjs.utc().unix())
+  const [startDate] = useState<number>(dayjs.utc().subtract(3, 'months').unix())
+  const [endDate] = useState<number>(dayjs.utc().unix())
 
   const [keyword, setKeyword] = useState<string>(query?.keyword ?? '')
   const [types, setTypes] = useState<string>('')
@@ -73,7 +73,7 @@ export const News = () => {
     },
   )
 
-  const { data: news_highest_views, isLoading: isNewsHighestLoading } = useQuery(
+  const { data: news_highest_views, isLoading: _isNewsHighestLoading } = useQuery(
     [QUERY_KEYS.NEWS_HIGHEST],
     async () => {
       try {
@@ -90,7 +90,7 @@ export const News = () => {
     },
   )
 
-  const { data: learning_video, isLoading: isLearningVideoLoading } = useQuery(
+  const { data: learning_video, isLoading: _isLearningVideoLoading } = useQuery(
     [QUERY_KEYS.LEARNING_VIDEO],
     async () => {
       try {
