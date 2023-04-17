@@ -1,13 +1,20 @@
-import { SearchIcon } from '@components/common/CustomIcon'
-import { NewsHighestViewsData, NewsHighestViewsDataResponse, NewsListData, NewsListDataResponse } from '@src/models/api'
+import dayjs from '@utils/dayjs'
+import { PlayIcon, SearchIcon } from '@components/common/CustomIcon'
+import {
+  LearningVideoData,
+  LearningVideoResponseData,
+  NewsHighestViewsData,
+  NewsHighestViewsDataResponse,
+  NewsListData,
+  NewsListDataResponse,
+} from '@src/models/api'
 import { useQuery } from '@tanstack/react-query'
-import { getHighestNewsList, getNewsList, getNewsListByType } from '@utils/api'
+import { getHighestNewsList, getLearningVideoList, getNewsList, getNewsListByType } from '@utils/api'
 import { deleteWhiteSpace } from '@utils/index'
 import { QUERY_KEYS } from '@utils/keys'
-import dayjs from '@utils/dayjs'
 import debounce from 'lodash.debounce'
 import Link from 'next/link'
-import React, { useCallback, useEffect, useLayoutEffect, useState } from 'react'
+import React, { useCallback, useLayoutEffect, useState } from 'react'
 import { Pagination } from '@components/common/Pagination'
 import { useRouter } from 'next/router'
 import { NEWS_LIST, NewsList } from '@utils/common'
@@ -15,8 +22,12 @@ import { NEWS_LIST, NewsList } from '@utils/common'
 export const News = () => {
   const router = useRouter()
   const { query }: any = router
+
   const [limit] = useState<number>(9)
   const [page, setPage] = useState<number>(Number(query?.page ?? 1))
+  const [startDate] = useState<number>(dayjs.utc().subtract(3, 'months').unix())
+  const [endDate] = useState<number>(dayjs.utc().unix())
+
   const [keyword, setKeyword] = useState<string>(query?.keyword ?? '')
   const [types, setTypes] = useState<string>('')
 
@@ -27,10 +38,10 @@ export const News = () => {
   }, [query])
 
   const { data: news, isLoading: isNewsLoading } = useQuery(
-    [QUERY_KEYS.NEWS_LIST, limit, page, keyword, types],
+    [QUERY_KEYS.NEWS_LIST, limit, page, keyword, types, startDate, endDate],
     async () => {
       try {
-        const response = (await getNewsList({ limit, page, keyword })) as NewsListDataResponse
+        const response = (await getNewsList({ limit, page, keyword, startDate, endDate })) as NewsListDataResponse
 
         return response
       } catch (error) {
@@ -62,11 +73,28 @@ export const News = () => {
     },
   )
 
-  const { data: news_highest_views, isLoading: isNewsHighestLoading } = useQuery(
+  const { data: news_highest_views, isLoading: _isNewsHighestLoading } = useQuery(
     [QUERY_KEYS.NEWS_HIGHEST],
     async () => {
       try {
         const response = (await getHighestNewsList({ limit: 3 })) as NewsHighestViewsDataResponse
+
+        return response
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    {
+      refetchInterval: false,
+      refetchOnWindowFocus: false,
+    },
+  )
+
+  const { data: learning_video, isLoading: _isLearningVideoLoading } = useQuery(
+    [QUERY_KEYS.LEARNING_VIDEO],
+    async () => {
+      try {
+        const response = (await getLearningVideoList({ limit: 6, page: 1 })) as LearningVideoResponseData
 
         return response
       } catch (error) {
@@ -101,65 +129,176 @@ export const News = () => {
     })
   }
 
-  const onSelectTypes = (e: { target: { checked: boolean; value: string } }) => {
-    let arrayTypes: any = types.split(',').filter((type: string) => type !== '')
-    let valTypes: string[] = []
-
-    if (e.target.checked) {
-      arrayTypes.push(e.target.value)
-      valTypes = arrayTypes
-    } else {
-      valTypes = arrayTypes.filter((type: string) => type !== e.target.value)
-    }
-
-    setTypes(valTypes.join(','))
-    router.replace({
-      query: {
-        page: page,
-        type: valTypes.join(','),
-      },
-    })
+  const onSelectTypes = (value: string) => {
+    setTypes(value)
   }
 
   return (
-    <div>
-      <div className="relative w-full h-[800px] bg-[url('/images/Post/banner_post.png')] bg-cover overflow-hidden">
-        <div className="absolute top-[50%] left-[50%] text-center -translate-x-[50%] -translate-y-[50%]">
-          <div className="text-white font-bold text-[32px]">
-            Our IELTS blog is your one-stop destination for all things IELTS, from practice materials to success
-            stories.
-          </div>
-        </div>
-      </div>
-      <div className="container xl:w-[calc(100%-200px)] flex justify-between mx-auto py-[50px] gap-[50px]">
-        <div className="w-[400px] py-[20px] px-[10px] border-[#808080] border-[1px] rounded-xl">
-          <p className="text-[24px] font-bold">News</p>
-          <div className="flex gap-[10px] rounded-lg py-[5px] px-[10px] border-[1px] border-[#808080] items-center">
-            <input className="outline-none flex-1" placeholder="Search blogs" onChange={onChangeKeyword} />
-            <SearchIcon width={25} height={25} color="#808080" />
-          </div>
-          <div className="cursor-pointer rounded-lg py-[5px] px-[10px] mt-[10px]">
+    <div className="container xl:w-[1300px] mx-auto mt-[110px]">
+      <div className="w-full flex gap-[20px]">
+        <div className="flex-1">
+          <div className="cursor-pointer flex">
+            <div
+              className={`px-[15px] py-[10px] ${types === '' && 'bg-[#808080] text-white'}`}
+              onClick={() => onSelectTypes('')}
+            >
+              <p>All</p>
+            </div>
             {NEWS_LIST.map((news: NewsList) => (
-              <div key={news.id} className="flex gap-[10px] items-center">
-                <input
-                  checked={types.split(',').includes(news.value)}
-                  type="checkbox"
-                  name="type"
-                  value={news.value}
-                  className="w-[20px] h-[20px]"
-                  onChange={onSelectTypes}
-                />
-                <label className="text-[20px]">{news.name}</label>
+              <div
+                key={news.id}
+                className={`px-[15px] py-[10px] ${types === news.value && 'bg-[#808080] text-white'}`}
+                onClick={() => onSelectTypes(news.value)}
+              >
+                <p>{news.name}</p>
               </div>
             ))}
           </div>
-          <p className="text-[26px] font-extrabold mt-[10px]">The highest view news</p>
-          <div className="flex flex-col gap-[10px] mt-[20px]">
+          <div className="flex justify-end mt-[20px]">
+            <div className="flex w-[300px] gap-[10px] rounded-lg py-[5px] px-[10px] border-[1px] border-[#808080] items-center">
+              <input className="outline-none flex-1" placeholder="Search the news" onChange={onChangeKeyword} />
+              <SearchIcon width={25} height={25} color="#808080" />
+            </div>
+          </div>
+          <div className="w-full mt-[30px]">
+            {news && isNewsLoading ? (
+              <div>Loading</div>
+            ) : (
+              <div className="flex flex-col gap-[50px]">
+                {news &&
+                  news.data?.length > 0 &&
+                  news.data.map((p: NewsListData, index: number) => {
+                    if (index % 2 === 0) {
+                      return (
+                        <Link
+                          href={`news/${p.id}`}
+                          className="cursor-pointer flex overflow-hidden gap-[20px] group hover:text-[#808080]"
+                          key={p.id}
+                        >
+                          <img className="w-[50%] h-[400px] object-cover" src={p.image} />
+                          <div className="flex-1">
+                            <div className="w-[100px] h-[10px] bg-black group-hover:bg-[#808080]" />
+                            <div className="py-[4px] break-words text-[32px] font-[600]">{p.title}</div>
+                            <div className="text-[10px] py-[10px] text-[#808080]">
+                              {dayjs.utc(p.day * 1000).format('HH:mm:ss YYYY, MMMM DD')}
+                            </div>
+                            <div
+                              className="mt-[8px] pb-[10px] text-[14px] h-[125px] overflow-y-hidden text-ellipsis"
+                              dangerouslySetInnerHTML={{ __html: deleteWhiteSpace(p.content) }}
+                            />
+                          </div>
+                        </Link>
+                      )
+                    } else {
+                      return (
+                        <Link
+                          href={`news/${p.id}`}
+                          className="cursor-pointer flex overflow-hidden gap-[20px] group hover:text-[#808080]"
+                          key={p.id}
+                        >
+                          <div className="flex-1 flex flex-col items-end">
+                            <div className="w-[100px] h-[10px] bg-black group-hover:bg-[#808080]" />
+                            <div className="py-[4px] break-words text-[32px] font-[600]">{p.title}</div>
+                            <div className="text-[10px] py-[10px] text-[#808080]">
+                              {dayjs.utc(p.day * 1000).format('HH:mm:ss YYYY, MMMM DD')}
+                            </div>
+                            <div
+                              className="mt-[8px] pb-[10px] text-[14px] h-[125px] overflow-y-hidden text-ellipsis text-right"
+                              dangerouslySetInnerHTML={{ __html: deleteWhiteSpace(p.content) }}
+                            />
+                          </div>
+                          <img className="w-[50%] h-[400px] object-cover" src={p.image} />
+                        </Link>
+                      )
+                    }
+                  })}
+              </div>
+            )}
+
+            {news_type && isNewsTypeLoading ? (
+              <div>Loading</div>
+            ) : (
+              <div className="flex flex-col gap-[50px]">
+                {news_type &&
+                  news_type.data?.length > 0 &&
+                  news_type.data.map((p: NewsListData, index: number) => {
+                    if (index % 2 === 0) {
+                      return (
+                        <Link
+                          href={`news/${p.id}`}
+                          className="cursor-pointer flex overflow-hidden gap-[20px] group hover:text-[#808080]"
+                          key={p.id}
+                        >
+                          <img className="w-[50%] h-[400px] object-cover" src={p.image} />
+                          <div className="flex-1">
+                            <div className="w-[100px] h-[10px] bg-black group-hover:bg-blue-500" />
+                            <div className="py-[4px] break-words text-[32px] font-[600]">{p.title}</div>
+                            <div className="text-[10px] py-[10px] text-[#808080] group-hover:text-[#808080]">
+                              {dayjs.utc(p.day * 1000).format('HH:mm:ss YYYY, MMMM DD')}
+                            </div>
+                            <div
+                              className="mt-[8px] pb-[10px] text-[14px] h-[125px] overflow-y-hidden text-ellipsis"
+                              dangerouslySetInnerHTML={{ __html: deleteWhiteSpace(p.content) }}
+                            />
+                          </div>
+                        </Link>
+                      )
+                    } else {
+                      return (
+                        <Link
+                          href={`news/${p.id}`}
+                          className="cursor-pointer flex overflow-hidden gap-[20px]"
+                          key={p.id}
+                        >
+                          <div className="flex-1 flex flex-col items-end group hover:text-blue-500">
+                            <div className="w-[100px] h-[10px] bg-black group-hover:bg-blue-500" />
+                            <div className="py-[4px] break-words text-[32px] font-[600]">{p.title}</div>
+                            <div className="text-[10px] py-[10px] text-[#808080] group-hover:text-blue-500">
+                              {dayjs.utc(p.day * 1000).format('HH:mm:ss YYYY, MMMM DD')}
+                            </div>
+                            <div
+                              className="mt-[8px] pb-[10px] text-[14px] h-[125px] overflow-y-hidden text-ellipsis text-right"
+                              dangerouslySetInnerHTML={{ __html: deleteWhiteSpace(p.content) }}
+                            />
+                          </div>
+                          <img className="w-[50%] h-[400px] object-cover" src={p.image} />
+                        </Link>
+                      )
+                    }
+                  })}
+              </div>
+            )}
+
+            <div className="my-[20px]">
+              {news && (
+                <Pagination
+                  currentPage={news.pagination.startPage}
+                  totalRecords={news.pagination.totalPages}
+                  limit={limit}
+                  onChangePage={onChangePage}
+                />
+              )}
+
+              {news_type && (
+                <Pagination
+                  currentPage={news_type.pagination.startPage}
+                  totalRecords={news_type.pagination.totalPages}
+                  limit={limit}
+                  onChangePage={onChangePage}
+                />
+              )}
+            </div>
+          </div>
+        </div>
+        <div className="w-[300px] py-[10px] px-[10px]">
+          <p className="text-[26px] font-extrabold">The highest view news</p>
+          <div className="flex flex-col gap-[20px] mt-[20px]">
             {news_highest_views &&
               news_highest_views.data.map((news: NewsHighestViewsData) => (
-                <Link href={`news/${news.id}`} key={news.id} className="flex gap-[10px]">
+                <Link href={`news/${news.id}`} key={news.id} className="flex flex-col gap-[10px] group">
+                  <div className="w-[100px] h-[10px] bg-black group-hover:bg-blue-500" />
                   <img src={news.image} className="w-[150px] object-cover" />
-                  <div>
+                  <div className="break-words">
                     <p className="text-[14px] font-semibold">{news.title}</p>
                     <p>
                       {news.view} {news.view > 1 ? 'views' : 'view'}
@@ -170,80 +309,45 @@ export const News = () => {
               ))}
           </div>
         </div>
-        <div className="w-full xl:w-[1200px] border-[1px] border-[#808080] p-[10px]">
-          {news && isNewsLoading ? (
-            <div>Loading</div>
-          ) : (
-            <div className="grid w-full grid-cols-1 md:grid-cols-3 gap-4 h-[calc(450px*3)]">
-              {news &&
-                news.data?.length > 0 &&
-                news.data.map((p: NewsListData) => (
-                  <Link
-                    href={`news/${p.id}`}
-                    className="bg-slate-100 cursor-pointer rounded-md p-[10px] shadow-2xl h-[420px] overflow-hidden"
-                    key={p.id}
-                  >
-                    <img className="w-full h-[200px] object-cover" src={p.image} />
-                    <div className="flex justify-between items-center py-[5px]  mx-auto">
-                      <div className="text-left text-sm py-[4px] break-words">{p.title}</div>
-                      <div className="text-[10px] text-[#808080] text-right">
-                        {dayjs.utc(p.day * 1000).format('HH:mm:ss YYYY, MMMM DD')}
+      </div>
+      <div className="w-full flex gap-[20px]">
+        <div className="flex-1 border-t-[0.5px] border-[#808080]">
+          <p className="font-[600] mt-[5px] text-[24px]">Video</p>
+          <div className="w-full grid grid-cols-3 gap-[20px] mt-[20px]">
+            {learning_video &&
+              learning_video.data.map((item: LearningVideoData) => (
+                <Link href={`/video/${item.id}`} className="w-full cursor-pointer group" key={item.id}>
+                  <div className="relative w-full h-fit">
+                    <img src={item.image} alt={item.title} className="w-full object-cover" />
+                    <div className="w-full h-full absolute top-0 left-0 bg-[#00000075] invisible group-hover:visible">
+                      <div className="absolute top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%]">
+                        <PlayIcon width={45} height={45} color="#FFFFFF" />
                       </div>
                     </div>
-                    <div
-                      className="mt-[8px] pb-[10px] text-[12px] h-[120px] overflow-y-hidden text-ellipsis"
-                      dangerouslySetInnerHTML={{ __html: deleteWhiteSpace(p.content) }}
-                    />
-                  </Link>
-                ))}
-            </div>
-          )}
-
-          {news_type && isNewsTypeLoading ? (
-            <div>Loading</div>
-          ) : (
-            <div className="grid w-full grid-cols-1 md:grid-cols-3 gap-4">
-              {news_type &&
-                news_type.data?.length > 0 &&
-                news_type.data.map((p: NewsListData) => (
-                  <Link
-                    href={`news/${p.id}`}
-                    className="bg-slate-100 cursor-pointer rounded-md p-[10px] shadow-2xl"
-                    key={p.id}
-                  >
-                    <img className="w-full h-[200px] object-cover" src={p.image}></img>
-                    <div className="flex justify-between items-center py-[5px]  mx-auto">
-                      <div className="text-left text-sm py-[4px] break-words">{p.title}</div>
-                      <div className="text-[10px] text-[#808080] text-right">
-                        {dayjs.utc(p.day * 1000).format('HH:mm:ss YYYY, MMMM DD')}
-                      </div>
-                    </div>
-                    <div
-                      className="mt-[8px] pb-[10px] text-[12px] h-[120px] overflow-y-hidden text-ellipsis"
-                      dangerouslySetInnerHTML={{ __html: deleteWhiteSpace(p.content) }}
-                    />
-                  </Link>
-                ))}
-            </div>
-          )}
-
-          {news && (
-            <Pagination
-              currentPage={news.pagination.startPage}
-              totalRecords={news.pagination.totalPages}
-              limit={limit}
-              onChangePage={onChangePage}
-            />
-          )}
-
-          {news_type && (
-            <Pagination
-              currentPage={news_type.pagination.startPage}
-              totalRecords={news_type.pagination.totalPages}
-              limit={limit}
-              onChangePage={onChangePage}
-            />
-          )}
+                  </div>
+                  <p className="mt-[10px]">{item.title}</p>
+                </Link>
+              ))}
+          </div>
+        </div>
+        <div className="w-[300px] py-[10px] px-[10px]">
+          <p className="text-[26px] font-extrabold">The highest view news</p>
+          <div className="flex flex-col gap-[20px] mt-[20px]">
+            {news_highest_views &&
+              news_highest_views.data.map((news: NewsHighestViewsData) => (
+                <Link href={`news/${news.id}`} key={news.id} className="flex flex-col gap-[10px] group">
+                  <div className="w-[100px] h-[10px] bg-black group-hover:bg-blue-500" />
+                  <img src={news.image} className="w-[150px] object-cover" />
+                  <div className="break-words">
+                    <p className="text-[14px] font-semibold">{news.title}</p>
+                    <p>
+                      {news.view} {news.view > 1 ? 'views' : 'view'}
+                    </p>
+                    <p className="text-[12px]">{dayjs.utc(news.day * 1000).format('HH:mm:ss YYYY, MMMM DD')} UTC</p>
+                  </div>
+                </Link>
+              ))}
+          </div>
         </div>
       </div>
     </div>

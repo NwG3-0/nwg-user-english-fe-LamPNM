@@ -8,12 +8,13 @@ import { checkViewNews, getNewsDetail, addViewNews, updateViewNews } from '@util
 import { QUERY_KEYS } from '@utils/keys'
 import { useDataLoginInfoStore } from '@src/zustand'
 import { NOTIFICATION_TYPE, notify } from '@utils/notify'
+import { DataLoginInfo } from '@utils/zustand'
 
 dayjs.extend(utc)
 
 export const NewsDetail = () => {
   const router = useRouter()
-  const [userInfo, accessToken] = useDataLoginInfoStore((state: any) => [state.userInfo, state.accessToken])
+  const [userInfo, accessToken] = useDataLoginInfoStore((state: DataLoginInfo) => [state.userInfo, state.accessToken])
   const { id } = router.query as { id: string }
 
   const { data: news_detail } = useQuery(
@@ -55,8 +56,10 @@ export const NewsDetail = () => {
 
   const onAddViewsNews = async () => {
     try {
-      await addViewNews({ newsId: id, userId: userInfo.id, accessToken })
-      await updateViewNews({ newsId: id, accessToken })
+      if (userInfo && accessToken) {
+        await addViewNews({ newsId: id, userId: userInfo.id, accessToken })
+        await updateViewNews({ newsId: id, accessToken })
+      }
     } catch (error) {
       notify(NOTIFICATION_TYPE.ERROR, 'Something went wrong')
     }

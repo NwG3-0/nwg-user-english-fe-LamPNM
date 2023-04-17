@@ -32,10 +32,10 @@ export const Collection = () => {
   const [tpName, setTopicName] = useState<string>('')
 
   const { data: deck, isLoading: isDeckLoading } = useQuery(
-    [QUERY_KEYS.TOPIC_LIST],
+    [QUERY_KEYS.TOPIC_LIST, userInfo, accessToken],
     async () => {
       try {
-        const response = await getDeckList(userInfo?.id)
+        const response = await getDeckList(userInfo?.id, accessToken)
 
         return response
       } catch (error) {

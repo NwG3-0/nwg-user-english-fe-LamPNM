@@ -47,7 +47,7 @@ class MyDocument extends Document {
             content="The Nwg English provide to you some features that help you improve your skills in english. On
           the other hand, there are some games that interested the your mind and help you learn faster"
           />
-          <meta property="og:site_name" content="Titan Hunters" />
+          <meta property="og:site_name" content="Nwg English" />
           <meta property="og:url" content="https://ielts.lampnm.com" />
           <meta
             property="og:image"

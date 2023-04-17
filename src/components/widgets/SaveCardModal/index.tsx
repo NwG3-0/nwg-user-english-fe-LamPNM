@@ -16,11 +16,11 @@ export const SaveCardModal = ({ word, onRequestClose }: Props) => {
   const [userInfo, accessToken] = useDataLoginInfoStore((state) => [state.userInfo, state.accessToken])
 
   const { data: deck } = useQuery(
-    [QUERY_KEYS.TOPIC_LIST],
+    [QUERY_KEYS.TOPIC_LIST, userInfo, accessToken],
     async () => {
       try {
-        if (userInfo) {
-          const response = await getDeckList(userInfo?.id)
+        if (userInfo && accessToken) {
+          const response = await getDeckList(userInfo?.id, accessToken)
 
           return response
         }
@@ -30,7 +30,7 @@ export const SaveCardModal = ({ word, onRequestClose }: Props) => {
     },
     {
       refetchInterval: false,
-      enabled: !!userInfo,
+      enabled: !!userInfo && !!accessToken,
       refetchOnWindowFocus: false,
     },
   )

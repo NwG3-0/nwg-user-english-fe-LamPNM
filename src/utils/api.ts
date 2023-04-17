@@ -2,15 +2,18 @@ import {
   API_DICTIONARY_URL,
   AUTH_TOKEN,
   EarliestPostResponse,
+  LearningVideoResponseData,
   NewsDetailResponse,
   NewsHighestViewsDataResponse,
   NewsListDataResponse,
   PostDetailResponse,
+  SubTitleDataResponse,
   USER_INFO,
+  VideoDataResponse,
 } from '@src/models/api'
 import { DEVICES } from './common'
 
-export const API_BASE_URL = process.env.API_BASE_URL ?? 'https://englishbe.lampnm.com'
+export const API_BASE_URL = process.env.API_BASE_URL ?? 'http://localhost:4000'
 
 export const isLogin = () => {
   if (typeof window !== 'undefined') {
@@ -186,10 +189,13 @@ export const getDictionary = async (searchWord: string) => {
 }
 
 //Topic
-export const getDeckList = async (userId: string) => {
+export const getDeckList = async (userId: string, accessToken: string) => {
   try {
     const response = await fetch(`${API_BASE_URL}/api/topic-deck?userId=${userId}`, {
       method: 'GET',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
     })
 
     const rawResponse = await response.json()
@@ -725,14 +731,22 @@ export const getEarliestPost = async (userId: string, accessToken: string) => {
   }
 }
 
-export const getNewsList = async (input: { limit: number; page: number; keyword: string }) => {
+export const getNewsList = async (input: {
+  limit: number
+  page: number
+  keyword: string
+  startDate: number
+  endDate: number
+}) => {
   try {
     const limit = input.limit ?? 10
     const page = input.page ?? 1
     const keyword = input.keyword ?? ''
+    const startDate = input.startDate
+    const endDate = input.endDate
 
     const response = await fetch(
-      `${API_BASE_URL}/api/news?limit=${limit}&page=${page}&keyword=${keyword}&device=${DEVICES.MOBILE}`,
+      `${API_BASE_URL}/api/news?limit=${limit}&page=${page}&keyword=${keyword}&device=${DEVICES.MOBILE}&startDate=${startDate}&endDate=${endDate}`,
       {
         method: 'GET',
         headers: {
@@ -906,6 +920,7 @@ export const getHighestNewsList = async (input: { limit: number }) => {
     const { limit } = input
 
     const response = await fetch(`${API_BASE_URL}/api/news/highest-views?device=${DEVICES.WEB}&limit=${limit ?? 5}`, {
+      method: 'GET',
       headers: {
         'Content-Type': 'application/json',
       },
@@ -937,6 +952,70 @@ export const getNewsListByType = async (input: { limit: number; page: number; ke
     )
 
     const rawResponse = (await response.json()) as NewsListDataResponse
+
+    if (rawResponse) {
+      return rawResponse
+    }
+  } catch (error) {
+    return { success: false, data: null, message: 'Something went wrong' }
+  }
+}
+
+export const getLearningVideoList = async (input: { limit: number; page: number }) => {
+  try {
+    const { limit, page } = input
+
+    const response = await fetch(`${API_BASE_URL}/api/learning-video?limit=${limit ?? 5}&page=${page ?? 1}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+
+    const rawResponse = (await response.json()) as LearningVideoResponseData
+
+    if (rawResponse) {
+      return rawResponse
+    }
+  } catch (error) {
+    return { success: false, data: null, message: 'Something went wrong' }
+  }
+}
+
+export const getLearningVideoDetail = async (input: { video_id: string; accessToken: string }) => {
+  try {
+    const { video_id, accessToken } = input
+
+    const response = await fetch(`${API_BASE_URL}/api/learning-video-detail?learning_video_id=${video_id}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      },
+    })
+
+    const rawResponse = (await response.json()) as VideoDataResponse
+
+    if (rawResponse) {
+      return rawResponse
+    }
+  } catch (error) {
+    return { success: false, data: null, message: 'Something went wrong' }
+  }
+}
+
+export const getSubTitleDetail = async (input: { learning_video_id: string; accessToken: string }) => {
+  try {
+    const { learning_video_id, accessToken } = input
+
+    const response = await fetch(`${API_BASE_URL}/api/subtitle?learning_video_id=${learning_video_id}`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    })
+
+    const rawResponse = (await response.json()) as SubTitleDataResponse
 
     if (rawResponse) {
       return rawResponse
