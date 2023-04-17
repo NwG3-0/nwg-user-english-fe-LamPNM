@@ -31,9 +31,7 @@ export const Checkout = () => {
             <p className="italic">Cảm ơn vì đã tin tưởng sử dụng trang web!</p>
           </div>
         </div>
-        <div className="w-[300px] h-[300px] border-[1px] border-[#808080] flex items-center justify-center">
-          <div>QR code</div>
-        </div>
+        <img src="/images/qr.jpg" alt="QR code" className="w-[300px] object-contain" />
       </div>
     </div>
   )
