@@ -18,7 +18,7 @@ interface WordTranslate {
 }
 
 export const VideoDetail = () => {
-  const router = useRouter()+
+  const router = useRouter()
   const { id } = router.query as { id: string }
 
   const playerRef = useRef<YouTube | null>(null)
