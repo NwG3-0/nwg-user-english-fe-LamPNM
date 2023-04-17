@@ -13,7 +13,7 @@ import {
 } from '@src/models/api'
 import { DEVICES } from './common'
 
-export const API_BASE_URL = process.env.API_BASE_URL ?? 'http://localhost:4000'
+export const API_BASE_URL = process.env.API_BASE_URL ?? 'https://englishbeielts.lampnm.com'
 
 export const isLogin = () => {
   if (typeof window !== 'undefined') {
