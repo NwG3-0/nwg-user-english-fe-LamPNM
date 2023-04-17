@@ -113,3 +113,35 @@ export interface LearningVideoData {
   view: number
   day: number
 }
+
+export interface VideoDataResponse {
+  message: string
+  success: boolean
+  data: VideoData
+}
+
+export interface VideoData {
+  CreatedAt: number
+  Image: string
+  Like: number
+  Link: string
+  Title: string
+  Type: string
+  UpdatedAt: number
+  View: number
+  _id: string
+}
+
+export interface SubTitleDataResponse {
+  success: boolean
+  data: SubTitleData[]
+}
+
+export interface SubTitleData {
+  day: number
+  duration: string
+  id: string
+  start: number
+  text: string
+  translate: string
+}

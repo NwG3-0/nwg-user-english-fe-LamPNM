@@ -14,7 +14,7 @@ import { deleteWhiteSpace } from '@utils/index'
 import { QUERY_KEYS } from '@utils/keys'
 import debounce from 'lodash.debounce'
 import Link from 'next/link'
-import React, { useCallback, useEffect, useLayoutEffect, useState } from 'react'
+import React, { useCallback, useLayoutEffect, useState } from 'react'
 import { Pagination } from '@components/common/Pagination'
 import { useRouter } from 'next/router'
 import { NEWS_LIST, NewsList } from '@utils/common'
@@ -25,8 +25,8 @@ export const News = () => {
 
   const [limit] = useState<number>(9)
   const [page, setPage] = useState<number>(Number(query?.page ?? 1))
-  const [startDate, setStartDate] = useState<number>(dayjs.utc().subtract(3, 'months').unix())
-  const [endDate, setEndDate] = useState<number>(dayjs.utc().unix())
+  const [startDate] = useState<number>(dayjs.utc().subtract(3, 'months').unix())
+  const [endDate] = useState<number>(dayjs.utc().unix())
 
   const [keyword, setKeyword] = useState<string>(query?.keyword ?? '')
   const [types, setTypes] = useState<string>('')
@@ -73,7 +73,7 @@ export const News = () => {
     },
   )
 
-  const { data: news_highest_views, isLoading: isNewsHighestLoading } = useQuery(
+  const { data: news_highest_views, isLoading: _isNewsHighestLoading } = useQuery(
     [QUERY_KEYS.NEWS_HIGHEST],
     async () => {
       try {
@@ -90,7 +90,7 @@ export const News = () => {
     },
   )
 
-  const { data: learning_video, isLoading: isLearningVideoLoading } = useQuery(
+  const { data: learning_video, isLoading: _isLearningVideoLoading } = useQuery(
     [QUERY_KEYS.LEARNING_VIDEO],
     async () => {
       try {
@@ -316,7 +316,7 @@ export const News = () => {
           <div className="w-full grid grid-cols-3 gap-[20px] mt-[20px]">
             {learning_video &&
               learning_video.data.map((item: LearningVideoData) => (
-                <div className="w-full cursor-pointer group" key={item.id}>
+                <Link href={`/video/${item.id}`} className="w-full cursor-pointer group" key={item.id}>
                   <div className="relative w-full h-fit">
                     <img src={item.image} alt={item.title} className="w-full object-cover" />
                     <div className="w-full h-full absolute top-0 left-0 bg-[#00000075] invisible group-hover:visible">
@@ -326,7 +326,7 @@ export const News = () => {
                     </div>
                   </div>
                   <p className="mt-[10px]">{item.title}</p>
-                </div>
+                </Link>
               ))}
           </div>
         </div>

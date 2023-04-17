@@ -7,7 +7,9 @@ import {
   NewsHighestViewsDataResponse,
   NewsListDataResponse,
   PostDetailResponse,
+  SubTitleDataResponse,
   USER_INFO,
+  VideoDataResponse,
 } from '@src/models/api'
 import { DEVICES } from './common'
 
@@ -980,18 +982,40 @@ export const getLearningVideoList = async (input: { limit: number; page: number 
   }
 }
 
-export const getLearningVideoDetail = async (input: { video_id: string }) => {
+export const getLearningVideoDetail = async (input: { video_id: string; accessToken: string }) => {
   try {
-    const { video_id } = input
+    const { video_id, accessToken } = input
 
-    const response = await fetch(`${API_BASE_URL}/api/learning-video-detail?learning_video_id${video_id}`, {
+    const response = await fetch(`${API_BASE_URL}/api/learning-video-detail?learning_video_id=${video_id}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`,
       },
     })
 
-    const rawResponse = (await response.json()) as LearningVideoResponseData
+    const rawResponse = (await response.json()) as VideoDataResponse
+
+    if (rawResponse) {
+      return rawResponse
+    }
+  } catch (error) {
+    return { success: false, data: null, message: 'Something went wrong' }
+  }
+}
+
+export const getSubTitleDetail = async (input: { learning_video_id: string; accessToken: string }) => {
+  try {
+    const { learning_video_id, accessToken } = input
+
+    const response = await fetch(`${API_BASE_URL}/api/subtitle?learning_video_id=${learning_video_id}`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    })
+
+    const rawResponse = (await response.json()) as SubTitleDataResponse
 
     if (rawResponse) {
       return rawResponse

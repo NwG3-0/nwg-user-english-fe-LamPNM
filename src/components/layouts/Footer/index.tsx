@@ -36,9 +36,10 @@ export const Footer = () => {
         </div>
         <div className="flex flex-col">
           <div className="text-[24px] font-bold ">Contact </div>
-          <div className="font-serif py-[8px]">Address77 Indian St. Baltimore, MD 21206</div>
-          <div className="font-serif py-[8px]">Phone+3233-332-334</div>
-          <div className="font-serif py-[8px]">Emailelearny@example.com</div>
+          <div className="font-serif py-[8px]">Phạm Ngọc Mai Lâm - 001200003812</div>
+          <div className="font-serif py-[8px]">56 Ngõ 1, Nguyễn An Ninh, Giáp Bát, Hoàng Mai, Hà Nội</div>
+          <div className="font-serif py-[8px]">Phone 0333889598</div>
+          <div className="font-serif py-[8px]">mailam1309@gmail.com</div>
         </div>
       </div>
     </div>
