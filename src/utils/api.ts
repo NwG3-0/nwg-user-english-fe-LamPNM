@@ -8,12 +8,13 @@ import {
   NewsListDataResponse,
   PostDetailResponse,
   SubTitleDataResponse,
+  SubTitleRandomDataResponse,
   USER_INFO,
   VideoDataResponse,
 } from '@src/models/api'
 import { DEVICES } from './common'
 
-export const API_BASE_URL = process.env.API_BASE_URL ?? 'https://englishbe.lampnm.com'
+export const API_BASE_URL = process.env.API_BASE_URL ?? 'http://localhost:4000'
 
 export const isLogin = () => {
   if (typeof window !== 'undefined') {
@@ -1016,6 +1017,27 @@ export const getSubTitleDetail = async (input: { learning_video_id: string; acce
     })
 
     const rawResponse = (await response.json()) as SubTitleDataResponse
+
+    if (rawResponse) {
+      return rawResponse
+    }
+  } catch (error) {
+    return { success: false, data: null, message: 'Something went wrong' }
+  }
+}
+
+export const getSubTitleRandomDetail = async (input: { learning_video_id: string; accessToken: string }) => {
+  try {
+    const { learning_video_id, accessToken } = input
+
+    const response = await fetch(`${API_BASE_URL}/api/subtitle/random?learning_video_id=${learning_video_id}`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    })
+
+    const rawResponse = (await response.json()) as SubTitleRandomDataResponse
 
     if (rawResponse) {
       return rawResponse

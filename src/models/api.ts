@@ -137,11 +137,26 @@ export interface SubTitleDataResponse {
   data: SubTitleData[]
 }
 
+export interface SubTitleRandomDataResponse {
+  success: boolean
+  data: SubTitleRandomData[]
+}
+
 export interface SubTitleData {
   day: number
   duration: string
   id: string
   start: number
+  text: string
+  translate: string
+}
+
+export interface SubTitleRandomData {
+  day: number
+  duration: string
+  id: string
+  start: number
+  word: string
   text: string
   translate: string
 }

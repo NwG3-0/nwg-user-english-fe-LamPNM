@@ -2,15 +2,15 @@ import { useEffect, useRef, useState } from 'react'
 import YouTube from 'react-youtube'
 import { useRouter } from 'next/router'
 import { useQuery } from '@tanstack/react-query'
-import { SubTitleData, SubTitleDataResponse, VideoDataResponse } from '@src/models/api'
+import { InView } from 'react-intersection-observer'
+import { SubTitleData, SubTitleDataResponse, SubTitleRandomDataResponse, VideoDataResponse } from '@src/models/api'
 import { useDataLoginInfoStore } from '@src/zustand'
-import { getLearningVideoDetail, getSubTitleDetail } from '@utils/api'
+import { getLearningVideoDetail, getSubTitleDetail, getSubTitleRandomDetail } from '@utils/api'
 import { QUERY_KEYS } from '@utils/keys'
 import { DataLoginInfo } from '@utils/zustand'
 import { TranslateIcon } from '@components/common/CustomIcon'
 import { CustomModal } from '@components/common/CustomModal'
 import { TranslateModal } from '@components/widgets/TranslateModal'
-import { InView } from 'react-intersection-observer'
 
 interface WordTranslate {
   text: string
@@ -18,7 +18,7 @@ interface WordTranslate {
 }
 
 export const VideoDetail = () => {
-  const router = useRouter()
+  const router = useRouter()+
   const { id } = router.query as { id: string }
 
   const playerRef = useRef<YouTube | null>(null)
@@ -55,6 +55,33 @@ export const VideoDetail = () => {
       enabled: !!accessToken && !!id,
     },
   )
+
+  const { data: subtitle_video_random } = useQuery(
+    [QUERY_KEYS.SUBTITLE_VIDEO_RANDOM_DETAIL, accessToken, id],
+    async () => {
+      if (accessToken) {
+        try {
+          const response = (await getSubTitleRandomDetail({
+            learning_video_id: id,
+            accessToken,
+          })) as SubTitleRandomDataResponse
+
+          if (response.success) {
+            return response.data
+          }
+        } catch (error) {
+          console.log(error)
+        }
+      }
+    },
+    {
+      refetchInterval: false,
+      refetchOnWindowFocus: false,
+      enabled: !!accessToken && !!id,
+    },
+  )
+
+  console.log(subtitle_video_random)
 
   const { data: video_detail } = useQuery(
     [QUERY_KEYS.VIDEO_DETAIL, accessToken, id],
