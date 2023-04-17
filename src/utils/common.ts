@@ -56,7 +56,7 @@ export const DROPDOWN_USER_MENU: Dropdown[] = [
   {
     id: 1,
     content: 'User Profile',
-    path: '/',
+    path: '/user_profile',
     type: 'link',
   },
   {

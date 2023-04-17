@@ -5,7 +5,7 @@ const Header = dynamic<any>(() => import('@components/layouts/Header').then((mod
   ssr: false,
 })
 
-const UserProfile = dynamic<any>(() => import('@components/screens/UserProfile/index').then((mod) => mod.UserProfile), {
+const Checkout = dynamic<any>(() => import('@components/screens/Checkout/index').then((mod) => mod.Checkout), {
   ssr: false,
 })
 
@@ -13,14 +13,14 @@ const Footer = dynamic<any>(() => import('@components/layouts/Footer').then((mod
   ssr: false,
 })
 
-const UserProfilePage: NextPage = () => {
+const CheckoutPage: NextPage = () => {
   return (
     <div>
       <Header />
-      <UserProfile />
+      <Checkout />
       <Footer />
     </div>
   )
 }
 
-export default UserProfilePage
+export default CheckoutPage
