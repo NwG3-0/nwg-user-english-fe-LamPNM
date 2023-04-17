@@ -1,10 +1,12 @@
 import { useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { Step1 } from './Step1'
-import { Step2Creation } from './Step2Creation'
-import { Step2Join } from './Step2Join'
-import { Step3 } from './Step3'
 import { QUERY_STRING_STEP } from '@src/models/drawGame'
+import dynamic from 'next/dynamic'
+
+const Step2Creation = dynamic(() => import('./Step2Creation').then((mod) => mod.Step2Creation))
+const Step2Join = dynamic(() => import('./Step2Join').then((mod) => mod.Step2Join))
+const Step3 = dynamic(() => import('./Step3').then((mod) => mod.Step3), { ssr: false })
 
 interface Props {
   step: QUERY_STRING_STEP | null
