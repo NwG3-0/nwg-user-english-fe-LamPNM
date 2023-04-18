@@ -1042,3 +1042,11 @@ export const TranslateIcon = ({ width, height }: IconType) => {
     </svg>
   )
 }
+
+export const PauseIcon = ({ width, height, color }: IconType) => {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" height={height} viewBox="0 0 24 24" width={width} fill={color}>
+      <path d="m4 20v-16a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v16a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1-1zm11 1h4a1 1 0 0 0 1-1v-16a1 1 0 0 0 -1-1h-4a1 1 0 0 0 -1 1v16a1 1 0 0 0 1 1z" />
+    </svg>
+  )
+}

@@ -26,14 +26,13 @@ export const Checkout = () => {
               <Link href={'/user_profile'} className="text-[#808080]">
                 User Profile
               </Link>{' '}
-              rồi bấm vào button "Kích hoạt thành viên" <br /> nhập mã code nhận được rồi ấn tiếp button "Kích hoạt"
+              rồi bấm vào button &quot;Kích hoạt thành viên&quot; <br /> nhập mã code nhận được rồi ấn tiếp button
+              &quot;Kích hoạt&quot;
             </p>
             <p className="italic">Cảm ơn vì đã tin tưởng sử dụng trang web!</p>
           </div>
         </div>
-        <div className="w-[300px] h-[300px] border-[1px] border-[#808080] flex items-center justify-center">
-          <div>QR code</div>
-        </div>
+        <img src="/images/qr.jpg" alt="QR code" className="w-[300px] object-contain" />
       </div>
     </div>
   )

@@ -10,11 +10,12 @@ import { useDataLoginInfoStore } from '@src/zustand'
 import { deleteWhiteSpace } from '@utils/index'
 import { QUERY_KEYS } from '@utils/keys'
 import { getEarliestPost, getPostList } from '@utils/api'
+import { DataLoginInfo } from '@utils/zustand'
 
 dayjs.extend(utc)
 
 export const Post = () => {
-  const [userInfo, accessToken] = useDataLoginInfoStore((state: any) => [state.userInfo, state.accessToken])
+  const [userInfo, accessToken] = useDataLoginInfoStore((state: DataLoginInfo) => [state.userInfo, state.accessToken])
   const [limit] = useState<number>(5)
   const [page] = useState<number>(1)
   const [keyword, setKeyword] = useState<string>('')
@@ -38,12 +39,14 @@ export const Post = () => {
   const { data: earliest_post } = useQuery(
     [QUERY_KEYS.EARLIEST_POST_LIST, userInfo, accessToken],
     async () => {
-      try {
-        const response = (await getEarliestPost(userInfo?.id, accessToken)) as EarliestPostResponse
+      if (userInfo && accessToken) {
+        try {
+          const response = (await getEarliestPost(userInfo?.id, accessToken)) as EarliestPostResponse
 
-        return response
-      } catch (error) {
-        console.log(error)
+          return response
+        } catch (error) {
+          console.log(error)
+        }
       }
     },
     {
@@ -57,7 +60,7 @@ export const Post = () => {
   }
 
   const debounceInput = useCallback(
-    debounce((keyword) => debounceKeyword(keyword), 1000),
+    debounce((keyword: string) => debounceKeyword(keyword), 1000),
     [],
   )
 
@@ -93,7 +96,7 @@ export const Post = () => {
                 post?.data?.length > 0 &&
                 post?.data.map(
                   (p: { id: string; imageTitle: string; title: string; description: string; day: number }) => (
-                    <Link href={`/post/${p.id}`} className="bg-slate-100 cursor-pointer rounded-md p-[10px]">
+                    <Link href={`/post/${p.id}`} className="bg-slate-100 cursor-pointer rounded-md p-[10px]" key={p.id}>
                       <img className="w-full h-[300px] object-cover" src={p.imageTitle}></img>
                       <div className="flex justify-between items-center py-[5px] mx-auto">
                         <div className="text-left text-[10px] py-[4px] break-words">{p.title}</div>

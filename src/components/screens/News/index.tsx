@@ -21,19 +21,19 @@ import { NEWS_LIST, NewsList } from '@utils/common'
 
 export const News = () => {
   const router = useRouter()
-  const { query }: any = router
+  const { query } = router
 
   const [limit] = useState<number>(9)
   const [page, setPage] = useState<number>(Number(query?.page ?? 1))
   const [startDate] = useState<number>(dayjs.utc().subtract(3, 'months').unix())
   const [endDate] = useState<number>(dayjs.utc().unix())
 
-  const [keyword, setKeyword] = useState<string>(query?.keyword ?? '')
+  const [keyword, setKeyword] = useState<string>((query.keyword as string | null) ?? '')
   const [types, setTypes] = useState<string>('')
 
   useLayoutEffect(() => {
     if (query?.type) {
-      setTypes(query.type)
+      setTypes(query.type as string)
     }
   }, [query])
 
@@ -73,7 +73,7 @@ export const News = () => {
     },
   )
 
-  const { data: news_highest_views, isLoading: _isNewsHighestLoading } = useQuery(
+  const { data: news_highest_views, isLoading: isNewsHighestLoading } = useQuery(
     [QUERY_KEYS.NEWS_HIGHEST],
     async () => {
       try {
@@ -90,7 +90,7 @@ export const News = () => {
     },
   )
 
-  const { data: learning_video, isLoading: _isLearningVideoLoading } = useQuery(
+  const { data: learning_video, isLoading: isLearningVideoLoading } = useQuery(
     [QUERY_KEYS.LEARNING_VIDEO],
     async () => {
       try {
@@ -112,7 +112,7 @@ export const News = () => {
   }
 
   const debounceInput = useCallback(
-    debounce((keyword) => debounceKeyword(keyword), 1000),
+    debounce((keyword: string) => debounceKeyword(keyword), 1000),
     [],
   )
 
@@ -122,7 +122,7 @@ export const News = () => {
 
   const onChangePage = (p: number) => {
     setPage(p)
-    router.push({
+    void router.push({
       query: {
         page: p,
       },
@@ -133,6 +133,9 @@ export const News = () => {
     setTypes(value)
   }
 
+  if (isNewsHighestLoading && isLearningVideoLoading) {
+    return <div>Loading</div>
+  }
   return (
     <div className="container xl:w-[1300px] mx-auto mt-[110px]">
       <div className="w-full flex gap-[20px]">

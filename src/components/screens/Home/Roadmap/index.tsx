@@ -53,7 +53,7 @@ export const RoadMap = () => {
         </div>
         <div>
           <div data-aos="fade-up" data-aos-duration="600" className="font-bold text-[18px]">
-            <p>Don't know your English level</p>
+            <p>Don&apos;t know your English level</p>
           </div>
           <div data-aos="fade-up" data-aos-duration="600">
             <p>
@@ -100,7 +100,7 @@ export const RoadMap = () => {
             </div>
             <div>
               <div data-aos="fade-up" data-aos-duration="600" className="font-bold text-[18px]">
-                <p className="text-[#FFFFFF]">Don't know your English level</p>
+                <p className="text-[#FFFFFF]">Don&apos;t know your English level</p>
               </div>
               <div data-aos="fade-up" data-aos-duration="600" className="text-[#FFFFFF]">
                 <p>

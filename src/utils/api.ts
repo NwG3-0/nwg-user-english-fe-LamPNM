@@ -1,19 +1,25 @@
 import {
   API_DICTIONARY_URL,
   AUTH_TOKEN,
+  CardDataResponse,
+  DeckListDataResponse,
   EarliestPostResponse,
   LearningVideoResponseData,
   NewsDetailResponse,
   NewsHighestViewsDataResponse,
   NewsListDataResponse,
   PostDetailResponse,
+  RandomWordDataResponse,
   SubTitleDataResponse,
+  SubTitleRandomDataResponse,
   USER_INFO,
+  UserInfoDataResponse,
+  UserLogOutResponse,
   VideoDataResponse,
 } from '@src/models/api'
 import { DEVICES } from './common'
 
-export const API_BASE_URL = process.env.API_BASE_URL ?? 'https://englishbeielts.lampnm.com'
+export const API_BASE_URL = process.env.API_BASE_URL ?? 'http://localhost:4000'
 
 export const isLogin = () => {
   if (typeof window !== 'undefined') {
@@ -40,7 +46,7 @@ export const login = async ({ email, password }: { email: string; password: stri
       body: JSON.stringify({ email, password }),
     })
 
-    const rawResponse = await response.json()
+    const rawResponse = (await response.json()) as UserInfoDataResponse
 
     if (rawResponse) {
       return rawResponse
@@ -134,7 +140,7 @@ export const logout = async (input: { token: string; expiredAt: number }) => {
       body: JSON.stringify({ token, expiredAt }),
     })
 
-    const rawResponse = await response.json()
+    const rawResponse = (await response.json()) as UserLogOutResponse
 
     if (rawResponse) {
       return rawResponse
@@ -198,7 +204,7 @@ export const getDeckList = async (userId: string, accessToken: string) => {
       },
     })
 
-    const rawResponse = await response.json()
+    const rawResponse = (await response.json()) as DeckListDataResponse
 
     if (rawResponse) {
       return rawResponse
@@ -248,7 +254,6 @@ export const deleteDeck = async (topicId: string) => {
     const rawResponse = await response.json()
 
     if (rawResponse) {
-      console.log(JSON.stringify({ topicId }))
       return rawResponse
     }
   } catch (error) {
@@ -284,7 +289,7 @@ export const getCard = async (input: {
       },
     )
 
-    const rawResponse = await response.json()
+    const rawResponse = (await response.json()) as CardDataResponse
 
     if (rawResponse) {
       return rawResponse
@@ -442,7 +447,7 @@ export const randomWord = async (userId: string, accessToken: string) => {
       },
     })
 
-    const rawResponse = await response.json()
+    const rawResponse = (await response.json()) as RandomWordDataResponse
 
     if (rawResponse) {
       return rawResponse
@@ -1016,6 +1021,27 @@ export const getSubTitleDetail = async (input: { learning_video_id: string; acce
     })
 
     const rawResponse = (await response.json()) as SubTitleDataResponse
+
+    if (rawResponse) {
+      return rawResponse
+    }
+  } catch (error) {
+    return { success: false, data: null, message: 'Something went wrong' }
+  }
+}
+
+export const getSubTitleRandomDetail = async (input: { learning_video_id: string; accessToken: string }) => {
+  try {
+    const { learning_video_id, accessToken } = input
+
+    const response = await fetch(`${API_BASE_URL}/api/subtitle/random?learning_video_id=${learning_video_id}`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    })
+
+    const rawResponse = (await response.json()) as SubTitleRandomDataResponse
 
     if (rawResponse) {
       return rawResponse

@@ -14,6 +14,8 @@ import {
 } from '@utils/api'
 import { QUERY_KEYS } from '@utils/keys'
 import { NOTIFICATION_TYPE, notify } from '@utils/notify'
+import { DataLoginInfo } from '@utils/zustand'
+import { DeckListData, DeckListDataResponse, RandomWordData, RandomWordDataResponse } from '@src/models/api'
 
 interface Status {
   isFalse: boolean
@@ -25,7 +27,7 @@ interface Status {
 
 export const WordTest = () => {
   const queryClient = useQueryClient()
-  const [userInfo, accessToken] = useDataLoginInfoStore((state: any) => [state.userInfo, state.accessToken])
+  const [userInfo, accessToken] = useDataLoginInfoStore((state: DataLoginInfo) => [state.userInfo, state.accessToken])
 
   const [isStatus, setIsStatus] = useState<Status>({
     isFalse: false,
@@ -40,7 +42,7 @@ export const WordTest = () => {
   const [level, setLevel] = useState<string>('')
 
   const [inCorrectLetter, setInCorrectLetter] = useState<string[]>([])
-  const [wordData, setWordData] = useState<any[]>([])
+  const [wordData, setWordData] = useState<RandomWordData[]>([])
   const [word, setWord] = useState({
     wordToGuess: '',
     wordMeaning: '',
@@ -78,9 +80,11 @@ export const WordTest = () => {
     [QUERY_KEYS.TOPIC_LIST, userInfo, accessToken],
     async () => {
       try {
-        const response = await getDeckList(userInfo?.id, accessToken)
+        if (userInfo && accessToken) {
+          const response = (await getDeckList(userInfo.id, accessToken)) as DeckListDataResponse
 
-        return response
+          return response
+        }
       } catch (error) {
         console.log(error)
       }
@@ -98,7 +102,7 @@ export const WordTest = () => {
     async () => {
       if (accessToken && userInfo) {
         try {
-          const response = await randomWord(userInfo?.id, accessToken)
+          const response = (await randomWord(userInfo?.id, accessToken)) as RandomWordDataResponse
           return response
         } catch (error) {
           console.log(error)
@@ -119,6 +123,7 @@ export const WordTest = () => {
       setWord({
         wordToGuess: rdWord.data[0]?.Word,
         wordPhonetic: rdWord.data[0]?.Phonetic,
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         wordMeaning: JSON.parse(rdWord.data[0]?.Meanings ?? '{}')[0]?.definitions[0].definition,
       })
     }
@@ -134,6 +139,7 @@ export const WordTest = () => {
       setWord({
         wordToGuess: arrWordData[0]?.Word,
         wordPhonetic: arrWordData[0]?.Phonetic,
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         wordMeaning: JSON.parse(arrWordData[0]?.Meanings ?? '{}')[0]?.definitions[0].definition,
       })
 
@@ -152,7 +158,7 @@ export const WordTest = () => {
   const onSetupWord = async () => {
     if (!checkUser.success) {
       try {
-        if (accessToken) {
+        if (accessToken && userInfo) {
           const { success } = await setUpRandomWord({
             number: numberWord,
             userId: userInfo.id,
@@ -163,7 +169,7 @@ export const WordTest = () => {
 
           if (success) {
             notify(NOTIFICATION_TYPE.SUCCESS, 'Saved success')
-            queryClient.invalidateQueries([QUERY_KEYS.WORD_TEST])
+            void queryClient.invalidateQueries([QUERY_KEYS.WORD_TEST])
             setGuessedLetter([])
             setOpenSetupModal(false)
 
@@ -175,7 +181,7 @@ export const WordTest = () => {
       }
     } else {
       try {
-        if (accessToken) {
+        if (userInfo && accessToken) {
           const { success } = await UpdateSetUpRandomWord({
             number: numberWord,
             userId: userInfo.id,
@@ -183,7 +189,7 @@ export const WordTest = () => {
             level: level || 'easy,normal,hard',
           })
           if (success) {
-            queryClient.invalidateQueries([QUERY_KEYS.WORD_TEST])
+            void queryClient.invalidateQueries([QUERY_KEYS.WORD_TEST])
             notify(NOTIFICATION_TYPE.SUCCESS, 'Update success')
             setGuessedLetter([])
             setOpenSetupModal(false)
@@ -197,7 +203,7 @@ export const WordTest = () => {
     }
   }
 
-  const handleTopicName = (e: any) => {
+  const handleTopicName = (e: { target: { value: string } }) => {
     setTopicName(e.target.value)
   }
 
@@ -215,7 +221,9 @@ export const WordTest = () => {
 
   const addGuessedLetter = useCallback(
     (letter: string) => {
-      if (guessedLetters.includes(letter) || isStatus.isCorrect || isStatus.isFalse) return
+      if (guessedLetters.includes(letter) || isStatus.isCorrect || isStatus.isFalse) {
+        return
+      }
       setGuessedLetter((currentLetters) => [...currentLetters, letter])
     },
     [guessedLetters],
@@ -225,7 +233,9 @@ export const WordTest = () => {
     const handler = (e: KeyboardEvent) => {
       const key = e.key
 
-      if (!key.match(/^[a-z]$/)) return
+      if (!key.match(/^[a-z]$/)) {
+        return
+      }
       e.preventDefault()
       addGuessedLetter(key)
     }
@@ -256,7 +266,7 @@ export const WordTest = () => {
 
   const onSaveResult = async () => {
     try {
-      if (accessToken) {
+      if (userInfo && accessToken) {
         const { success } = await addResultWordTest({
           resultTest: JSON.stringify(result),
           topicName: topicName,
@@ -307,8 +317,8 @@ export const WordTest = () => {
               <div className="w-full">
                 <div>Choose the topic name of word :</div>
                 <select onChange={handleTopicName} name="topic" id="topic">
-                  {deck?.data?.map((tpName: any) => {
-                    return <option>{tpName.topicName}</option>
+                  {deck?.data?.map((tpName: DeckListData) => {
+                    return <option key={tpName.id}>{tpName.topicName}</option>
                   })}
                 </select>
               </div>
@@ -374,14 +384,14 @@ export const WordTest = () => {
             <div className=" text-[24px] mt-[40px] p-[40px]">{word.wordMeaning}</div>
             <div className="text-[20px] text-center mt-[20px]">{word.wordPhonetic}</div>
             <div className="absolute right-[50%] bottom-[4px] translate-x-[50%]">
-              {result.length + 1}/{rdWord?.data.length}
+              {Number(result.length) + 1}/{rdWord?.data.length}
             </div>
             <div className="absolute bottom-[40px] right-[4px]">
               <p>You have 3 chance each word</p>
             </div>
             <div className="absolute bottom-[4px] right-[4px] flex">
-              {heart.map(() => (
-                <img className="w-[32px] h-[32px]" src="/images/HeartIcon.gif" alt="Heart Icon" />
+              {heart.map((_, index: number) => (
+                <img className="w-[32px] h-[32px]" src="/images/HeartIcon.gif" alt="Heart Icon" key={index} />
               ))}
             </div>
           </div>
