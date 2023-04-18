@@ -49,12 +49,17 @@ export const Step1 = () => {
   }
 
   return (
-    <div className="w-full py-[200px]">
-      <p className="text-center text-3xl mb-8">Draw Game</p>
-      <div className="flex flex-col justify-center items-center gap-y-4">
-        <Button label="Create" color="green" onClick={() => onButtonClick({ type: 'create' })} />
-        <Button label="Join" color="yellow" onClick={() => onButtonClick({ type: 'join' })} />
-        <Button label="Play online" onClick={() => onButtonClick({ type: 'playOnline' })} />
+    <div className="w-screen h-screen relative">
+      <div className="absolute top-[20px] left-[50%] -translate-x-[50%] text-center">
+        You can press F11 to expand your experience
+      </div>
+      <div className="absolute top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%]">
+        <p className="text-center text-3xl mb-8">Draw Game</p>
+        <div className="flex flex-col justify-center items-center gap-y-4">
+          <Button label="Create" color="green" onClick={() => onButtonClick({ type: 'create' })} />
+          <Button label="Join" color="yellow" onClick={() => onButtonClick({ type: 'join' })} />
+          <Button label="Play online" onClick={() => onButtonClick({ type: 'playOnline' })} />
+        </div>
       </div>
     </div>
   )

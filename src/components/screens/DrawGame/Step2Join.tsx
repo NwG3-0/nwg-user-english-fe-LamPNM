@@ -5,6 +5,10 @@ import { useQuery } from '@tanstack/react-query'
 import { LoadingButton } from '@components/common/LoadingButton'
 import { REACT_QUERY_KEYS } from '@src/models/keys'
 import { fetchListRoom } from '@utils/api/drawGame'
+import { useDataLoginInfoStore } from '@src/zustand'
+import { DataLoginInfo } from '@utils/zustand'
+import { SOCKET_KEYS } from '@src/models/socket'
+import { socket } from '.'
 
 type FormData = {
   roomId: string
@@ -15,6 +19,9 @@ type FormData = {
 
 export const Step2Join = () => {
   const router = useRouter()
+
+  const [userInfo] = useDataLoginInfoStore((state: DataLoginInfo) => [state.userInfo])
+
   const [isShowPassword, setIsShowPassword] = useState<boolean>(false)
   const [formData, setFormData] = useState<FormData>({
     roomId: '',
@@ -50,7 +57,9 @@ export const Step2Join = () => {
   }
 
   const onSubmit = () => {
-    console.log(1)
+    if (userInfo) {
+      socket.emit(SOCKET_KEYS.JOIN_ROOM, { room: formData.roomId, user: userInfo.id })
+    }
   }
 
   return (
@@ -72,7 +81,6 @@ export const Step2Join = () => {
             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
             placeholder="Room 1"
             required
-            disabled
             value={formData.roomId}
             onChange={onChangeInput}
           />
@@ -130,7 +138,7 @@ export const Step2Join = () => {
               onClick={onTogglePassword}
             />
           </div>
-          <LoadingButton type="button" content="Create" isLoading={true} onClick={onSubmit} />
+          <LoadingButton type="button" content="Create" isLoading={false} onClick={onSubmit} />
         </div>
       </div>
 

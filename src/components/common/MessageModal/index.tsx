@@ -11,7 +11,7 @@ import { CloseMessageIcon, EmojiIcon, UserIcon } from '../CustomIcon'
 import { GifPopUp } from '../GifPopUp'
 // import { StickerPopUp } from '../StickerPopUp'
 
-const socket = io.connect('https://nwg-ielts-backend.onrender.com/')
+const socket = io.connect('http://localhost:4000')
 
 interface Props {
   onOpenMessageModal: () => void
@@ -67,7 +67,7 @@ export const MessageModal = ({ onOpenMessageModal }: Props) => {
           type: 'text',
         })
         if (success) {
-          await socket.emit('send_msg', {
+          socket.emit('send_msg', {
             fromSelf: userInfo.id,
             message: messageValue,
             type: TYPE_MESSAGE.TEXT,
@@ -123,6 +123,7 @@ export const MessageModal = ({ onOpenMessageModal }: Props) => {
 
   useEffect(() => {
     if (getMessage && getMessage?.data?.length > 0) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       setMessageData(getMessage?.data)
     }
   }, [getMessage])
@@ -163,9 +164,9 @@ export const MessageModal = ({ onOpenMessageModal }: Props) => {
         </div>
         <div className="w-full flex-col-reverse flex overflow-y-scroll h-[80%]">
           {messageData.length > 0 &&
-            messageData.map((mess: any) => {
+            messageData.map((mess: any, index: number) => {
               return (
-                <div className="w-full ">
+                <div className="w-full" key={index}>
                   {mess?.fromSelf === userInfo.id && receivedMsgData ? (
                     <div className="float-right  w-[60%] py-[8px] px-[12px] mr-[16px] rounded-[16px] my-[2px] text-white">
                       {mess.type !== TYPE_MESSAGE.TEXT ? (

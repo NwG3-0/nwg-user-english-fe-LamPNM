@@ -28,7 +28,7 @@ export const News = () => {
   const [startDate] = useState<number>(dayjs.utc().subtract(3, 'months').unix())
   const [endDate] = useState<number>(dayjs.utc().unix())
 
-  const [keyword, setKeyword] = useState<string>(query?.keyword ?? '')
+  const [keyword, setKeyword] = useState<string>(query.keyword ?? '')
   const [types, setTypes] = useState<string>('')
 
   useLayoutEffect(() => {
@@ -73,7 +73,7 @@ export const News = () => {
     },
   )
 
-  const { data: news_highest_views, isLoading: _isNewsHighestLoading } = useQuery(
+  const { data: news_highest_views, isLoading: isNewsHighestLoading } = useQuery(
     [QUERY_KEYS.NEWS_HIGHEST],
     async () => {
       try {
@@ -90,7 +90,7 @@ export const News = () => {
     },
   )
 
-  const { data: learning_video, isLoading: _isLearningVideoLoading } = useQuery(
+  const { data: learning_video, isLoading: isLearningVideoLoading } = useQuery(
     [QUERY_KEYS.LEARNING_VIDEO],
     async () => {
       try {
@@ -112,7 +112,7 @@ export const News = () => {
   }
 
   const debounceInput = useCallback(
-    debounce((keyword) => debounceKeyword(keyword), 1000),
+    debounce((keyword: string) => debounceKeyword(keyword), 1000),
     [],
   )
 
@@ -131,6 +131,10 @@ export const News = () => {
 
   const onSelectTypes = (value: string) => {
     setTypes(value)
+  }
+
+  if (isNewsHighestLoading && isLearningVideoLoading) {
+    return <div>Loading</div>
   }
 
   return (

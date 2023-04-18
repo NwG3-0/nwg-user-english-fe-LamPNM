@@ -3,6 +3,10 @@ import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { v4 as uuidv4 } from 'uuid'
 import { LoadingButton } from '@components/common/LoadingButton'
+import { socket } from '.'
+import { SOCKET_KEYS } from '@src/models/socket'
+import { useDataLoginInfoStore } from '@src/zustand'
+import { DataLoginInfo } from '@utils/zustand'
 
 type FormData = {
   username: string
@@ -12,6 +16,8 @@ type FormData = {
 
 export const Step2Creation = () => {
   const router = useRouter()
+  const [userInfo] = useDataLoginInfoStore((state: DataLoginInfo) => [state.userInfo])
+
   const [isShowPassword, setIsShowPassword] = useState<boolean>(false)
   const [formData, setFormData] = useState<FormData>({
     username: '',
@@ -35,7 +41,9 @@ export const Step2Creation = () => {
   }
 
   const onSubmit = () => {
-    console.log(1)
+    if (userInfo) {
+      socket.emit(SOCKET_KEYS.CREATE_ROOM, { room: uniqueId, user: userInfo.id })
+    }
   }
 
   return (
@@ -101,7 +109,7 @@ export const Step2Creation = () => {
             onClick={onTogglePassword}
           />
         </div>
-        <LoadingButton type="button" content="Create" isLoading={true} onClick={onSubmit} />
+        <LoadingButton type="button" content="Create" isLoading={false} onClick={onSubmit} />
       </div>
     </div>
   )

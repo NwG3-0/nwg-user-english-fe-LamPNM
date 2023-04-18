@@ -1,8 +1,13 @@
 import { useEffect } from 'react'
+import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 import { Step1 } from './Step1'
 import { QUERY_STRING_STEP } from '@src/models/drawGame'
-import dynamic from 'next/dynamic'
+import * as io from 'socket.io-client'
+import { useDataLoginInfoStore } from '@src/zustand'
+import { DataLoginInfo } from '@utils/zustand'
+
+export const socket = io.connect('http://localhost:4000')
 
 const Step2Creation = dynamic(() => import('./Step2Creation').then((mod) => mod.Step2Creation))
 const Step2Join = dynamic(() => import('./Step2Join').then((mod) => mod.Step2Join))
@@ -14,6 +19,13 @@ interface Props {
 
 export const DrawGameScreen = ({ step }: Props) => {
   const router = useRouter()
+  const [userInfo] = useDataLoginInfoStore((state: DataLoginInfo) => [state.userInfo])
+
+  useEffect(() => {
+    if (userInfo) {
+      socket.emit('users', userInfo.id)
+    }
+  }, [userInfo])
 
   useEffect(() => {
     if (!step) {
