@@ -1,8 +1,10 @@
+import { DeckListData, DeckListDataResponse } from '@src/models/api'
 import { useDataLoginInfoStore } from '@src/zustand'
 import { useQuery } from '@tanstack/react-query'
 import { createCard, getDeckList } from '@utils/api'
 import { QUERY_KEYS } from '@utils/keys'
 import { NOTIFICATION_TYPE, notify } from '@utils/notify'
+import { DataLoginInfo } from '@utils/zustand'
 import { useEffect, useState } from 'react'
 
 interface Props {
@@ -11,16 +13,17 @@ interface Props {
 }
 
 export const SaveCardModal = ({ word, onRequestClose }: Props) => {
+  const [userInfo, accessToken] = useDataLoginInfoStore((state: DataLoginInfo) => [state.userInfo, state.accessToken])
+
   const [level, setLevel] = useState<string>('')
   const [topicName, setTopicName] = useState<string>('')
-  const [userInfo, accessToken] = useDataLoginInfoStore((state) => [state.userInfo, state.accessToken])
 
   const { data: deck } = useQuery(
     [QUERY_KEYS.TOPIC_LIST, userInfo, accessToken],
     async () => {
       try {
         if (userInfo && accessToken) {
-          const response = await getDeckList(userInfo?.id, accessToken)
+          const response = (await getDeckList(userInfo.id, accessToken)) as DeckListDataResponse
 
           return response
         }
@@ -41,7 +44,7 @@ export const SaveCardModal = ({ word, onRequestClose }: Props) => {
     }
   }, [deck])
 
-  const handleTopicName = (e: any) => {
+  const handleTopicName = (e: { target: { value: string } }) => {
     setTopicName(e.target.value)
   }
 
@@ -82,8 +85,8 @@ export const SaveCardModal = ({ word, onRequestClose }: Props) => {
               defaultValue={topicName}
               className="border-[#808080] text-[18px] py-[5px] border-[0.5px]"
             >
-              {deck?.data?.map((tpName: any) => {
-                return <option>{tpName.topicName}</option>
+              {deck?.data?.map((tpName: DeckListData) => {
+                return <option key={tpName.id}>{tpName.topicName}</option>
               })}
             </select>
           )}

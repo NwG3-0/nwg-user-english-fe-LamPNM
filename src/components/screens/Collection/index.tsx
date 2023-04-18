@@ -8,6 +8,8 @@ import { useDataLoginInfoStore } from '@src/zustand'
 import { createDeck, deleteDeck, getCard, getDeckList } from '@utils/api'
 import { QUERY_KEYS } from '@utils/keys'
 import { NOTIFICATION_TYPE, notify } from '@utils/notify'
+import { DataLoginInfo } from '@utils/zustand'
+import { CardDataResponse, DeckListData, DeckListDataResponse } from '@src/models/api'
 
 const settings = {
   dots: false,
@@ -17,7 +19,7 @@ const settings = {
 
 export const Collection = () => {
   const queryClient = useQueryClient()
-  const [userInfo, accessToken] = useDataLoginInfoStore((state: any) => [state.userInfo, state.accessToken])
+  const [userInfo, accessToken] = useDataLoginInfoStore((state: DataLoginInfo) => [state.userInfo, state.accessToken])
 
   const [isOpenAddTopicModal, setIsOpenAddTopicModal] = useState<boolean>(false)
   const [showDetail, setShowDetail] = useState<boolean>(false)
@@ -26,7 +28,7 @@ export const Collection = () => {
   const [limit] = useState<number>(5)
   const [page] = useState<number>(1)
 
-  const [_mean, setMean] = useState<any>([])
+  const [setMean] = useState<any>([])
   const [keyword] = useState<string>('')
   const [level, setLevel] = useState<string[]>([])
   const [tpName, setTopicName] = useState<string>('')
@@ -35,9 +37,11 @@ export const Collection = () => {
     [QUERY_KEYS.TOPIC_LIST, userInfo, accessToken],
     async () => {
       try {
-        const response = await getDeckList(userInfo?.id, accessToken)
+        if (userInfo && accessToken) {
+          const response = (await getDeckList(userInfo.id, accessToken)) as DeckListDataResponse
 
-        return response
+          return response
+        }
       } catch (error) {
         console.log(error)
       }
@@ -45,7 +49,7 @@ export const Collection = () => {
     {
       refetchInterval: false,
       refetchOnWindowFocus: false,
-      enabled: !!userInfo,
+      enabled: !!userInfo && !!accessToken,
     },
   )
 
@@ -54,7 +58,13 @@ export const Collection = () => {
     async () => {
       try {
         const topicName = tpName
-        const response = await getCard({ limit, page, keyword, level: level.join(','), topicName })
+        const response = (await getCard({
+          limit,
+          page,
+          keyword,
+          level: level.join(','),
+          topicName,
+        })) as CardDataResponse
 
         return response
       } catch (error) {
@@ -71,7 +81,7 @@ export const Collection = () => {
   useEffect(() => {
     if (card && !isCardLoading) {
       setMean(
-        card?.data?.map((m: any) => {
+        card?.data?.map((m: { meanings: string }) => {
           return JSON.parse(m.meanings)
         }),
       )
@@ -80,22 +90,22 @@ export const Collection = () => {
 
   useEffect(() => {
     if (deck && !isDeckLoading) {
-      if (deck?.data.length === 7) {
+      if (deck.data.length === 7) {
         setIsOutOfLengthTopic(true)
       }
 
-      setTopicName(deck?.data[0].topicName)
+      setTopicName(deck.data[0].topicName)
     }
   }, [deck])
 
-  const onDelete = async (id: any) => {
+  const onDelete = async (id: string) => {
     try {
-      if (id !== '') {
+      if (id !== '' && id) {
         const { success } = await deleteDeck(id)
 
         if (success) {
           notify(NOTIFICATION_TYPE.SUCCESS, 'Delete success')
-          queryClient.invalidateQueries([QUERY_KEYS.TOPIC_LIST])
+          void queryClient.invalidateQueries([QUERY_KEYS.TOPIC_LIST])
         }
       }
     } catch (error) {
@@ -131,7 +141,7 @@ export const Collection = () => {
 
   const onAddTopic = async ({ topicName }: { topicName: string }) => {
     try {
-      if (accessToken && topicName !== '') {
+      if (accessToken && topicName !== '' && userInfo) {
         const { success } = await createDeck({
           topicName: topicName,
           userId: userInfo?.id,
@@ -141,7 +151,7 @@ export const Collection = () => {
         if (success) {
           onCloseTopicModal()
           notify(NOTIFICATION_TYPE.SUCCESS, 'Create topic name success')
-          queryClient.invalidateQueries([QUERY_KEYS.TOPIC_LIST])
+          void queryClient.invalidateQueries([QUERY_KEYS.TOPIC_LIST])
         }
       } else {
         notify(NOTIFICATION_TYPE.ERROR, 'Invalid topic name')
@@ -165,7 +175,7 @@ export const Collection = () => {
         <div className="px-[20px]">
           <Slider {...settings} className="slide-collection h-[100%]">
             {card &&
-              card?.data?.map((item: any, index: number, arr: any) => {
+              card?.data?.map((item: { meanings: string; word: string; phonetic: string }, index: number, arr: any) => {
                 return (
                   <div key={index} className="w-full h-[460px] px-[10px] relative">
                     {!showDetail ? (
@@ -175,18 +185,27 @@ export const Collection = () => {
                       </>
                     ) : (
                       <div>
-                        {JSON.parse(item.meanings)?.map((wordDetail: any) => {
-                          return (
-                            <div className="flex flex-col gap-y-[12px]">
-                              <div className="italic">{wordDetail?.partOfSpeech}</div>
-                              <div>
-                                <div className="font-semibold">Definition :</div>
-                                <div>-{wordDetail?.definitions[0]?.definition}</div>
+                        {JSON.parse(item.meanings)?.map(
+                          (
+                            wordDetail: {
+                              partOfSpeech: string
+                              synonyms: string
+                              definitions: { definition: string }[]
+                            },
+                            index: number,
+                          ) => {
+                            return (
+                              <div className="flex flex-col gap-y-[12px]" key={index}>
+                                <div className="italic">{wordDetail?.partOfSpeech}</div>
+                                <div>
+                                  <div className="font-semibold">Definition :</div>
+                                  <div>-{wordDetail?.definitions[0]?.definition}</div>
+                                </div>
+                                <div>{wordDetail?.synonyms}</div>
                               </div>
-                              <div>{wordDetail?.synonyms}</div>
-                            </div>
-                          )
-                        })}
+                            )
+                          },
+                        )}
                       </div>
                     )}
 
@@ -214,7 +233,7 @@ export const Collection = () => {
         </div>
         <div className={`h-[300px] ${deck && deck?.data?.length > 4 && 'overflow-y-scroll'} mt-[10px]`}>
           {deck &&
-            deck?.data?.map((topic: any) => {
+            deck?.data?.map((topic: DeckListData) => {
               return (
                 <div className="flex items-center gap-[20px]" key={topic.id}>
                   <div
@@ -222,7 +241,9 @@ export const Collection = () => {
                       topic.topicName === tpName && 'bg-sky-400'
                     }`}
                     onClick={() => {
-                      if (topic.topicName !== tpName) onSelect(topic.topicName)
+                      if (topic.topicName !== tpName) {
+                        onSelect(topic.topicName)
+                      }
                     }}
                   >
                     {topic?.topicName}

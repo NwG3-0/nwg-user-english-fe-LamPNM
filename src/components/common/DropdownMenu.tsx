@@ -7,7 +7,7 @@ import { Dropdown } from '@utils/common'
 import { NOTIFICATION_TYPE, notify } from '@utils/notify'
 import { logout } from '@utils/api'
 import { useDataLoginInfoStore } from '@src/zustand'
-import { AUTH_TOKEN, USER_INFO } from '@src/models/api'
+import { AUTH_TOKEN, USER_INFO, UserLogOutResponse } from '@src/models/api'
 
 dayjs.extend(utc)
 
@@ -27,7 +27,10 @@ export const DropdownMenuRelative = ({ title, list, classNameCustom }: Props) =>
 
   const onLogout = async () => {
     try {
-      const { success, message } = await logout({ token: accessToken, expiredAt: dayjs.utc().add(1, 'day').unix() })
+      const { success, message } = (await logout({
+        token: accessToken,
+        expiredAt: dayjs.utc().add(1, 'day').unix(),
+      })) as UserLogOutResponse
 
       if (success) {
         notify(NOTIFICATION_TYPE.SUCCESS, message)

@@ -34,7 +34,7 @@ export const KeyBoard = ({ activeLetter, inactiveLetter, addGuessedLetter }: Pro
   ]
   return (
     <div className="flex flex-wrap gap-[8px] justify-center">
-      {KEYS.map((key) => {
+      {KEYS.map((key, index: number) => {
         const isActive = activeLetter.includes(key)
         const isInactive = inactiveLetter.includes(key)
         return (
@@ -43,6 +43,7 @@ export const KeyBoard = ({ activeLetter, inactiveLetter, addGuessedLetter }: Pro
             onClick={() => {
               addGuessedLetter(key)
             }}
+            key={`${key}-${index}`}
             className={`w-[75px] border-[1px] border-slate-900 aspect-square text-[36px] uppercase font-bold  p-[4px] hover:bg-sky-500 hover:text-white ${
               isActive ? 'bg-sky-500' : ''
             } ${isInactive ? 'bg-slate-300 ' : ''}`}

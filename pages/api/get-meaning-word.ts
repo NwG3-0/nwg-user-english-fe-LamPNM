@@ -21,7 +21,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(400).json({ success: false, data: null, message: 'Invalid Sneaker ID' })
       }
       const cacheKey = `${CACHE_PREFIX}_${searchWord}`
-      const cachedResponse: any = cache.get(cacheKey)
+      const cachedResponse = cache.get(cacheKey) as string
 
       if (cachedResponse) {
         res.setHeader('Cache-Control', `s-maxage=${CACHE_DURATION_IN_SECOND}, stale-while-revalidate`)

@@ -1,15 +1,20 @@
 import {
   API_DICTIONARY_URL,
   AUTH_TOKEN,
+  CardDataResponse,
+  DeckListDataResponse,
   EarliestPostResponse,
   LearningVideoResponseData,
   NewsDetailResponse,
   NewsHighestViewsDataResponse,
   NewsListDataResponse,
   PostDetailResponse,
+  RandomWordDataResponse,
   SubTitleDataResponse,
   SubTitleRandomDataResponse,
   USER_INFO,
+  UserInfoDataResponse,
+  UserLogOutResponse,
   VideoDataResponse,
 } from '@src/models/api'
 import { DEVICES } from './common'
@@ -41,7 +46,7 @@ export const login = async ({ email, password }: { email: string; password: stri
       body: JSON.stringify({ email, password }),
     })
 
-    const rawResponse = await response.json()
+    const rawResponse = (await response.json()) as UserInfoDataResponse
 
     if (rawResponse) {
       return rawResponse
@@ -135,7 +140,7 @@ export const logout = async (input: { token: string; expiredAt: number }) => {
       body: JSON.stringify({ token, expiredAt }),
     })
 
-    const rawResponse = await response.json()
+    const rawResponse = (await response.json()) as UserLogOutResponse
 
     if (rawResponse) {
       return rawResponse
@@ -199,7 +204,7 @@ export const getDeckList = async (userId: string, accessToken: string) => {
       },
     })
 
-    const rawResponse = await response.json()
+    const rawResponse = (await response.json()) as DeckListDataResponse
 
     if (rawResponse) {
       return rawResponse
@@ -249,7 +254,6 @@ export const deleteDeck = async (topicId: string) => {
     const rawResponse = await response.json()
 
     if (rawResponse) {
-      console.log(JSON.stringify({ topicId }))
       return rawResponse
     }
   } catch (error) {
@@ -285,7 +289,7 @@ export const getCard = async (input: {
       },
     )
 
-    const rawResponse = await response.json()
+    const rawResponse = (await response.json()) as CardDataResponse
 
     if (rawResponse) {
       return rawResponse
@@ -443,7 +447,7 @@ export const randomWord = async (userId: string, accessToken: string) => {
       },
     })
 
-    const rawResponse = await response.json()
+    const rawResponse = (await response.json()) as RandomWordDataResponse
 
     if (rawResponse) {
       return rawResponse

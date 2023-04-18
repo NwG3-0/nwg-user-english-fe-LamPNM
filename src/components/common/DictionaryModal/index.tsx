@@ -67,20 +67,22 @@ export const DictionaryModal = ({
                   {word && <div>{word?.phonetics[0].text}</div>}
                 </div>
                 {word &&
-                  word?.meanings.map((mean: any, index: number) => {
-                    return (
-                      <div key={`word ${index}`}>
-                        <div className="font-bold capitalize">{mean?.partOfSpeech}:</div>
-                        <div>
-                          {mean?.definitions.map((define: any) => {
-                            return <div>- {define.definition}</div>
-                          })}
+                  word?.meanings.map(
+                    (mean: { partOfSpeech: string; definitions: { definition: string }[] }, index: number) => {
+                      return (
+                        <div key={`word ${index}`}>
+                          <div className="font-bold capitalize">{mean?.partOfSpeech}:</div>
+                          <div>
+                            {mean?.definitions.map((define: { definition: string }) => {
+                              return <div key={define.definition}>- {define.definition}</div>
+                            })}
+                          </div>
                         </div>
-                      </div>
-                    )
-                  })}
+                      )
+                    },
+                  )}
                 {word &&
-                  word?.phonetics.map((voice: any, index: number) => {
+                  word?.phonetics.map((voice: { audio: string }, index: number) => {
                     return (
                       <div className="my-[16px]" key={`voice ${index}`}>
                         <p className="font-bold text-blue-800">Spelling:</p>

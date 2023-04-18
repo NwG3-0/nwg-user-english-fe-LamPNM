@@ -28,7 +28,7 @@ export const GifPopUp = ({ onSendGiphy }: Props) => {
   }
 
   const debounceInput = useCallback(
-    debounce((keyword) => debounceKeyword(keyword), 1000),
+    debounce((keyword: string) => debounceKeyword(keyword), 1000),
     [],
   )
 

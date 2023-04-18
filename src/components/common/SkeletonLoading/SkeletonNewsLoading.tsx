@@ -1,1 +1,1 @@
-export const SkeletonNewsLoadingScreen = () => {}
+export {}

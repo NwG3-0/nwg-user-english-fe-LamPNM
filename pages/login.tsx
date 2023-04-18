@@ -2,27 +2,31 @@ import React, { useRef } from 'react'
 import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
-import { AUTH_TOKEN, USER_INFO } from '@src/models/api'
+import { AUTH_TOKEN, USER_INFO, UserInfoDataResponse } from '@src/models/api'
 import { useDataLoginInfoStore } from '@src/zustand'
 import InputPassword from '@components/common/InputPassword'
 import { login } from '@utils/api'
 import { NOTIFICATION_TYPE, notify } from '@utils/notify'
+import { DataLoginInfo } from '@utils/zustand'
 
 const LoginPage: NextPage = () => {
   const router = useRouter()
   const emailValue = useRef() as React.MutableRefObject<HTMLInputElement>
   const passwordValue = useRef() as React.MutableRefObject<HTMLInputElement>
 
-  const [setUserInfo, setAccessToken] = useDataLoginInfoStore((state: any) => [state.setUserInfo, state.setAccessToken])
+  const [setUserInfo, setAccessToken] = useDataLoginInfoStore((state: DataLoginInfo) => [
+    state.setUserInfo,
+    state.setAccessToken,
+  ])
 
   const onLogin = async (e: { preventDefault: () => void }) => {
     try {
       e.preventDefault()
       if (emailValue.current.value !== '' && passwordValue.current.value !== '') {
-        const { success, data } = await login({
+        const { success, data } = (await login({
           email: emailValue.current.value,
           password: passwordValue.current.value,
-        })
+        })) as UserInfoDataResponse
 
         if (success) {
           localStorage.setItem(USER_INFO, JSON.stringify(data))
@@ -31,7 +35,7 @@ const LoginPage: NextPage = () => {
           setAccessToken(data.token)
           notify(NOTIFICATION_TYPE.SUCCESS, 'Login success')
 
-          router.push('/')
+          void router.push('/')
         }
       }
     } catch (error) {}
@@ -67,7 +71,7 @@ const LoginPage: NextPage = () => {
           </div>
           <div className="flex justify-end mt-[10px]">
             <Link href="/register" className="text-white underline">
-              Don't have an account ?
+              Don&apos;t have an account ?
             </Link>
           </div>
           <button className="w-full py-[8px] bg-[#FFFFFF] mt-[20px] rounded-sm" type="submit">

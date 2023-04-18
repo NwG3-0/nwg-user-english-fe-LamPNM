@@ -26,7 +26,8 @@ export const Checkout = () => {
               <Link href={'/user_profile'} className="text-[#808080]">
                 User Profile
               </Link>{' '}
-              rồi bấm vào button "Kích hoạt thành viên" <br /> nhập mã code nhận được rồi ấn tiếp button "Kích hoạt"
+              rồi bấm vào button &quot;Kích hoạt thành viên&quot; <br /> nhập mã code nhận được rồi ấn tiếp button
+              &quot;Kích hoạt&quot;
             </p>
             <p className="italic">Cảm ơn vì đã tin tưởng sử dụng trang web!</p>
           </div>

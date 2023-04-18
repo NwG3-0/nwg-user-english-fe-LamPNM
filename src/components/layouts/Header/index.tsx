@@ -11,8 +11,8 @@ import { useRouter } from 'next/router'
 
 export const Header = () => {
   const router = useRouter()
-  const contentRef = useRef() as any
-  const childRef = useRef() as any
+  const contentRef = useRef() as React.MutableRefObject<HTMLInputElement>
+  const childRef = useRef() as React.MutableRefObject<HTMLInputElement>
   useClickOutside(contentRef, childRef, (value) => setIsOpen(value))
 
   const [showUpTop, setShowUpTop] = useState<boolean>(false)
@@ -90,7 +90,8 @@ export const Header = () => {
         </div>
         {isOpen && (
           <div
-            className="absolute z-100 h-screen w-full top-[78px] left-0 flex md:hidden flex-col bg-[#4d4d4dfd] text-[white]"
+            className="absolute z-100 h-screen w-full top-[78px] left-0
+            flex md:hidden flex-col bg-[#4d4d4dfd] text-[white]"
             ref={childRef}
           >
             {MENU_HEADER.map((item: MenuHeader) => (
