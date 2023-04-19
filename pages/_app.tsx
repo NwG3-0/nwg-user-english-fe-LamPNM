@@ -15,7 +15,6 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { isLogin } from '@utils/api'
 import utc from 'dayjs/plugin/utc'
 import { AUTH_TOKEN, USER_INFO } from '@src/models/api'
-import Head from 'next/head'
 import { useDataLoginInfoStore } from '@src/zustand'
 import { safeParseJSON } from '@utils/json'
 import { AuthToken } from '@utils/common'
@@ -56,13 +55,6 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   return (
     <>
-      <Head>
-        <meta
-          name="viewport"
-          // eslint-disable-next-line max-len
-          content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no, user-scalable=no, viewport-fit=cover"
-        />
-      </Head>
       <QueryClientProvider client={queryClient}>
         <Component {...pageProps} />
         <ToastContainer />

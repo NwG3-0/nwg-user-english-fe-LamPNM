@@ -1,3 +1,4 @@
+import { requireAuthenticated } from '@components/HOCs/requiredAuthentication'
 import type { NextPage } from 'next'
 import dynamic from 'next/dynamic'
 
@@ -23,4 +24,4 @@ const UserProfilePage: NextPage = () => {
   )
 }
 
-export default UserProfilePage
+export default requireAuthenticated(UserProfilePage)
