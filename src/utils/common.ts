@@ -1,3 +1,4 @@
+import crypto from 'crypto'
 import { NEWS } from '@src/models/news'
 
 export interface AuthToken {
@@ -115,3 +116,9 @@ export const NEWS_LIST: NewsList[] = [
     value: NEWS.TRAVEL,
   },
 ]
+
+export function getHash(key: string, data: string) {
+  const hmac = crypto.createHmac('sha256', key)
+  hmac.update(data)
+  return hmac.digest('hex')
+}
