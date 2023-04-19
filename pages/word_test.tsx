@@ -1,3 +1,4 @@
+import { requireAuthenticated } from '@components/HOCs/requiredAuthentication'
 import type { NextPage } from 'next'
 import dynamic from 'next/dynamic'
 
@@ -13,7 +14,7 @@ const Footer = dynamic<any>(() => import('@components/layouts/Footer').then((mod
   ssr: false,
 })
 
-const PostPage: NextPage = () => {
+const WordTestPage: NextPage = () => {
   return (
     <div>
       <Header />
@@ -23,4 +24,4 @@ const PostPage: NextPage = () => {
   )
 }
 
-export default PostPage
+export default requireAuthenticated(WordTestPage)
