@@ -226,3 +226,11 @@ export interface RandomWordData {
   UserId: string
   Word: string
 }
+
+export interface CheckOutDataResponse {
+  code: string
+  message: string
+  checkoutUrl: string
+  transactionCode: string
+  signature: string
+}
