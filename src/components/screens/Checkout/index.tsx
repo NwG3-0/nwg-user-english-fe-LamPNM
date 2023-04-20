@@ -5,30 +5,39 @@ export const Checkout = () => {
   const createLinkCheckOut = async () => {
     try {
       const value = {
-        tokenKey: 'uRS4E2NHRvNTObACk1d8dJ9ULe9WT',
-        orderCode: 'ORDER_051500',
-        customMerchantId: 'mailam1309@gmail.com',
         amount: 500000,
-        currency: 'VND',
-        orderDescription: 'This is for order description',
-        totalItem: 1,
-        returnUrl: 'http://test/return',
-        cancelUrl: 'http://test/cancel',
-        buyerName: 'Nguyễn Văn A',
-        buyerEmail: 'mailam1309@gmail.com',
-        buyerPhone: '03338899598',
         buyerAddress: 'Ha Noi',
         buyerCity: 'Ha Noi',
         buyerCountry: 'VietNam',
+        buyerEmail: 'mailam1309@gmail.com',
+        buyerName: 'Nguyễn Văn A',
+        buyerPhone: '03338899598',
+        cancelUrl: 'https://ietls.lampnm.com',
+        currency: 'VND',
+        customMerchantId: 'mailam1309@gmail.com',
+        orderCode: 'ORDER_051500',
+        orderDescription: 'This is for order description',
         paymentHours: '48',
+        returnUrl: 'https://ietls.lampnm.com',
+        tokenKey: 'fuRS4E2NHRvNTObACk1d8dJ9ULe9WT',
+        totalItem: 1,
+        signature: 'c9c691353dcde326cf6d7cc380845e84a7834e9126e55a1d5cf8ff416cc8f6e1',
       }
 
-      const data = `amount=${value.amount}&buyerAddress=${value.buyerAddress}&buyerCity=${value.buyerCity}&buyerCountry=${value.buyerCountry}&buyerEmail=${value.buyerEmail}&buyerName=${value.buyerName}&buyerPhone=${value.buyerPhone}&cancel
-Url=${value.cancelUrl}&currency=${value.currency}&customMerchantId=${value.customMerchantId}&orderCode=${value.orderCode}&orderDescription=${value.orderDescription}&returnUrl=${value.returnUrl}&tokenKey=${value.tokenKey}&totalItem=${value.totalItem}`
+      const valueTransaction = {
+        tokenKey: 'fuRS4E2NHRvNTObACk1d8dJ9ULe9WT',
+        transactionCode: 'ALE00QTPU',
+        signature: 'c9c691353dcde326cf6d7cc380845e84a7834e9126e55a1d5cf8ff416cc8f6e1',
+      }
+      const data = `amount=${value.amount}&buyerAddress=${value.buyerAddress}&buyerCity=${value.buyerCity}&buyerCountry=${value.buyerCountry}&buyerEmail=${value.buyerEmail}&buyerName=${value.buyerName}&buyerPhone=${value.buyerPhone}&cancelUrl=${value.cancelUrl}&currency=${value.currency}&customMerchantId=${value.customMerchantId}&orderCode=${value.orderCode}&orderDescription=${value.orderDescription}&paymentHours=${value.paymentHours}&returnUrl=${value.returnUrl}&tokenKey=${value.tokenKey}&totalItem=${value.totalItem}`
 
       const key = 'KdUlIJKSX6hiekfhamdUU0LmL2Ew8u'
 
-      const signature = getHash(data, key)
+      const dataTrans = `tokenKey=${valueTransaction.tokenKey}&transactionCode=${valueTransaction.transactionCode}`
+
+      const signature = getHash(key, data)
+      const sign = getHash(key, dataTrans)
+      console.log(sign)
       const response = await checkoutTest({ ...value, signature })
 
       console.log(response)
