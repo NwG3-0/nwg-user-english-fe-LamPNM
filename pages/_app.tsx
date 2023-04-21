@@ -18,6 +18,7 @@ import { AUTH_TOKEN, USER_INFO } from '@src/models/api'
 import { useDataLoginInfoStore } from '@src/zustand'
 import { safeParseJSON } from '@utils/json'
 import { AuthToken } from '@utils/common'
+import { removeCookies } from 'cookies-next'
 
 dayjs.extend(utc)
 
@@ -44,6 +45,8 @@ function MyApp({ Component, pageProps }: AppProps) {
     if (authToken && authToken.email !== '' && dayjs.utc(authToken?.exp).isBefore(dayjs.utc().unix())) {
       localStorage.removeItem(AUTH_TOKEN)
       localStorage.removeItem(USER_INFO)
+      removeCookies(AUTH_TOKEN)
+      removeCookies(USER_INFO)
     }
   }, [authToken])
 

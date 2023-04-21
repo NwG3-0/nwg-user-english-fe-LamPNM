@@ -1,0 +1,18 @@
+export const ErrorCode = {
+  '000': 'Thành công',
+  '001': 'Tham số không hợp lệ',
+  '005': 'Không có dữ liệu',
+  '101': 'Checksum không hợp lệ',
+  '102': 'Mã hóa không hợp lệ',
+  '103': 'IP không được phép truy cập',
+  '104': 'Dữ liệu không hợp lệ',
+  '105': 'Token key không hợp lệ',
+  '106': 'Token thanh toán Alepay không tồn tại hoặc đã bị hủy',
+  '107': 'Giao dịch đang được xử lý',
+  '108': 'Dữ liệu không tìm thấy',
+  '109': 'Mã đơn hàng không tìm thấy',
+  '110': 'Phải có email hoặc số điện thoại người mua',
+  '111': 'Giao dịch thất bại',
+  '120': 'Giá trị đơn hàng phải lớn hơn 0',
+  '121': 'Loại tiền tệ không hợp lệ',
+}
