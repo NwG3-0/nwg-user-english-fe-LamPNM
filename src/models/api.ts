@@ -234,3 +234,33 @@ export interface CheckOutDataResponse {
   transactionCode: string
   signature: string
 }
+
+export interface GetTransactionInfoDataResponse {
+  code: string
+  message: string
+  signature: string
+  transactionCode: string
+  orderCode: string
+  amount: string
+  currency: string
+  buyerEmail: string
+  buyerPhone: string
+  cardNumber: string
+  buyerName: string
+  status: string
+  reason: string
+  description: string
+  installment: boolean
+  is3D: boolean
+  month: number
+  bankCode: string
+  bankName: string
+  method: string
+  bankType: string
+  transactionTime: number
+  successTime: number
+  bankHotline: string
+  merchantFee: number
+  payerFee: number
+  authenCode: string | null
+}

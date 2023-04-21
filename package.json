@@ -17,9 +17,11 @@
   "dependencies": {
     "@tanstack/react-query": "^4.16.1",
     "aos": "^2.3.4",
+    "cookies-next": "^2.1.1",
     "crypto": "^1.0.1",
     "dayjs": "^1.11.6",
     "emoji-picker-react": "^4.4.6",
+    "js-cookies": "^1.0.4",
     "jwt-decode": "^3.1.2",
     "lodash.debounce": "^4.0.8",
     "lru-cache": "^7.18.3",
@@ -46,6 +48,7 @@
   "devDependencies": {
     "@babel/runtime": "7.20.1",
     "@types/aos": "^3.0.4",
+    "@types/js-cookie": "^3.0.3",
     "@types/lodash.debounce": "^4.0.7",
     "@types/node": "18.11.7",
     "@types/react": "18.0.24",

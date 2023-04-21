@@ -1,5 +1,6 @@
 import React, { useRef } from 'react'
 import type { NextPage } from 'next'
+import { setCookie } from 'cookies-next'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { AUTH_TOKEN, USER_INFO, UserInfoDataResponse } from '@src/models/api'
@@ -33,6 +34,9 @@ const LoginPage: NextPage = () => {
           localStorage.setItem(AUTH_TOKEN, data.token)
           setUserInfo(data)
           setAccessToken(data.token)
+          setCookie(USER_INFO, JSON.stringify(data))
+          setCookie(AUTH_TOKEN, data.token)
+
           notify(NOTIFICATION_TYPE.SUCCESS, 'Login success')
 
           void router.push('/')

@@ -1,6 +1,6 @@
-import { requireAuthenticated } from '@components/HOCs/requiredAuthentication'
-import type { NextPage } from 'next'
 import dynamic from 'next/dynamic'
+import { getServerSideProps } from '@components/common/checkauth'
+import { NextPage } from 'next'
 
 const Header = dynamic<any>(() => import('@components/layouts/Header').then((mod) => mod.Header), {
   ssr: false,
@@ -24,4 +24,6 @@ const WordTestPage: NextPage = () => {
   )
 }
 
-export default requireAuthenticated(WordTestPage)
+export default WordTestPage
+
+export { getServerSideProps }
