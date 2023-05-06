@@ -14,6 +14,12 @@ export interface MenuHeader {
   name: string
 }
 
+export interface MenuHeaderUser {
+  id: string
+  name: string
+  link: string
+}
+
 export interface Dropdown {
   id: number
   content: string
@@ -35,6 +41,19 @@ export const MENU_HEADER: MenuHeader[] = [
   {
     id: 'roadMap',
     name: 'Road Map',
+  },
+]
+
+export const MENU_HEADER_USER: MenuHeaderUser[] = [
+  {
+    id: 'news',
+    name: 'News',
+    link: '/news',
+  },
+  {
+    id: 'post',
+    name: 'Post',
+    link: '/post',
   },
 ]
 
@@ -64,6 +83,21 @@ export const DROPDOWN_USER_MENU: Dropdown[] = [
     id: 2,
     content: 'Log out',
     path: '/',
+    type: 'div',
+  },
+]
+
+export const DROPDOWN_MORE: Dropdown[] = [
+  {
+    id: 1,
+    content: 'News',
+    path: '/news',
+    type: 'link',
+  },
+  {
+    id: 2,
+    content: 'Post',
+    path: '/post',
     type: 'div',
   },
 ]

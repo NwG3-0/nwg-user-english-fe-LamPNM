@@ -5,10 +5,11 @@ import { DropdownMenu } from '@components/common/Dropdown'
 import { DropdownMenuRelative } from '@components/common/DropdownMenu'
 import { useClickOutside } from '@hooks/useClickOutSide'
 import { useOpenHeaderStore } from '@src/zustand'
-import { MENU_HEADER, MenuHeader, DROPDOWN_MORE } from '@utils/common'
+import { isLogin } from '@utils/api'
+import { DROPDOWN_USER_MENU, MENU_HEADER_USER, MenuHeaderUser } from '@utils/common'
 import { useRouter } from 'next/router'
 
-export const Header = () => {
+export const HeaderUser = () => {
   const router = useRouter()
   const contentRef = useRef() as React.MutableRefObject<HTMLInputElement>
   const childRef = useRef() as React.MutableRefObject<HTMLInputElement>
@@ -93,7 +94,7 @@ export const Header = () => {
             flex md:hidden flex-col bg-[#4d4d4dfd] text-[white]"
             ref={childRef}
           >
-            {MENU_HEADER.map((item: MenuHeader) => (
+            {MENU_HEADER_USER.map((item: MenuHeaderUser) => (
               <Link
                 href={{
                   pathname: '/',
@@ -108,20 +109,23 @@ export const Header = () => {
               </Link>
             ))}
 
-            <div className="relative">
-              <DropdownMenuRelative classNameCustom="" title="More" list={DROPDOWN_MORE} />
-            </div>
+            {isLogin() ? (
+              <div className="relative">
+                <DropdownMenuRelative classNameCustom="" title="User Profile " list={DROPDOWN_USER_MENU} />
+              </div>
+            ) : (
+              <Link className="font-bold text-[22px] p-[10px]" href={'/login'}>
+                Login
+              </Link>
+            )}
           </div>
         )}
         <div className="hidden md:flex gap-[20px] items-center">
           <div className="flex items-center gap-[20px] text-[#FFFFFF]">
-            {MENU_HEADER.map((item) => (
+            {MENU_HEADER_USER.map((item: MenuHeaderUser) => (
               <Link
                 className="font-bold text-[22px] relative menu-link"
-                href={{
-                  pathname: '/',
-                  hash: item.id,
-                }}
+                href={item.link}
                 scroll={false}
                 key={`sub_${item.id}`}
               >
@@ -129,9 +133,15 @@ export const Header = () => {
               </Link>
             ))}
 
-            <div className="relative">
-              <DropdownMenu classNameCustom="" title="More" subMenu={DROPDOWN_MORE} />
-            </div>
+            {isLogin() ? (
+              <div className="relative">
+                <DropdownMenu classNameCustom="" title="User Profile " subMenu={DROPDOWN_USER_MENU} />
+              </div>
+            ) : (
+              <Link className=" font-bold text-[22px] " href={'/login'}>
+                Login
+              </Link>
+            )}
           </div>
         </div>
       </div>

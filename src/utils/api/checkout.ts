@@ -1,4 +1,4 @@
-import { CheckOutDataResponse, GetTransactionInfoDataResponse } from '@src/models/api'
+import { CheckOutDataResponse, GetTransactionInfoDataResponse } from '@src/models/api.interface'
 
 export const BASE_URL_CHECKOUT_API = 'https://alepay-v3-sandbox.nganluong.vn/api/v3/checkout'
 

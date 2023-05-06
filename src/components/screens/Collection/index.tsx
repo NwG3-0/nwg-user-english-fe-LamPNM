@@ -9,7 +9,7 @@ import { createDeck, deleteDeck, getCard, getDeckList } from '@utils/api'
 import { QUERY_KEYS } from '@utils/keys'
 import { NOTIFICATION_TYPE, notify } from '@utils/notify'
 import { DataLoginInfo } from '@utils/zustand'
-import { CardDataResponse, DeckListData, DeckListDataResponse } from '@src/models/api'
+import { CardDataResponse, DeckListData, DeckListDataResponse } from '@src/models/api.interface'
 
 const settings = {
   dots: false,

@@ -4,21 +4,21 @@ import 'react-toastify/dist/ReactToastify.css'
 import 'react-quill/dist/quill.snow.css'
 import '../styles/globals.css'
 import 'slick-carousel/slick/slick.css'
+import 'react-loading-skeleton/dist/skeleton.css'
 
 import { useEffect, useState } from 'react'
 import { ToastContainer } from 'react-toastify'
 import AOS from 'aos'
 import type { AppProps } from 'next/app'
 import jwtDecode from 'jwt-decode'
-import dayjs from 'dayjs'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { isLogin } from '@utils/api'
+import { AUTH_TOKEN, USER_INFO, isLogin } from '@utils/api'
+import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
-import { AUTH_TOKEN, USER_INFO } from '@src/models/api'
 import { useDataLoginInfoStore } from '@src/zustand'
 import { safeParseJSON } from '@utils/json'
 import { AuthToken } from '@utils/common'
-import { removeCookies } from 'cookies-next'
+import { getCookie, removeCookies } from 'cookies-next'
 
 dayjs.extend(utc)
 
@@ -35,9 +35,9 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   useEffect(() => {
     if (isLogin() && typeof window !== 'undefined') {
-      setAuthToken(jwtDecode(localStorage.getItem(AUTH_TOKEN) || '{}'))
-      setUserInfo(safeParseJSON(localStorage.getItem(USER_INFO) ?? '{}'))
-      setAccessToken(localStorage.getItem(AUTH_TOKEN) || '')
+      setAuthToken(jwtDecode(String(getCookie(AUTH_TOKEN)) || '{}'))
+      setUserInfo(safeParseJSON(String(getCookie(USER_INFO)) ?? '{}'))
+      setAccessToken(String(getCookie(AUTH_TOKEN)) || '')
     }
   }, [])
 

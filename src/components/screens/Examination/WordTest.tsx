@@ -15,7 +15,7 @@ import {
 import { QUERY_KEYS } from '@utils/keys'
 import { NOTIFICATION_TYPE, notify } from '@utils/notify'
 import { DataLoginInfo } from '@utils/zustand'
-import { DeckListData, DeckListDataResponse, RandomWordData, RandomWordDataResponse } from '@src/models/api'
+import { DeckListData, DeckListDataResponse, RandomWordData, RandomWordDataResponse } from '@src/models/api.interface'
 
 interface Status {
   isFalse: boolean

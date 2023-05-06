@@ -3,7 +3,7 @@ import utc from 'dayjs/plugin/utc'
 import React, { useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useRouter } from 'next/router'
-import { NewsDetailResponse } from '@src/models/api'
+import { NewsDetailResponse } from '@src/models/api.interface'
 import { checkViewNews, getNewsDetail, addViewNews, updateViewNews } from '@utils/api'
 import { QUERY_KEYS } from '@utils/keys'
 import { useDataLoginInfoStore } from '@src/zustand'
@@ -85,7 +85,7 @@ export const NewsDetail = () => {
       {news_detail && news_detail?.success && news_detail.data && (
         <div className="mt-[30px] w-[600px] mx-auto py-[50px]">
           <div className="text-[20px] font-bold text-center">{news_detail?.data?.Title}</div>
-          <img src={news_detail?.data?.Image} className="w-full mt-[20px]" />
+          <img src={news_detail?.data?.Image} className="w-full mt-[20px]" alt={news_detail?.data?.Title} />
           <div className="text-right mt-[20px] text-[12px]">
             <p>{news_detail.data.View} Views</p>
             <p>

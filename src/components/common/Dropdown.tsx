@@ -8,7 +8,8 @@ import { Dropdown } from '@utils/common'
 import { useDataLoginInfoStore } from '@src/zustand'
 import { NOTIFICATION_TYPE, notify } from '@utils/notify'
 import { logout } from '@utils/api'
-import { AUTH_TOKEN, USER_INFO, UserLogOutResponse } from '@src/models/api'
+import { AUTH_TOKEN, USER_INFO, UserLogOutResponse } from '@src/models/api.interface'
+import { removeCookies } from 'cookies-next'
 
 dayjs.extend(utc)
 
@@ -41,8 +42,8 @@ export const DropdownMenu = ({ classNameCustom, title, subMenu }: Props) => {
         notify(NOTIFICATION_TYPE.SUCCESS, message)
         setAccessToken(undefined)
         setUserInfo(undefined)
-        localStorage.removeItem(AUTH_TOKEN)
-        localStorage.removeItem(USER_INFO)
+        removeCookies(AUTH_TOKEN)
+        removeCookies(USER_INFO)
       } else {
         notify(NOTIFICATION_TYPE.ERROR, message)
       }

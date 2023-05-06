@@ -3,7 +3,7 @@ import utc from 'dayjs/plugin/utc'
 import React from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useRouter } from 'next/router'
-import { PostDetailResponse } from '@src/models/api'
+import { PostDetailResponse } from '@src/models/api.interface'
 import { getPostDetail } from '@utils/api'
 import { QUERY_KEYS } from '@utils/keys'
 

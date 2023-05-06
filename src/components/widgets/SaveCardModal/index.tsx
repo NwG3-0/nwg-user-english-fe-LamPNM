@@ -1,4 +1,4 @@
-import { DeckListData, DeckListDataResponse } from '@src/models/api'
+import { DeckListData, DeckListDataResponse } from '@src/models/api.interface'
 import { useDataLoginInfoStore } from '@src/zustand'
 import { useQuery } from '@tanstack/react-query'
 import { createCard, getDeckList } from '@utils/api'

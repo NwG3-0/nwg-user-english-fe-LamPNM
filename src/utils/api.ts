@@ -1,6 +1,9 @@
+export const USER_INFO = '@user_ielts'
+export const AUTH_TOKEN = '@token_user_ielts'
+
+export const API_DICTIONARY_URL = process.env.API_DICTIONARY_URL ?? 'https://api.dictionaryapi.dev/api/v2/entries/en/'
+
 import {
-  API_DICTIONARY_URL,
-  AUTH_TOKEN,
   CardDataResponse,
   DeckListDataResponse,
   EarliestPostResponse,
@@ -12,18 +15,18 @@ import {
   RandomWordDataResponse,
   SubTitleDataResponse,
   SubTitleRandomDataResponse,
-  USER_INFO,
   UserInfoDataResponse,
   UserLogOutResponse,
   VideoDataResponse,
-} from '@src/models/api'
+} from '@src/models/api.interface'
 import { DEVICES } from './common'
+import { hasCookie } from 'cookies-next'
 
 export const API_BASE_URL = process.env.API_BASE_URL ?? 'http://localhost:4000'
 
 export const isLogin = () => {
   if (typeof window !== 'undefined') {
-    return !!localStorage.getItem(USER_INFO) && !!localStorage.getItem(AUTH_TOKEN)
+    return hasCookie(USER_INFO) && hasCookie(AUTH_TOKEN)
   } else {
     return false
   }

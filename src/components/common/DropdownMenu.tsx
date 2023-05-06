@@ -7,7 +7,7 @@ import { Dropdown } from '@utils/common'
 import { NOTIFICATION_TYPE, notify } from '@utils/notify'
 import { logout } from '@utils/api'
 import { useDataLoginInfoStore } from '@src/zustand'
-import { AUTH_TOKEN, USER_INFO, UserLogOutResponse } from '@src/models/api'
+import { AUTH_TOKEN, USER_INFO, UserLogOutResponse } from '@src/models/api.interface'
 
 dayjs.extend(utc)
 
