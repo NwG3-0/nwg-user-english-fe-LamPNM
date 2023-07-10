@@ -22,7 +22,7 @@ import {
 import { DEVICES } from './common'
 import { hasCookie } from 'cookies-next'
 
-export const API_BASE_URL = process.env.API_BASE_URL ?? 'http://localhost:4000'
+export const API_BASE_URL = process.env.API_BASE_URL ?? 'https://englishbe.lampnm.com'
 
 export const isLogin = () => {
   if (typeof window !== 'undefined') {
