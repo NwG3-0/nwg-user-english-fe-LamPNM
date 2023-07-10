@@ -1,6 +1,5 @@
-import { USER_INFO } from '@src/models/api.interface'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { receiveMessage, sendMessage } from '@utils/api'
+import { USER_INFO, receiveMessage, sendMessage } from '@utils/api'
 import { TYPE_MESSAGE } from '@utils/common'
 import { safeParseJSON } from '@utils/json'
 import { QUERY_KEYS } from '@utils/keys'

@@ -7,7 +7,7 @@ import { Dropdown } from '@utils/common'
 import { NOTIFICATION_TYPE, notify } from '@utils/notify'
 import { logout } from '@utils/api'
 import { useDataLoginInfoStore } from '@src/zustand'
-import { AUTH_TOKEN, USER_INFO, UserLogOutResponse } from '@src/models/api.interface'
+import { UserLogOutResponse } from '@src/models/api.interface'
 
 dayjs.extend(utc)
 
@@ -36,8 +36,6 @@ export const DropdownMenuRelative = ({ title, list, classNameCustom }: Props) =>
         notify(NOTIFICATION_TYPE.SUCCESS, message)
         setAccessToken(undefined)
         setUserInfo(undefined)
-        localStorage.removeItem(AUTH_TOKEN)
-        localStorage.removeItem(USER_INFO)
       } else {
         notify(NOTIFICATION_TYPE.ERROR, message)
       }
